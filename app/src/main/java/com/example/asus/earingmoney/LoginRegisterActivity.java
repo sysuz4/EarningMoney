@@ -17,12 +17,28 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -31,19 +47,19 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
     private User user;
     private ConstraintLayout login_area;
-    private ScrollView register_area;
+    private ScrollView register_area_1, register_area_2, register_area_3, register_area_4;
     private CircleImageView login_image,register_image;
-    private TextView register_button, login_button;
-    private EditText login_user_name, login_password, register_nickname, register_password, register_password_clarify, register_name,
+    private TextView register_button, login_button, continue_1, continue_2, continue_3;
+    private EditText login_credit, login_password, register_nickname, register_password, register_password_clarify, register_name,
             register_age, register_major, register_credit, register_mail, register_phone;
-    private Button login_username_clear, login_password_clear, register_nickname_clear, register_password_clear, register_password_clarify_clear, register_name_clear,
+    private Button login_credit_clear, login_password_clear, register_nickname_clear, register_password_clear, register_password_clarify_clear, register_name_clear,
             register_age_clear, register_major_clear, register_credit_clear, register_mail_clear, register_phone_clear;
     private RadioGroup register_sex_group, register_grade_group;
     private ActionProcessButton log_in, register;
-    private TextWatcher login_username_watcher, login_password_watcher, register_nickname_watcher, register_password_watcher , register_password_clarify_watcher, register_name_watcher,
+    private TextWatcher login_credit_watcher, login_password_watcher, register_nickname_watcher, register_password_watcher , register_password_clarify_watcher, register_name_watcher,
             register_age_watcher, register_major_watcher, register_credit_watcher, register_mail_watcher, register_phone_watcher;
-    private boolean login_has_username, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify, register_has_name,
-            register_has_age, register_has_sex, register_has_grade, register_has_major, register_has_credit, register_has_mail, register_has_phone;
+    private boolean login_has_credit, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify,
+            register_has_name, register_has_credit, register_has_sex, register_has_grade;
 
     private String default_image = "android.resource://com.example.asus.work2/" + R.mipmap.me;
     private int current_sex, current_grade;
@@ -53,12 +69,18 @@ public class LoginRegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
 
+        current_sex = 2;//初始化性别为未知
+        current_grade = 0;
+
         login_area = (ConstraintLayout)findViewById(R.id.login_area);
-        register_area = (ScrollView)findViewById(R.id.register_area);
+        register_area_1 = (ScrollView)findViewById(R.id.register_area_1);
+        register_area_2 = (ScrollView)findViewById(R.id.register_area_2);
+        register_area_3 = (ScrollView)findViewById(R.id.register_area_3);
+        register_area_4 = (ScrollView)findViewById(R.id.register_area_4);
 
         register_image = (CircleImageView)findViewById(R.id.register_image);
 
-        login_user_name = (EditText)findViewById(R.id.login_user_name);
+        login_credit = (EditText)findViewById(R.id.login_credit);
         login_password = (EditText)findViewById(R.id.login_password);
 
         register_nickname = (EditText)findViewById(R.id.register_nickname);
@@ -71,7 +93,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         register_mail = (EditText)findViewById(R.id.register_mail);
         register_phone = (EditText)findViewById(R.id.register_phone);
 
-        login_username_clear = (Button)findViewById(R.id.login_username_clear);
+        login_credit_clear = (Button)findViewById(R.id.login_credit_clear);
         login_password_clear = (Button)findViewById(R.id.login_password_clear);
 
         register_nickname_clear = (Button)findViewById(R.id.register_nickname_clear);
@@ -92,10 +114,13 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         login_button = (TextView)findViewById(R.id.login_button);
         register_button = (TextView)findViewById(R.id.register_button);
+        continue_1 = (TextView)findViewById(R.id.continue_1);
+        continue_2 = (TextView)findViewById(R.id.continue_2);
+        continue_3 = (TextView)findViewById(R.id.continue_3);
 
         initWatcher();
 
-        login_user_name.addTextChangedListener(login_username_watcher);
+        login_credit.addTextChangedListener(login_credit_watcher);
         login_password.addTextChangedListener(login_password_watcher);
         register_nickname.addTextChangedListener(register_nickname_watcher);
         register_password.addTextChangedListener(register_password_watcher);
@@ -122,11 +147,11 @@ public class LoginRegisterActivity extends AppCompatActivity {
             }
         });
 
-        login_username_clear.setOnClickListener(new View.OnClickListener() {
+        login_credit_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login_user_name.setText("");
-                login_has_username = false;
+                login_credit.setText("");
+                login_has_credit = false;
                 log_in.setEnabled(false);
             }
         });
@@ -180,7 +205,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 register_age.setText("");
-                register_has_age = false;
                 register.setEnabled(false);
             }
         });
@@ -189,7 +213,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 register_major.setText("");
-                register_has_major = false;
                 register.setEnabled(false);
             }
         });
@@ -207,7 +230,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 register_mail.setText("");
-                register_has_mail = false;
                 register.setEnabled(false);
             }
         });
@@ -216,15 +238,64 @@ public class LoginRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 login_area.setVisibility(View.GONE);
-                register_area.setVisibility(View.VISIBLE);
+                register_area_1.setVisibility(View.VISIBLE);
             }
         });
 
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                register_area.setVisibility(View.GONE);
+                register_area_4.setVisibility(View.GONE);
                 login_area.setVisibility(View.VISIBLE);
+            }
+        });
+
+        continue_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(register_password.getText().toString().equals(register_password_clarify.getText().toString()) && register_has_password && register_has_nickname){
+                    register_area_1.setVisibility(View.GONE);
+                    register_area_2.setVisibility(View.VISIBLE);
+                }
+                else if(!register_has_nickname){
+                    Toast.makeText(getApplicationContext(), "请输入昵称", Toast.LENGTH_SHORT).show();
+                }
+                else if(!register_has_password){
+                    Toast.makeText(getApplicationContext(), "您还没输入密码，请重新输入", Toast.LENGTH_SHORT).show();
+                    register_password.setText("");
+                    register_password_clarify.setText("");
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "两次密码输入不一致，请重新输入", Toast.LENGTH_SHORT).show();
+                    register_password.setText("");
+                    register_password_clarify.setText("");
+                }
+            }
+        });
+
+        continue_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(register_has_name){
+                    register_area_2.setVisibility(View.GONE);
+                    register_area_3.setVisibility(View.VISIBLE);
+                }
+               else {
+                    Toast.makeText(getApplicationContext(), "请输入姓名", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        continue_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(register_has_credit){
+                    register_area_3.setVisibility(View.GONE);
+                    register_area_4.setVisibility(View.VISIBLE);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "请输入学号", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -241,9 +312,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         current_sex = 1;
                         break;
                 }
-                if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                        && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                    register.setEnabled(true);
             }
         });
 
@@ -266,28 +334,96 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         current_grade = 4;
                         break;
                 }
-                if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                        && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                    register.setEnabled(true);
+            }
+        });
+
+        log_in.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String credit = login_credit.getText().toString();
+                final String password = login_password.getText().toString();
+
+                login_credit.setEnabled(false);
+                login_password.setEnabled(false);
+                log_in.setProgress(0);
+
+//                //params.setUseJsonStreamer(true);
+//                JSONObject body = new JSONObject();
+//                body.put("username", "panghao");
+//                body.put("password", "12345");
+//                String urlPath = "http://192.168.137.1:8080/login";
+//                URL url = new URL(urlPath);
+//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                conn.setConnectTimeout(5000);
+//                // 设置允许输出
+//                conn.setDoOutput(true);
+//                conn.setDoInput(true);
+//                conn.setRequestMethod("POST");
+//                // 设置contentType
+//                conn.setRequestProperty("Content-Type", "application/json");
+//                DataOutputStream os = new DataOutputStream( conn.getOutputStream());
+//                String content = String.valueOf(body);
+//                os.writeBytes(content);
+//                os.flush();
+//                os.close();
+//                if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//                    InputStreamReader in = new InputStreamReader(conn.getInputStream());
+//                    BufferedReader bf = new BufferedReader(in);
+//                    String recieveData = null;
+//                    String result = "";
+//                    while ((recieveData = bf.readLine()) != null){
+//                        result += recieveData + "\n";
+//                    }
+//                    in.close();
+//                    conn.disconnect();
+//                }
+//                } catch (JSONException e) {
+//                    throw e;
+//                } catch (IOException io){
+//                    throw io;
+//                }
+            }
+        });
+
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String nickname = register_nickname.getText().toString();
+                final String password = register_password.getText().toString();
+                final String name = register_name.getText().toString();
+                final String age_temp = register_age.getText().toString();
+                final int age = Integer.parseInt(age_temp);
+                final int sex = current_sex;
+                final int grade = current_grade;
+                final String major = register_major.getText().toString();
+                final String credit_temp = register_credit.getText().toString();
+                final int credit = Integer.parseInt(age_temp);
+                final String mail = register_mail.getText().toString();
+                final String phone_temp = register_phone.getText().toString();
+                final int phone = Integer.parseInt(age_temp);
+
+                register_mail.setEnabled(false);
+                register_phone.setEnabled(false);
+
             }
         });
     }
 
     //用来判断edittext是否有内容，如果有再显示清除按钮
     private void initWatcher() {
-        login_username_watcher = new TextWatcher() {
+        login_credit_watcher = new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
             public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
             public void afterTextChanged(Editable s) {
                 login_password.setText("");
                 if(s.toString().length()>0){
-                    login_username_clear.setVisibility(View.VISIBLE);
-                    login_has_username = true;
-                    if(login_has_username && login_has_password)
+                    login_credit_clear.setVisibility(View.VISIBLE);
+                    login_has_credit = true;
+                    if(login_has_credit && login_has_password)
                         log_in.setEnabled(true);
                 }else{
-                    login_username_clear.setVisibility(View.INVISIBLE);
-                    login_has_username = false;
+                    login_credit_clear.setVisibility(View.INVISIBLE);
+                    login_has_credit = false;
                 }
             }
         };
@@ -299,7 +435,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 if(s.toString().length()>0){
                     login_password_clear.setVisibility(View.VISIBLE);
                     login_has_password = true;
-                    if(login_has_username && login_has_password)
+                    if(login_has_credit && login_has_password)
                         log_in.setEnabled(true);
                 }else{
                     login_password_clear.setVisibility(View.INVISIBLE);
@@ -315,9 +451,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 if(s.toString().length()>0){
                     register_nickname_clear.setVisibility(View.VISIBLE);
                     register_has_nickname = true;
-                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                            && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                        register.setEnabled(true);
                 }else{
                     register_nickname_clear.setVisibility(View.INVISIBLE);
                     register_has_nickname = false;
@@ -332,9 +465,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 if(s.toString().length()>0){
                     register_password_clear.setVisibility(View.VISIBLE);
                     register_has_password = true;
-                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                            && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                        register.setEnabled(true);
                 }else{
                     register_password_clear.setVisibility(View.INVISIBLE);
                     register_has_password = false;
@@ -349,9 +479,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 if(s.toString().length()>0){
                     register_password_clarify_clear.setVisibility(View.VISIBLE);
                     register_has_password_clarify = true;
-                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                            && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                        register.setEnabled(true);
                 }else{
                     register_password_clarify_clear.setVisibility(View.INVISIBLE);
                     register_has_password_clarify = false;
@@ -366,9 +493,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 if(s.toString().length()>0){
                     register_name_clear.setVisibility(View.VISIBLE);
                     register_has_name = true;
-                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                            && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                        register.setEnabled(true);
                 }else{
                     register_name_clear.setVisibility(View.INVISIBLE);
                     register_has_name = false;
@@ -382,13 +506,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if(s.toString().length()>0){
                     register_age_clear.setVisibility(View.VISIBLE);
-                    register_has_age = true;
-                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                            && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                        register.setEnabled(true);
                 }else{
                     register_age_clear.setVisibility(View.INVISIBLE);
-                    register_has_age = false;
                 }
             }
         };
@@ -399,13 +518,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if(s.toString().length()>0){
                     register_major_clear.setVisibility(View.VISIBLE);
-                    register_has_major = true;
-                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                            && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                        register.setEnabled(true);
                 }else{
                     register_major_clear.setVisibility(View.INVISIBLE);
-                    register_has_major = false;
                 }
             }
         };
@@ -417,8 +531,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 if(s.toString().length()>0){
                     register_credit_clear.setVisibility(View.VISIBLE);
                     register_has_credit = true;
-                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                            && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
+                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_credit)
                         register.setEnabled(true);
                 }else{
                     register_credit_clear.setVisibility(View.INVISIBLE);
@@ -433,13 +546,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if(s.toString().length()>0){
                     register_mail_clear.setVisibility(View.VISIBLE);
-                    register_has_mail = true;
-                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                            && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                        register.setEnabled(true);
                 }else{
                     register_mail_clear.setVisibility(View.INVISIBLE);
-                    register_has_mail = false;
                 }
             }
         };
@@ -450,13 +558,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if(s.toString().length()>0){
                     register_phone_clear.setVisibility(View.VISIBLE);
-                    register_has_phone = true;
-                    if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_age
-                            && register_has_sex && register_has_grade && register_has_major && register_has_credit && register_has_mail && register_has_phone)
-                        register.setEnabled(true);
                 }else{
                     register_phone_clear.setVisibility(View.INVISIBLE);
-                    register_has_phone = false;
                 }
             }
         };

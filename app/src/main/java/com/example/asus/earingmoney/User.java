@@ -9,7 +9,7 @@ public class User {
     private String avator;//头像
     private String nickName;//昵称
     private int age;
-    private int sex;// 0 = female 1 = male
+    private int sex;// 0 = female 1 = male 2 = not sure
     private int grade;
     private String major;
     private String mailAddr;
