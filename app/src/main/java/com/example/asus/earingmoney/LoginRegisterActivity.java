@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,45 +22,48 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
-import java.util.Map;
 import java.util.UUID;
+
+import retrofit2.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LoginRegisterActivity extends AppCompatActivity {
 
-    private User user;
+    private service myservice;
+    public ServiceFactory serviceFactory;
+    private GetTokenJsonObj getTokenJsonObj;
     private ConstraintLayout login_area;
     private ScrollView register_area_1, register_area_2, register_area_3, register_area_4;
     private CircleImageView login_image,register_image;
     private TextView register_button, login_button, continue_1, continue_2, continue_3;
-    private EditText login_credit, login_password, register_nickname, register_password, register_password_clarify, register_name,
+    private EditText login_username, login_password, register_nickname, register_password, register_password_clarify, register_name,
             register_age, register_major, register_credit, register_mail, register_phone;
-    private Button login_credit_clear, login_password_clear, register_nickname_clear, register_password_clear, register_password_clarify_clear, register_name_clear,
+    private Button login_username_clear, login_password_clear, register_nickname_clear, register_password_clear, register_password_clarify_clear, register_name_clear,
             register_age_clear, register_major_clear, register_credit_clear, register_mail_clear, register_phone_clear;
     private RadioGroup register_sex_group, register_grade_group;
     private ActionProcessButton log_in, register;
     private TextWatcher login_credit_watcher, login_password_watcher, register_nickname_watcher, register_password_watcher , register_password_clarify_watcher, register_name_watcher,
             register_age_watcher, register_major_watcher, register_credit_watcher, register_mail_watcher, register_phone_watcher;
-    private boolean login_has_credit, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify,
+    private boolean login_has_username, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify,
             register_has_name, register_has_credit, register_has_sex, register_has_grade;
 
     private String default_image = "android.resource://com.example.asus.work2/" + R.mipmap.me;
@@ -68,6 +73,9 @@ public class LoginRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
+
+        serviceFactory = new ServiceFactory();
+        myservice = serviceFactory.CreatService();
 
         current_sex = 2;//初始化性别为未知
         current_grade = 0;
@@ -80,7 +88,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         register_image = (CircleImageView)findViewById(R.id.register_image);
 
-        login_credit = (EditText)findViewById(R.id.login_credit);
+        login_username = (EditText)findViewById(R.id.login_username);
         login_password = (EditText)findViewById(R.id.login_password);
 
         register_nickname = (EditText)findViewById(R.id.register_nickname);
@@ -93,7 +101,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         register_mail = (EditText)findViewById(R.id.register_mail);
         register_phone = (EditText)findViewById(R.id.register_phone);
 
-        login_credit_clear = (Button)findViewById(R.id.login_credit_clear);
+        login_username_clear = (Button)findViewById(R.id.login_username_clear);
         login_password_clear = (Button)findViewById(R.id.login_password_clear);
 
         register_nickname_clear = (Button)findViewById(R.id.register_nickname_clear);
@@ -120,7 +128,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         initWatcher();
 
-        login_credit.addTextChangedListener(login_credit_watcher);
+        login_username.addTextChangedListener(login_credit_watcher);
         login_password.addTextChangedListener(login_password_watcher);
         register_nickname.addTextChangedListener(register_nickname_watcher);
         register_password.addTextChangedListener(register_password_watcher);
@@ -147,11 +155,11 @@ public class LoginRegisterActivity extends AppCompatActivity {
             }
         });
 
-        login_credit_clear.setOnClickListener(new View.OnClickListener() {
+        login_username_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login_credit.setText("");
-                login_has_credit = false;
+                login_username.setText("");
+                login_has_username = false;
                 log_in.setEnabled(false);
             }
         });
@@ -340,48 +348,10 @@ public class LoginRegisterActivity extends AppCompatActivity {
         log_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String credit = login_credit.getText().toString();
+                final String username = login_username.getText().toString();
                 final String password = login_password.getText().toString();
 
-                login_credit.setEnabled(false);
-                login_password.setEnabled(false);
-                log_in.setProgress(0);
-
-//                //params.setUseJsonStreamer(true);
-//                JSONObject body = new JSONObject();
-//                body.put("username", "panghao");
-//                body.put("password", "12345");
-//                String urlPath = "http://192.168.137.1:8080/login";
-//                URL url = new URL(urlPath);
-//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//                conn.setConnectTimeout(5000);
-//                // 设置允许输出
-//                conn.setDoOutput(true);
-//                conn.setDoInput(true);
-//                conn.setRequestMethod("POST");
-//                // 设置contentType
-//                conn.setRequestProperty("Content-Type", "application/json");
-//                DataOutputStream os = new DataOutputStream( conn.getOutputStream());
-//                String content = String.valueOf(body);
-//                os.writeBytes(content);
-//                os.flush();
-//                os.close();
-//                if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//                    InputStreamReader in = new InputStreamReader(conn.getInputStream());
-//                    BufferedReader bf = new BufferedReader(in);
-//                    String recieveData = null;
-//                    String result = "";
-//                    while ((recieveData = bf.readLine()) != null){
-//                        result += recieveData + "\n";
-//                    }
-//                    in.close();
-//                    conn.disconnect();
-//                }
-//                } catch (JSONException e) {
-//                    throw e;
-//                } catch (IOException io){
-//                    throw io;
-//                }
+                getToken(username,password);
             }
         });
 
@@ -392,22 +362,223 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 final String password = register_password.getText().toString();
                 final String name = register_name.getText().toString();
                 final String age_temp = register_age.getText().toString();
-                final int age = Integer.parseInt(age_temp);
+                final int age;
+                if(age_temp.isEmpty())
+                    age = -1;
+                else
+                    age = Integer.parseInt(age_temp);
                 final int sex = current_sex;
                 final int grade = current_grade;
                 final String major = register_major.getText().toString();
                 final String credit_temp = register_credit.getText().toString();
-                final int credit = Integer.parseInt(age_temp);
+                final int credit = Integer.parseInt(credit_temp);
                 final String mail = register_mail.getText().toString();
                 final String phone_temp = register_phone.getText().toString();
-                final int phone = Integer.parseInt(age_temp);
+                final int phone;
+                if(phone_temp.isEmpty())
+                    phone = -1;
+                else
+                    phone = Integer.parseInt(phone_temp);
 
-                register_mail.setEnabled(false);
-                register_phone.setEnabled(false);
+                register.setProgress(0);
+
+                new Thread(){
+                    @Override
+                    public void run () {
+                        //params.setUseJsonStreamer(true);
+                        JSONObject body = new JSONObject();
+                        try {
+                            body.put("userId", 4396);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("userType", 0);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("name", name);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("nickName", nickname);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("age", age);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("sex", sex);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("grade", grade);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("major", major);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("mailAddr", mail);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("phoneNum", phone);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("creditVal", credit);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("balance", 0);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("tags", "0");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("password", password);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        Message msg1 = new Message();
+                        msg1.what = 20;
+                        handler.sendMessage(msg1);
+
+                        String urlPath = "http://106.14.225.59/users";
+                        URL url = null;
+                        try {
+                            url = new URL(urlPath);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        HttpURLConnection conn = null;
+                        try {
+                            conn = (HttpURLConnection) url.openConnection();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        conn.setConnectTimeout(5000);
+                        // 设置允许输出
+                        conn.setDoOutput(true);
+                        conn.setDoInput(true);
+                        try {
+                            conn.setRequestMethod("POST");
+                        } catch (ProtocolException e) {
+                            e.printStackTrace();
+                        }
+
+                        Message msg2 = new Message();
+                        msg2.what = 20;
+                        handler.sendMessage(msg2);
+
+                        // 设置contentType
+                        conn.setRequestProperty("Content-Type", "application/json");
+                        DataOutputStream os = null;
+                        try {
+                            os = new DataOutputStream(conn.getOutputStream());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        Message msg3 = new Message();
+                        msg3.what = 20;
+                        handler.sendMessage(msg3);
+
+                        String content = String.valueOf(body);
+                        try {
+                            os.writeBytes(content);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            os.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            os.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            //System.out.println(conn.getResponseCode());
+                            if (conn.getResponseCode() == 201) {
+                                InputStreamReader in = new InputStreamReader(conn.getInputStream());
+                                BufferedReader bf = new BufferedReader(in);
+                                String recieveData = null;
+                                String result = "";
+                                while ((recieveData = bf.readLine()) != null) {
+                                    result += recieveData + "\n";
+                                }
+                                //System.out.println(result);
+                                in.close();
+                                conn.disconnect();
+
+                                Message msg4 = new Message();
+                                msg4.what = 40;
+                                handler.sendMessage(msg4);
+
+                                getToken(nickname,password);
+                            }
+                            else if(conn.getResponseCode() ==  409){
+                                Message msg5 = new Message();
+                                msg5.what = -1;
+                                handler.sendMessage(msg5);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
 
             }
+
         });
     }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            super.handleMessage(msg);
+            if(msg.what == -1){
+                Toast.makeText(getApplicationContext(), "该用户名已被注册", Toast.LENGTH_SHORT).show();
+                register.setProgress(100);
+                register_area_4.setVisibility(View.GONE);
+                register_area_1.setVisibility(View.VISIBLE);
+            }
+            else if(msg.what == -2){
+                Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();
+                login_username.setText("");
+                login_password.setText("");
+            }
+            else {
+                register.setProgress(register.getProgress() + msg.what);
+                if(register.getProgress() == 100){
+                    Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                    register_area_4.setVisibility(View.GONE);
+                    login_area.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    };
 
     //用来判断edittext是否有内容，如果有再显示清除按钮
     private void initWatcher() {
@@ -417,13 +588,13 @@ public class LoginRegisterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 login_password.setText("");
                 if(s.toString().length()>0){
-                    login_credit_clear.setVisibility(View.VISIBLE);
-                    login_has_credit = true;
-                    if(login_has_credit && login_has_password)
+                    login_username_clear.setVisibility(View.VISIBLE);
+                    login_has_username = true;
+                    if(login_has_username && login_has_password)
                         log_in.setEnabled(true);
                 }else{
-                    login_credit_clear.setVisibility(View.INVISIBLE);
-                    login_has_credit = false;
+                    login_username_clear.setVisibility(View.INVISIBLE);
+                    login_has_username = false;
                 }
             }
         };
@@ -435,7 +606,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 if(s.toString().length()>0){
                     login_password_clear.setVisibility(View.VISIBLE);
                     login_has_password = true;
-                    if(login_has_credit && login_has_password)
+                    if(login_has_username && login_has_password)
                         log_in.setEnabled(true);
                 }else{
                     login_password_clear.setVisibility(View.INVISIBLE);
@@ -596,5 +767,38 @@ public class LoginRegisterActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void getToken(final String username, final String password) {
+        myservice.post_to_get_token(username, password, new GetTokenJsonObj())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response<GetTokenJsonObj>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(LoginRegisterActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(Response<GetTokenJsonObj> getTokenJsonObjResponse) {
+                        System.out.println(getTokenJsonObjResponse.body().toString());
+                        if(getTokenJsonObjResponse.raw().code() == 200){
+                            Toast.makeText(LoginRegisterActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                            getTokenJsonObj = getTokenJsonObjResponse.body();
+                            Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
+                            intent.putExtra("userid", getTokenJsonObj.getUserId());
+                            intent.putExtra("token", getTokenJsonObj.getToken());
+                            startActivity(intent);
+                        }
+                        else {
+                            Toast.makeText(LoginRegisterActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

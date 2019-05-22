@@ -1,25 +1,43 @@
 package com.example.asus.earingmoney;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
-public class User {
+public class User{
+    @SerializedName("id")
     private int id;
+    @SerializedName("userType")
     private int userType;//判断是普通用户还是管理员
+    @SerializedName("name")
     private String name;
+    @SerializedName("avator")
     private String avator;//头像
+    @SerializedName("nickName")
     private String nickName;//昵称
+    @SerializedName("age")
     private int age;
+    @SerializedName("sex")
     private int sex;// 0 = female 1 = male 2 = not sure
+    @SerializedName("grade")
     private int grade;
+    @SerializedName("major")
     private String major;
+    @SerializedName("mailAddr")
     private String mailAddr;
+    @SerializedName("phoneNum")
     private String phoneNum;
+    @SerializedName("creditValue")
     private String creditValue;//学号
+    @SerializedName("balance")
     private int balance;//余额
+    @SerializedName("tags")
     private ArrayList<String> tags;//标签，用于分类
+    @SerializedName("password")
     private String password;
 
     public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _creditValue, int _balance, ArrayList<String> _tags, String _password) {
+
         id = _id;
         userType = _userType;
         name = _name;
@@ -156,4 +174,5 @@ public class User {
     public void setUserType(int userType) {
         this.userType = userType;
     }
+
 }
