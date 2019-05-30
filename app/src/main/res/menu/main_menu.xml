@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu android:name="menu1" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/tj"
-        android:icon="@mipmap/add"
+        android:icon="@mipmap/icon_add"
         app:showAsAction="ifRoom"
         android:title="添加"
         app:actionProviderClass="com.example.asus.earingmoney.PlusActionProvider"/>
