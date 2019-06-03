@@ -1,8 +1,35 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
-        <item name="android:actionOverflowButtonStyle">@style/OverflowStyle</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- toolbar（actionbar）颜色 -->
+        <item name="colorPrimary">@color/gray</item>
+        <!-- 状态栏颜色 -->
+        <item name="colorPrimaryDark">@android:color/darker_gray</item>
+        <!-- 窗口的背景颜色 -->
+        <item name="android:windowBackground">@color/white</item>
+        <item name="actionOverflowMenuStyle">@style/MenuStyle</item>
+    </style>
+
+    <style name="MenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu.Overflow">
+        <!--可以看到该属性 overlap：重叠 Anchor：描-->
+        <item name="overlapAnchor">false</item>
+        <!-- 这个就是背景颜色了-->
+        <item name="android:popupBackground">?attr/colorPrimary</item>
+    </style>
+
+    <style name="PopWindowStyle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!--字体和图标的颜色-->
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+
+    <style name="PopWindowBackgroundStyle" parent="@style/ThemeOverlay.AppCompat.Light">
+        <item name="actionOverflowMenuStyle">@style/MenuStyle1</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="MenuStyle1" parent="@style/Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+        <item name="android:popupBackground">@android:color/darker_gray</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -13,10 +40,5 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="OverflowStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
-        <item name="android:src">@mipmap/add</item>
-        <item name="overlapAnchor">false</item>
-    </style>
 
 </resources>
