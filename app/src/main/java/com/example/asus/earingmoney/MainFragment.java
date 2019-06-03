@@ -3,9 +3,12 @@ package com.example.asus.earingmoney;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainFragment extends Fragment {
     private static final String ARG_SHOW_TEXT = "text";
@@ -38,9 +41,17 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.main_fragment, container, false);
-        TextView contentTv = rootView.findViewById(R.id.content_tv);
-        contentTv.setText(mContentText);
+        setHasOptionsMenu(true);
+//        TextView contentTv = rootView.findViewById(R.id.content_tv);
+//        contentTv.setText(mContentText);
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
     }
 
 }
