@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.asus.earingmoney">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -28,7 +29,9 @@
         <activity
             android:logo="@mipmap/add"
             android:name=".MainPartActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".createQuestionare">
+        </activity>
     </application>
 
 </manifest>
