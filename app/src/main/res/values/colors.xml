@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="Blue">#1296db</color>
+    <color name="buttom_tv">#484747</color>
+    <color name="toubu">#f4692a</color>
+    <color name="gray">#d3d3d3</color>
+    <color name="whitecolor">#ffffff</color>
 </resources>

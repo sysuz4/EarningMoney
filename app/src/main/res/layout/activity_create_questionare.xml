@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".createQuestionare">
+    <EditText
+        android:textAlignment="center"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/descripText"
+        android:id="@+id/titleText"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:hint="输入问卷题目"
+        android:layout_margin="5dp"/>
+    <EditText
+        android:hint="输入问卷描述"
+        app:layout_constraintTop_toBottomOf="@id/titleText"
+        app:layout_constraintBottom_toTopOf="@id/lv_edit"
+        app:layout_constraintVertical_weight="2"
+        android:id="@+id/descripText"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"/>
+    <com.yydcdut.sdlv.SlideAndDragListView
+        app:layout_constraintTop_toBottomOf="@id/descripText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_weight="10"
+        android:id="@+id/lv_edit"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        >
+    </com.yydcdut.sdlv.SlideAndDragListView>
+    <com.example.asus.earingmoney.lib.Fab
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        fab:fab_colorNormal="@color/blue_normal"
+        fab:fab_colorPressed="@color/blue_pressed"
+        fab:fab_colorRipple="@color/colorAccent" />
+    <!-- Overlay that dims the screen -->
+    <com.gordonwong.materialsheetfab.DimOverlayFrameLayout
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Circular reveal container for the sheet -->
+    <io.codetail.widget.RevealLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end|bottom"
+        android:orientation="vertical">
+
+        <!-- Sheet that contains your items -->
+        <android.support.v7.widget.CardView
+            android:id="@+id/fab_sheet"
+            android:layout_width="250dp"
+            android:layout_height="300dp">
+            <Button
+                android:id="@+id/createSingleChooseBtn"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:background="@color/cardview_light_background"
+                android:text="创建单选题"
+                android:onClick="createSingleChooseBtn_click"/>
+            <Button
+                android:id="@+id/createMultiChooseBtn"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:background="@color/cardview_light_background"
+                android:layout_marginVertical="75dp"
+                android:text="创建多选题"
+                android:onClick="createMultiChooseBtn_click"/>
+            <Button
+                android:id="@+id/createQueryBtn"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:background="@color/cardview_light_background"
+                android:layout_marginVertical="150dp"
+                android:text="创建问答题"
+                android:onClick="createQueryBtn_click"/>
+            <Button
+                android:id="@+id/finishBtn"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:background="@color/blue_normal"
+                android:layout_marginVertical="225dp"
+                android:text="结束创建问卷"/>
+            <!-- TODO: Put your sheet items here -->
+
+        </android.support.v7.widget.CardView>
+    </io.codetail.widget.RevealLinearLayout>
+
+</android.support.constraint.ConstraintLayout>
