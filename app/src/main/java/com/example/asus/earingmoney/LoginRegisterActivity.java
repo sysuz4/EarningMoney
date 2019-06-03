@@ -25,6 +25,7 @@ import com.dd.processbutton.iml.ActionProcessButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.helper.HttpConnection;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -38,6 +39,9 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.UUID;
 
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+import okio.BufferedSource;
 import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -50,7 +54,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
     private service myservice;
     public ServiceFactory serviceFactory;
-    private GetTokenJsonObj getTokenJsonObj;
+    private GetTokenObj getTokenObj;
     private ConstraintLayout login_area;
     private ScrollView register_area_1, register_area_2, register_area_3, register_area_4;
     private CircleImageView login_image,register_image;
@@ -770,10 +774,25 @@ public class LoginRegisterActivity extends AppCompatActivity {
     }
 
     public void getToken(final String username, final String password) {
-        myservice.post_to_get_token(username, password, new GetTokenJsonObj())
+        myservice.post_to_get_token(username, password, new ResponseBody() {
+            @Override
+            public MediaType contentType() {
+                return null;
+            }
+
+            @Override
+            public long contentLength() {
+                return 0;
+            }
+
+            @Override
+            public BufferedSource source() {
+                return null;
+            }
+        })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<GetTokenJsonObj>>() {
+                .subscribe(new Subscriber<ResponseBody>() {
                     @Override
                     public void onCompleted() {
 
@@ -785,19 +804,19 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Response<GetTokenJsonObj> getTokenJsonObjResponse) {
-                        System.out.println(getTokenJsonObjResponse.body().toString());
-                        if(getTokenJsonObjResponse.raw().code() == 200){
-                            Toast.makeText(LoginRegisterActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                            getTokenJsonObj = getTokenJsonObjResponse.body();
+                    public void onNext(ResponseBody response) {
+                        String jstr = null;
+                        try {
+                            jstr = new String(response.bytes());
                             Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
-                            intent.putExtra("userid", getTokenJsonObj.getUserId());
-                            intent.putExtra("token", getTokenJsonObj.getToken());
+                            intent.putExtra("userid", username);
+                            intent.putExtra("token", jstr);
                             startActivity(intent);
-                        }
-                        else {
+                        } catch (IOException e) {
                             Toast.makeText(LoginRegisterActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
                         }
+                        System.out.println(jstr);
                     }
                 });
     }
