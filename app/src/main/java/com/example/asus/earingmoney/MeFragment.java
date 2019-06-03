@@ -38,6 +38,7 @@ public class MeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.me_fragment, container, false);
+        setHasOptionsMenu(true);
         TextView contentTv = rootView.findViewById(R.id.content_tv);
         contentTv.setText(mContentText);
         return rootView;
