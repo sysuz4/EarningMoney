@@ -2,6 +2,7 @@ package com.example.asus.earingmoney;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -68,15 +69,23 @@ public class LoginRegisterActivity extends AppCompatActivity {
     private TextWatcher login_credit_watcher, login_password_watcher, register_nickname_watcher, register_password_watcher , register_password_clarify_watcher, register_name_watcher,
             register_age_watcher, register_major_watcher, register_credit_watcher, register_mail_watcher, register_phone_watcher;
     private boolean login_has_username, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify,
-            register_has_name, register_has_credit, register_has_sex, register_has_grade;
+            register_has_name, register_has_credit, register_has_sex, register_has_grade, had_login_in;
 
     private String default_image = "android.resource://com.example.asus.work2/" + R.mipmap.me;
     private int current_sex, current_grade;
+    SharedPreferences user_shared_preference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
+
+        user_shared_preference = getSharedPreferences("user", 0);
+        had_login_in = user_shared_preference.getBoolean("had_user",false);
+        if(had_login_in){
+            Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
+            startActivity(intent);
+        }
 
         serviceFactory = new ServiceFactory();
         myservice = serviceFactory.CreatService();
@@ -809,8 +818,11 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         try {
                             jstr = new String(response.bytes());
                             Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
-                            intent.putExtra("userid", username);
-                            intent.putExtra("token", jstr);
+                            SharedPreferences.Editor editor = user_shared_preference.edit();
+                            editor.putString("token",jstr);
+                            editor.putString("username",username);
+                            editor.putBoolean("had_user",true);
+                            editor.commit();
                             startActivity(intent);
                         } catch (IOException e) {
                             Toast.makeText(LoginRegisterActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
