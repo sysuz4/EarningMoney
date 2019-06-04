@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -54,6 +55,7 @@ public class MainPartActivity extends AppCompatActivity {
         fragments.add(MainFragment.newInstance("首页"));
         fragments.add(TasksFragment.newInstance("任务"));
         fragments.add(MeFragment.newInstance("我的"));
+
 
         adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), fragments);
         fragment_vp.setAdapter(adapter);

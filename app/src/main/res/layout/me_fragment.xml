@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.constraint.ConstraintLayout
-            app:layout_constraintTop_toBottomOf="@id/content_tv"
             android:id="@+id/topPart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -263,5 +262,4 @@
                 android:layout_height="wrap_content" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
-
 </android.support.constraint.ConstraintLayout>
