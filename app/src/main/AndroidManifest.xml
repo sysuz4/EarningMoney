@@ -27,8 +27,11 @@
         </activity>
         <activity
             android:name=".MainPartActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".createQuestionare">
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".createQuestionare"
+            android:theme="@style/AppTheme"></activity>
+        <activity android:name=".creat_errand_activity" android:theme="@style/AppTheme">
         </activity>
     </application>
 
