@@ -9,16 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="100dp"
-            android:layout_height="60dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            app:layout_constraintLeft_toRightOf="@+id/image"/>
-
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

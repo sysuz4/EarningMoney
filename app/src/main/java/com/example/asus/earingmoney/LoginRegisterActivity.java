@@ -2,6 +2,7 @@ package com.example.asus.earingmoney;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import com.dd.processbutton.iml.ActionProcessButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.helper.HttpConnection;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -38,6 +40,9 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.UUID;
 
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+import okio.BufferedSource;
 import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -50,7 +55,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
     private service myservice;
     public ServiceFactory serviceFactory;
-    private GetTokenJsonObj getTokenJsonObj;
+    private GetTokenObj getTokenObj;
     private ConstraintLayout login_area;
     private ScrollView register_area_1, register_area_2, register_area_3, register_area_4;
     private CircleImageView login_image,register_image;
@@ -64,15 +69,23 @@ public class LoginRegisterActivity extends AppCompatActivity {
     private TextWatcher login_credit_watcher, login_password_watcher, register_nickname_watcher, register_password_watcher , register_password_clarify_watcher, register_name_watcher,
             register_age_watcher, register_major_watcher, register_credit_watcher, register_mail_watcher, register_phone_watcher;
     private boolean login_has_username, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify,
-            register_has_name, register_has_credit, register_has_sex, register_has_grade;
+            register_has_name, register_has_credit, register_has_sex, register_has_grade, had_login_in;
 
     private String default_image = "android.resource://com.example.asus.work2/" + R.mipmap.me;
     private int current_sex, current_grade;
+    SharedPreferences user_shared_preference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
+
+        user_shared_preference = getSharedPreferences("user", 0);
+        had_login_in = user_shared_preference.getBoolean("had_user",false);
+        if(had_login_in){
+            Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
+            startActivity(intent);
+        }
 
         serviceFactory = new ServiceFactory();
         myservice = serviceFactory.CreatService();
@@ -770,10 +783,25 @@ public class LoginRegisterActivity extends AppCompatActivity {
     }
 
     public void getToken(final String username, final String password) {
-        myservice.post_to_get_token(username, password, new GetTokenJsonObj())
+        myservice.post_to_get_token(username, password, new ResponseBody() {
+            @Override
+            public MediaType contentType() {
+                return null;
+            }
+
+            @Override
+            public long contentLength() {
+                return 0;
+            }
+
+            @Override
+            public BufferedSource source() {
+                return null;
+            }
+        })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<GetTokenJsonObj>>() {
+                .subscribe(new Subscriber<ResponseBody>() {
                     @Override
                     public void onCompleted() {
 
@@ -785,19 +813,22 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Response<GetTokenJsonObj> getTokenJsonObjResponse) {
-                        System.out.println(getTokenJsonObjResponse.body().toString());
-                        if(getTokenJsonObjResponse.raw().code() == 200){
-                            Toast.makeText(LoginRegisterActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                            getTokenJsonObj = getTokenJsonObjResponse.body();
+                    public void onNext(ResponseBody response) {
+                        String jstr = null;
+                        try {
+                            jstr = new String(response.bytes());
                             Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
-                            intent.putExtra("userid", getTokenJsonObj.getUserId());
-                            intent.putExtra("token", getTokenJsonObj.getToken());
+                            SharedPreferences.Editor editor = user_shared_preference.edit();
+                            editor.putString("token",jstr);
+                            editor.putString("username",username);
+                            editor.putBoolean("had_user",true);
+                            editor.commit();
                             startActivity(intent);
-                        }
-                        else {
+                        } catch (IOException e) {
                             Toast.makeText(LoginRegisterActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
                         }
+                        System.out.println(jstr);
                     }
                 });
     }
