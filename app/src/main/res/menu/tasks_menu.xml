@@ -5,5 +5,5 @@
         android:icon="@mipmap/me"
         app:showAsAction="ifRoom"
         android:title="w"
-        app:actionProviderClass="com.example.asus.earingmoney.PlusActionProvider"/>
+        app:actionProviderClass="com.example.asus.earingmoney.adapter.PlusActionProvider"/>
 </menu>

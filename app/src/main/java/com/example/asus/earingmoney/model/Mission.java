@@ -1,4 +1,4 @@
-package com.example.asus.earingmoney;
+package com.example.asus.earingmoney.model;
 
 import com.google.gson.annotations.SerializedName;
 
