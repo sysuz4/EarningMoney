@@ -27,9 +27,10 @@
         </activity>
         <activity
             android:name=".MainPartActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".createQuestionare">
-        </activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".createQuestionare"></activity>
+        <activity android:name=".MissionDetailActivity"
+            android:theme="@style/AppTheme" ></activity>
     </application>
 
 </manifest>

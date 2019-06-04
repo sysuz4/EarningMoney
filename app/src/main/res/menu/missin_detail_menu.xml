@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu android:name="menu1" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:icon="@mipmap/ellipsis"
+        app:showAsAction="always"
+        android:title="选项"
+        app:actionProviderClass="com.example.asus.earingmoney.ElipsisActionProvider"/>
+</menu>

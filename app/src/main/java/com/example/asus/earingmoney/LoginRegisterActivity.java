@@ -55,7 +55,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
     private service myservice;
     public ServiceFactory serviceFactory;
-    private GetTokenObj getTokenObj;
     private ConstraintLayout login_area;
     private ScrollView register_area_1, register_area_2, register_area_3, register_area_4;
     private CircleImageView login_image,register_image;
