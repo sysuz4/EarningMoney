@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.adapter.MyAdapter;
@@ -52,6 +54,12 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
     private MyAdapter myAdapter;
     private MaterialSheetFab materialSheetFab;
 
+    private EditText titleText;
+    private EditText descripText;
+    public String finishDate;
+    public Float money;
+    public int taskNum;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +92,9 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
         int sheetColor = getResources().getColor(R.color.cardview_light_background);
         int fabColor = getResources().getColor(R.color.blue_normal);
 
+        titleText = findViewById(R.id.titleText);
+        descripText = findViewById(R.id.descripText);
+
         // Initialize material sheet FAB
         materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, sheetColor, fabColor);
     }
@@ -105,11 +116,9 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
     }
 
     private void initData() {
-        for(int i = 0; i < 20; i++)
-        {
-            QuestionModel questionModel = new QuestionModel(2, "hi");
-            mQueList.add(questionModel);
-        }
+        money = -1.f;
+        taskNum = -1;
+        finishDate = "";
     }
 
     @Override
@@ -248,10 +257,15 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
     }
 
     public void finishBtn_click(View view) {
-        final FinishQuestionareDialog dialog = new FinishQuestionareDialog(createQuestionare.this);
-        dialog.showAnim(new NewsPaperEnter())//
-                .dismissAnim(new FadeExit())//
-                .show();
-        dialog.setCanceledOnTouchOutside(false);
+        if(titleText.getText().toString().isEmpty())
+            Toast.makeText(this, "请输入标题", Toast.LENGTH_SHORT).show();
+        else
+        {
+            final FinishQuestionareDialog dialog = new FinishQuestionareDialog(createQuestionare.this);
+            dialog.showAnim(new NewsPaperEnter())//
+                    .dismissAnim(new FadeExit())//
+                    .show();
+            dialog.setCanceledOnTouchOutside(false);
+        }
     }
 }
