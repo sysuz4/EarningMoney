@@ -11,6 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.clj.memoryspinner.MemorySpinner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainFragment extends Fragment {
     private static final String ARG_SHOW_TEXT = "text";
 
@@ -43,6 +48,11 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.main_fragment, container, false);
         setHasOptionsMenu(true);
+
+        MemorySpinner ms1 = rootView.findViewById(R.id.ms1);
+        ArrayList<String> list = new ArrayList<>(Arrays.asList("跑腿任务", "问卷任务"));
+        ms1.setMemoryCount(1);
+        ms1.setData(null, list);
 //        TextView contentTv = rootView.findViewById(R.id.content_tv);
 //        contentTv.setText(mContentText);
         return rootView;
