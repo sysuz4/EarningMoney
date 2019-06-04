@@ -11,4 +11,5 @@
     <color name="black">#B2000000</color>
     <color name="white">#fafafa</color>
     <color name="white_pressed">#f1f1f1</color>
+    <color name="divider">#CCC</color>
 </resources>

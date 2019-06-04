@@ -16,4 +16,8 @@ public interface service{
 
     @POST("/tokens")
     Observable<ResponseBody> post_to_get_token(@Query("username") String username, @Query("password") String password, @Body ResponseBody response);
+
+    @Headers("{token}")
+    @GET("/missions")
+    Observable<List<Mission>> getMissions(@Path("token") String token);
 }

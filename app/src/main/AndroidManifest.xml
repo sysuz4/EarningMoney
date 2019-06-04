@@ -28,6 +28,8 @@
         <activity
             android:name=".MainPartActivity"
             android:theme="@style/AppTheme" />
+        <activity android:name=".MissionDetailActivity"
+            android:theme="@style/AppTheme" ></activity>
         <activity
             android:name=".createQuestionare"
             android:theme="@style/AppTheme"></activity>
