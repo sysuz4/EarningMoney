@@ -43,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
+        android:src="@mipmap/addd"
         fab:fab_colorNormal="@color/blue_normal"
         fab:fab_colorPressed="@color/blue_pressed"
         fab:fab_colorRipple="@color/colorAccent" />
@@ -93,7 +94,8 @@
                 android:layout_height="75dp"
                 android:background="@color/blue_normal"
                 android:layout_marginVertical="225dp"
-                android:text="结束创建问卷"/>
+                android:text="结束创建问卷"
+                android:onClick="finishBtn_click"/>
             <!-- TODO: Put your sheet items here -->
 
         </android.support.v7.widget.CardView>

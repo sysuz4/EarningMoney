@@ -3,16 +3,20 @@ package com.example.asus.earingmoney;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.adapter.MyAdapter;
 import com.example.asus.earingmoney.lib.Fab;
+import com.example.asus.earingmoney.lib.FinishQuestionareDialog;
 import com.example.asus.earingmoney.lib.MultiChooseDialog;
 import com.example.asus.earingmoney.lib.QueryDialog;
 import com.example.asus.earingmoney.lib.SingleChooseDialog;
@@ -23,6 +27,7 @@ import com.flyco.animation.FadeExit.FadeExit;
 import com.flyco.animation.FallEnter.FallEnter;
 import com.flyco.animation.FallEnter.FallRotateEnter;
 import com.flyco.animation.FlipExit.FlipHorizontalExit;
+import com.flyco.animation.NewsPaperEnter;
 import com.flyco.animation.SlideExit.SlideBottomExit;
 import com.flyco.animation.ZoomEnter.ZoomInEnter;
 import com.flyco.animation.ZoomExit.ZoomOutExit;
@@ -48,6 +53,12 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
     private SlideAndDragListView mListView;
     private MyAdapter myAdapter;
     private MaterialSheetFab materialSheetFab;
+
+    private EditText titleText;
+    private EditText descripText;
+    public String finishDate;
+    public Float money;
+    public int taskNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +92,9 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
         int sheetColor = getResources().getColor(R.color.cardview_light_background);
         int fabColor = getResources().getColor(R.color.blue_normal);
 
+        titleText = findViewById(R.id.titleText);
+        descripText = findViewById(R.id.descripText);
+
         // Initialize material sheet FAB
         materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, sheetColor, fabColor);
     }
@@ -90,22 +104,21 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
 
         mMenu.addItem(new MenuItem.Builder().setWidth(120)
                 .setBackground(new ColorDrawable(Color.GRAY))//设置菜单的背景
-                .setText("Two")
                 .setTextColor(Color.BLACK)
                 .setTextSize((14))
+                .setIcon(getResources().getDrawable(R.mipmap.modify))
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth(180)
                 .setBackground(new ColorDrawable(Color.BLACK))//设置菜单的背景
                 .setDirection(MenuItem.DIRECTION_RIGHT)
+                .setIcon(getResources().getDrawable(R.mipmap.gabege))
                 .build());
     }
 
     private void initData() {
-        for(int i = 0; i < 20; i++)
-        {
-            QuestionModel questionModel = new QuestionModel(2, "hi");
-            mQueList.add(questionModel);
-        }
+        money = -1.f;
+        taskNum = -1;
+        finishDate = "";
     }
 
     @Override
@@ -241,5 +254,18 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
         }
 
 
+    }
+
+    public void finishBtn_click(View view) {
+        if(titleText.getText().toString().isEmpty())
+            Toast.makeText(this, "请输入标题", Toast.LENGTH_SHORT).show();
+        else
+        {
+            final FinishQuestionareDialog dialog = new FinishQuestionareDialog(createQuestionare.this);
+            dialog.showAnim(new NewsPaperEnter())//
+                    .dismissAnim(new FadeExit())//
+                    .show();
+            dialog.setCanceledOnTouchOutside(false);
+        }
     }
 }
