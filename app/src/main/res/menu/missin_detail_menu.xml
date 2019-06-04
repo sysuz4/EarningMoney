@@ -6,5 +6,5 @@
         android:icon="@mipmap/ellipsis"
         app:showAsAction="always"
         android:title="选项"
-        app:actionProviderClass="com.example.asus.earingmoney.ElipsisActionProvider"/>
+        app:actionProviderClass="com.example.asus.earingmoney.adapter.ElipsisActionProvider"/>
 </menu>

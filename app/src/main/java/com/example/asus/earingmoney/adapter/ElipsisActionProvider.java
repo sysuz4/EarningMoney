@@ -1,4 +1,4 @@
-package com.example.asus.earingmoney;
+package com.example.asus.earingmoney.adapter;
 
 import android.content.Context;
 import android.support.v4.view.ActionProvider;
