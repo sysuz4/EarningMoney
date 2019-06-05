@@ -1,5 +1,6 @@
 package com.example.asus.earingmoney;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +57,7 @@ public class MainFragment extends Fragment {
         ms1.setData(null, list);
 //        TextView contentTv = rootView.findViewById(R.id.content_tv);
 //        contentTv.setText(mContentText);
+
         return rootView;
     }
 
