@@ -5,6 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="45dp">
 
+<<<<<<< HEAD
+
+=======
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -262,4 +265,5 @@
                 android:layout_height="wrap_content" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
+>>>>>>> 8268351cf1ea6b8433e186310c67e9d573c7d3bf
 </android.support.constraint.ConstraintLayout>

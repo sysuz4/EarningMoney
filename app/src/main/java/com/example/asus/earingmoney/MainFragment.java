@@ -1,7 +1,10 @@
 package com.example.asus.earingmoney;
 
 import android.content.Intent;
+<<<<<<< HEAD
+=======
 import android.content.SharedPreferences;
+>>>>>>> 8268351cf1ea6b8433e186310c67e9d573c7d3bf
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,10 +12,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+<<<<<<< HEAD
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+=======
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+>>>>>>> 8268351cf1ea6b8433e186310c67e9d573c7d3bf
 
 import com.example.asus.earingmoney.adapter.ListViewAdapter_missions;
 import com.example.asus.earingmoney.model.Mission;
@@ -81,6 +90,8 @@ public class MainFragment extends Fragment {
 //        TextView contentTv = rootView.findViewById(R.id.content_tv);
 //        contentTv.setText(mContentText);
 
+<<<<<<< HEAD
+=======
 //        serviceFactory = new ServiceFactory();
 //        myservice = serviceFactory.CreatService();
 //
@@ -132,6 +143,7 @@ public class MainFragment extends Fragment {
             }
         });
 
+>>>>>>> 8268351cf1ea6b8433e186310c67e9d573c7d3bf
         return rootView;
     }
 
