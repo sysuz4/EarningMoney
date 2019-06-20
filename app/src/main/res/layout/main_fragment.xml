@@ -6,11 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-<<<<<<< HEAD
-        android:id="@+id/linearlayout"
-=======
         android:id="@+id/spinner_list_1"
->>>>>>> 8268351cf1ea6b8433e186310c67e9d573c7d3bf
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
@@ -79,8 +75,6 @@
 
     </LinearLayout>
 
-<<<<<<< HEAD
-=======
     <View
         android:id="@+id/line1"
         android:background="@color/divider"
@@ -104,6 +98,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/spinner_list_2"/>
->>>>>>> 8268351cf1ea6b8433e186310c67e9d573c7d3bf
 
 </android.support.constraint.ConstraintLayout>
