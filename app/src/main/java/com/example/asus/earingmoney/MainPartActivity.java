@@ -32,6 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainPartActivity extends AppCompatActivity {
 
+    public static MainPartActivity instance = null;
     private ViewPager fragment_vp;
     private RadioGroup tabs_rg;
     private List<Fragment> fragments;
@@ -47,6 +48,12 @@ public class MainPartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_part);
+
+        instance = this;
+
+        if(LoginRegisterActivity.instance != null){
+            LoginRegisterActivity.instance.finish();
+        }
 
         fragment_vp = findViewById(R.id.fragment_vp);
         tabs_rg = findViewById(R.id.tabs_rg);

@@ -1,5 +1,7 @@
 package com.example.asus.earingmoney;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -35,6 +38,8 @@ public class MeFragment extends Fragment {
     TextView pass;
     ImageView sexImage;
     CircleImageView header;
+    Button logOut;
+    SharedPreferences user_shared_preference;
 
     public MeFragment() {
         // Required empty public constructor
@@ -78,6 +83,21 @@ public class MeFragment extends Fragment {
         pass = view.findViewById(R.id.pass);
         header = view.findViewById(R.id.headerPic);
         sexImage = view.findViewById(R.id.sexImage);
+        logOut = view.findViewById(R.id.log_out);
+
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                user_shared_preference = getActivity().getSharedPreferences("user", 0);
+                SharedPreferences.Editor editor = user_shared_preference.edit();
+                editor.putString("token","");
+                editor.putString("username","");
+                editor.putBoolean("had_user",false);
+                editor.commit();
+                Intent intent = new Intent(getActivity(),LoginRegisterActivity.class);
+                startActivity(intent);
+            }
+        });
 
         finishModify();
         return rootView;
