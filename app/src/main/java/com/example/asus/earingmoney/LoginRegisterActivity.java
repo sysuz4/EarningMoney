@@ -53,6 +53,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LoginRegisterActivity extends AppCompatActivity {
 
+    public static LoginRegisterActivity instance = null;
     private service myservice;
     public ServiceFactory serviceFactory;
     private ConstraintLayout login_area;
@@ -78,6 +79,12 @@ public class LoginRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
+
+        if(MainPartActivity.instance != null){
+            MainPartActivity.instance.finish();
+        }
+
+        instance = this;
 
         user_shared_preference = getSharedPreferences("user", 0);
         had_login_in = user_shared_preference.getBoolean("had_user",false);
