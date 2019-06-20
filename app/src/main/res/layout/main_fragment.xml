@@ -6,96 +6,97 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/spinner_list_1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
         android:visibility="visible"
-        app:layout_constraintHorizontal_weight="4">
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        app:layout_constraintHorizontal_weight="2">
 
-        <com.clj.memoryspinner.MemorySpinner
-            android:id="@+id/ms1"
-            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
-            android:visibility="visible"
-            app:msDropItemBackgroundColor="@android:color/white"
-            app:msDropItemText="全部选项"
-            app:msDropItemTextColor="@android:color/black"
+        <View
+            android:id="@+id/line4"
+            android:background="@color/divider"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"/>
 
-            app:msDropItemTextSize="14sp"
-            app:msDropTitleBackgroundColor="@color/colorPrimary"
-            app:msDropTitleText="常用选项"
-            app:msDropTitleTextColor="@android:color/white"
-
-            app:msDropTitleTextSize="12sp"
-            app:msItemTextColor="@android:color/black"
-            app:msItemTextSize="14sp" />
-
-        <com.clj.memoryspinner.MemorySpinner
-            android:id="@+id/ms2"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:visibility="visible"
-
-            app:layout_constraintLeft_toRightOf="@+id/ms1"
-            app:msDropItemBackgroundColor="@android:color/white"
-            app:msDropItemText="全部选项"
-            app:msDropItemTextColor="@android:color/black"
-
-            app:msDropItemTextSize="14sp"
-            app:msDropTitleBackgroundColor="@color/colorPrimary"
-            app:msDropTitleText="常用选项"
-            app:msDropTitleTextColor="@android:color/white"
-
-            app:msDropTitleTextSize="12sp"
-            app:msItemTextColor="@android:color/black"
-            app:msItemTextSize="14sp" />
-
-        <com.clj.memoryspinner.MemorySpinner
-            android:id="@+id/ms3"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:visibility="visible"
-
-            app:layout_constraintLeft_toRightOf="@+id/ms2"
-            app:msDropItemBackgroundColor="@android:color/white"
-            app:msDropItemText="全部选项"
-            app:msDropItemTextColor="@android:color/black"
-
-            app:msDropItemTextSize="14sp"
-            app:msDropTitleBackgroundColor="@color/colorPrimary"
-            app:msDropTitleText="常用选项"
-            app:msDropTitleTextColor="@android:color/white"
-
-            app:msDropTitleTextSize="12sp"
-            app:msItemTextColor="@android:color/black"
-            app:msItemTextSize="14sp" />
-
-        <com.clj.memoryspinner.MemorySpinner
-            android:id="@+id/ms4"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:visibility="visible"
-
-            app:layout_constraintLeft_toRightOf="@+id/ms3"
-            app:msDropItemBackgroundColor="@android:color/white"
-            app:msDropItemText="全部选项"
-            app:msDropItemTextColor="@android:color/black"
-
-            app:msDropItemTextSize="14sp"
-            app:msDropTitleBackgroundColor="@color/colorPrimary"
-            app:msDropTitleText="常用选项"
-            app:msDropTitleTextColor="@android:color/white"
-
-            app:msDropTitleTextSize="12sp"
-            app:msItemTextColor="@android:color/black"
-            app:msItemTextSize="14sp" />
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/line2"
+        android:background="@color/divider"
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_list_1"/>
+
+    <LinearLayout
+        android:id="@+id/spinner_list_2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_list_1"
+        app:layout_constraintHorizontal_weight="2">
+
+        <Spinner
+            android:id="@+id/spinner3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <View
+            android:id="@+id/line3"
+            android:background="@color/divider"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"/>
+
+        <Spinner
+            android:id="@+id/spinner4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line1"
+        android:background="@color/divider"
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_list_2"/>
+
+    <ListView
+        android:id = "@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#00000000"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toBottomOf="@id/spinner_list_2">
+    </ListView>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_list_2"/>
 
 </android.support.constraint.ConstraintLayout>
