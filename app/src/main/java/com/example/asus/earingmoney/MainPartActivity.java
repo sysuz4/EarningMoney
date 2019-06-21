@@ -25,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.asus.earingmoney.Util.Constants;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,7 +115,7 @@ public class MainPartActivity extends AppCompatActivity {
                         }
                         btn.setImageURI(headerUri);
                     }
-                    if(sex == 1)
+                    if(sex == Constants.FEMALE)
                     {
                         ImageView sexImage = findViewById(R.id.sexImage);
                         if(sexImage == null)
@@ -175,14 +177,14 @@ public class MainPartActivity extends AppCompatActivity {
 
     public void changeSex(View view) {
         ImageView sexImage = findViewById(R.id.sexImage);
-        if(sex == 0)
+        if(sex == Constants.MALE)
         {
-            sex = 1;
+            sex = Constants.FEMALE;
             sexImage.setImageResource(R.mipmap.girl);
         }
         else
         {
-            sex = 0;
+            sex = Constants.MALE;
             sexImage.setImageResource(R.mipmap.boy);
         }
     }

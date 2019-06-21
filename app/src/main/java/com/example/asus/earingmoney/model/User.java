@@ -30,13 +30,15 @@ public class User{
     @SerializedName("stuId")
     private String stuId;//学号
     @SerializedName("balance")
-    private int balance;//余额
+    private float balance;//余额
     @SerializedName("tags")
-    private ArrayList<String> tags;//标签，用于分类
+    private String tags;//标签，用于分类
     @SerializedName("password")
     private String password;
+    @SerializedName("creditVal")
+    private String creditVal;
 
-    public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _stuId, int _balance, ArrayList<String> _tags, String _password) {
+    public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _stuId,  float _balance, String _tags, String _password, String creditVal) {
 
         id = _id;
         userType = _userType;
@@ -53,6 +55,7 @@ public class User{
         balance = _balance;
         tags = _tags;
         password = _password;
+        this.creditVal = creditVal;
     }
 
     public int getId() {
@@ -87,11 +90,11 @@ public class User{
         return grade;
     }
 
-    public ArrayList<String> getTags() {
+    public String getTags() {
         return tags;
     }
 
-    public int getBalance() {
+    public  float getBalance() {
         return balance;
     }
 
@@ -123,7 +126,7 @@ public class User{
         this.avator = avator;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance( float balance) {
         this.balance = balance;
     }
 
@@ -167,7 +170,7 @@ public class User{
         this.sex = sex;
     }
 
-    public void setTags(ArrayList<String> tags) {
+    public void setTags(String tags) {
         this.tags = tags;
     }
 
@@ -175,4 +178,11 @@ public class User{
         this.userType = userType;
     }
 
+    public String getCreditVal() {
+        return creditVal;
+    }
+
+    public void setCreditVal(String creditVal) {
+        this.creditVal = creditVal;
+    }
 }

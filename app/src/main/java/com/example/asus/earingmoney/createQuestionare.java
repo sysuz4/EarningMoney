@@ -4,6 +4,7 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,13 +15,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Constants;
+import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.adapter.MyAdapter;
 import com.example.asus.earingmoney.lib.Fab;
 import com.example.asus.earingmoney.lib.FinishQuestionareDialog;
 import com.example.asus.earingmoney.lib.MultiChooseDialog;
 import com.example.asus.earingmoney.lib.QueryDialog;
 import com.example.asus.earingmoney.lib.SingleChooseDialog;
+import com.example.asus.earingmoney.model.CreateQuestionareModel;
+import com.example.asus.earingmoney.model.Mission;
+import com.example.asus.earingmoney.model.Question;
 import com.example.asus.earingmoney.model.QuestionModel;
+import com.example.asus.earingmoney.model.Questionare;
+import com.example.asus.earingmoney.model.Task;
 import com.flyco.animation.BounceEnter.BounceTopEnter;
 import com.flyco.animation.FadeEnter.FadeEnter;
 import com.flyco.animation.FadeExit.FadeExit;
@@ -32,6 +39,7 @@ import com.flyco.animation.SlideExit.SlideBottomExit;
 import com.flyco.animation.ZoomEnter.ZoomInEnter;
 import com.flyco.animation.ZoomExit.ZoomOutExit;
 import com.flyco.dialog.widget.NormalDialog;
+import com.google.gson.Gson;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.melnykov.fab.FloatingActionButton;
 import com.yydcdut.sdlv.Menu;
@@ -39,7 +47,19 @@ import com.yydcdut.sdlv.MenuItem;
 import com.yydcdut.sdlv.SlideAndDragListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class createQuestionare extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
@@ -47,8 +67,8 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
         SlideAndDragListView.OnDragDropListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener,
         SlideAndDragListView.OnItemScrollBackListener{
-    private QuestionModel mDraggedEntity;
-    private List<QuestionModel> mQueList = new ArrayList<>();
+    private Question mDraggedEntity;
+    private List<Question> mQueList = new ArrayList<>();
     private Menu mMenu;
     private SlideAndDragListView mListView;
     private MyAdapter myAdapter;
@@ -60,6 +80,8 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
     public Float money;
     public int taskNum;
 
+    private service myservice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +90,23 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
         initData();
         initMenu();
         initUiAndListener();
+
+        OkHttpClient build = new OkHttpClient.Builder()
+                .connectTimeout(2, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS)
+                .writeTimeout(2, TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASEURL)
+                // 本次实验不需要自定义Gson
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                // build 即为okhttp声明的变量，下文会讲
+                .client(build)
+                .build();
+
+        myservice = retrofit.create(service.class);
 
     }
 
@@ -147,7 +186,7 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onDragDropViewMoved(int fromPosition, int toPosition) {
-        QuestionModel questionModel = mQueList.remove(fromPosition);
+        Question questionModel = mQueList.remove(fromPosition);
         mQueList.add(toPosition, questionModel);
     }
 
@@ -222,7 +261,7 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
 
     public void modifyQuestion(int position)
     {
-        QuestionModel questionModel = mQueList.get(position);
+        Question questionModel = mQueList.get(position);
         int type = questionModel.getQuestionType();
 
         if(type == Constants.QUERY_QUESTION)
@@ -268,4 +307,71 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
             dialog.setCanceledOnTouchOutside(false);
         }
     }
+
+    public void create_questinoare_to_server()
+    {
+        CreateQuestionareModel createQuestionareModel = new CreateQuestionareModel();
+        Mission mission = new Mission();
+        Task task = new Task();
+        Questionare questionare = new Questionare();
+
+        questionare.setQuestions(mQueList);
+        questionare.setTitle(titleText.getText().toString());
+        questionare.setDescription(descripText.getText().toString());
+        questionare.setQuestionNum(mQueList.size());
+
+        task.setFinishTime(finishDate);
+        task.setTaskType(Constants.TASK_QUESTIONARE);
+        task.setTaskStatus(Constants.TO_DO);
+
+        mission.setDeadLine(finishDate);
+        mission.setMoney(money);
+        mission.setTags(""); //todo
+        mission.setTitle(titleText.getText().toString());
+        mission.setTaskNum(taskNum);
+        mission.setPublishTime(Util.convertDate2String(new Date()));
+        mission.setMissionStatus(Constants.NEED_MORE_PEOPLE);
+        mission.setUserId(); //todo
+
+        createQuestionareModel.setMission(mission);
+        createQuestionareModel.setTask(task);
+        createQuestionareModel.setQuestionare(questionare);
+
+        Gson gson=new Gson();
+        String jsonBody = gson.toJson(createQuestionareModel);
+        RequestBody reqBody = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=utf-8"),jsonBody);
+
+        Call<String> postCall =  myservice.create_questionare(Util.getToken(this), reqBody);
+        postCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.code() == 200)
+                {
+                    Toast.makeText(getApplicationContext(), "200",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if(response.code() == 401){
+                    Toast.makeText(getApplicationContext(), "401",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if(response.code() == 404){
+                    Toast.makeText(getApplicationContext(), "404",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), String.valueOf(response.code()),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("s", t.toString());
+                Toast.makeText(getApplicationContext(), "fail",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

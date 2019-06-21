@@ -3,19 +3,45 @@ package com.example.asus.earingmoney;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.example.asus.earingmoney.Util.Constants;
+import com.example.asus.earingmoney.Util.Util;
+import com.example.asus.earingmoney.model.CreateErrandModel;
+import com.example.asus.earingmoney.model.CreateQuestionareModel;
+import com.example.asus.earingmoney.model.Errand;
+import com.example.asus.earingmoney.model.Mission;
+import com.example.asus.earingmoney.model.Questionare;
+import com.example.asus.earingmoney.model.Task;
+import com.google.gson.Gson;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class creat_errand_activity extends AppCompatActivity implements View.OnLongClickListener{
     private int currentBtn = 0;
 
     private EditText titleText;
     private EditText descripText;
+    private EditText errandContactText;
     public String finishDate;
     public Float money;
     public int taskNum;
+
+    private service myservice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +69,34 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
 
         titleText = findViewById(R.id.titleText);
         descripText = findViewById(R.id.descripText);
+        errandContactText = findViewById(R.id.errandContactText);
         finishDate = "";
         money = -1.f;
         taskNum = -1;
+
+        OkHttpClient build = new OkHttpClient.Builder()
+                .connectTimeout(2, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS)
+                .writeTimeout(2, TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASEURL)
+                // 本次实验不需要自定义Gson
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                // build 即为okhttp声明的变量，下文会讲
+                .client(build)
+                .build();
+
+        myservice = retrofit.create(service.class);
     }
 
     public void okFab_click(android.view.View view) {
         if(titleText.getText().toString().isEmpty())
             Toast.makeText(this, "标题不能为空", Toast.LENGTH_SHORT).show();
+        else if(errandContactText.getText().toString().isEmpty())
+            Toast.makeText(this, "联系方式不能为空", Toast.LENGTH_SHORT).show();
         else
         {
             final com.example.asus.earingmoney.lib.FinishQuestionareDialog dialog = new com.example.asus.earingmoney.lib.FinishQuestionareDialog(creat_errand_activity.this);
@@ -111,5 +157,69 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
         ImageButton button = (ImageButton)view;
         button.setImageResource(R.mipmap.addd);
         return false;
+    }
+
+    public void create_errand_to_server()
+    {
+        CreateErrandModel createErrandModel = new CreateErrandModel();
+        Mission mission = new Mission();
+        Task task = new Task();
+        Errand errand = new Errand();
+
+        errand.setDescription(descripText.getText().toString());
+        errand.setPrivateInfo(errandContactText.getText().toString());
+
+        task.setFinishTime(finishDate);
+        task.setTaskType(Constants.TASK_QUESTIONARE);
+        task.setTaskStatus(Constants.TO_DO);
+
+        mission.setDeadLine(finishDate);
+        mission.setMoney(money);
+        mission.setTags(""); //todo
+        mission.setTitle(titleText.getText().toString());
+        mission.setTaskNum(taskNum);
+        mission.setPublishTime(Util.convertDate2String(new Date()));
+        mission.setMissionStatus(Constants.NEED_MORE_PEOPLE);
+        mission.setUserId(); //todo
+
+        createErrandModel.setErrand(errand);
+        createErrandModel.setMission(mission);
+        createErrandModel.setTask(task);
+
+        Gson gson=new Gson();
+        String jsonBody = gson.toJson(createErrandModel);
+        RequestBody reqBody = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=utf-8"),jsonBody);
+
+        Call<String> postCall =  myservice.create_errand(Util.getToken(this), reqBody);
+        postCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.code() == 200)
+                {
+                    Toast.makeText(getApplicationContext(), "200",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if(response.code() == 401){
+                    Toast.makeText(getApplicationContext(), "401",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if(response.code() == 404){
+                    Toast.makeText(getApplicationContext(), "404",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), String.valueOf(response.code()),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("s", t.toString());
+                Toast.makeText(getApplicationContext(), "fail",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
