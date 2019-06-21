@@ -27,8 +27,8 @@ public class User{
     private String mailAddr;
     @SerializedName("phoneNum")
     private String phoneNum;
-    @SerializedName("creditValue")
-    private String creditValue;//学号
+    @SerializedName("stuId")
+    private String stuId;//学号
     @SerializedName("balance")
     private int balance;//余额
     @SerializedName("tags")
@@ -36,7 +36,7 @@ public class User{
     @SerializedName("password")
     private String password;
 
-    public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _creditValue, int _balance, ArrayList<String> _tags, String _password) {
+    public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _stuId, int _balance, ArrayList<String> _tags, String _password) {
 
         id = _id;
         userType = _userType;
@@ -49,7 +49,7 @@ public class User{
         major = _major;
         mailAddr = _mailAddr;
         phoneNum = _phoneNum;
-        creditValue = _creditValue;
+        stuId = _stuId;
         balance = _balance;
         tags = _tags;
         password = _password;
@@ -95,8 +95,8 @@ public class User{
         return balance;
     }
 
-    public String getCreditValue() {
-        return creditValue;
+    public String getstuId() {
+        return stuId;
     }
 
     public String getMailAddr() {
@@ -127,8 +127,8 @@ public class User{
         this.balance = balance;
     }
 
-    public void setCreditValue(String creditValue) {
-        this.creditValue = creditValue;
+    public void setstuId(String stuId) {
+        this.stuId = stuId;
     }
 
     public void setGrade(int grade) {

@@ -53,6 +53,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LoginRegisterActivity extends AppCompatActivity {
 
+    public static LoginRegisterActivity instance = null;
     private service myservice;
     public ServiceFactory serviceFactory;
     private ConstraintLayout login_area;
@@ -60,13 +61,13 @@ public class LoginRegisterActivity extends AppCompatActivity {
     private CircleImageView login_image,register_image;
     private TextView register_button, login_button, continue_1, continue_2, continue_3;
     private EditText login_username, login_password, register_nickname, register_password, register_password_clarify, register_name,
-            register_age, register_major, register_credit, register_mail, register_phone;
+            register_age, register_major, register_id, register_mail, register_phone;
     private Button login_username_clear, login_password_clear, register_nickname_clear, register_password_clear, register_password_clarify_clear, register_name_clear,
-            register_age_clear, register_major_clear, register_credit_clear, register_mail_clear, register_phone_clear;
+            register_age_clear, register_major_clear, register_id_clear, register_mail_clear, register_phone_clear;
     private RadioGroup register_sex_group, register_grade_group;
     private ActionProcessButton log_in, register;
     private TextWatcher login_credit_watcher, login_password_watcher, register_nickname_watcher, register_password_watcher , register_password_clarify_watcher, register_name_watcher,
-            register_age_watcher, register_major_watcher, register_credit_watcher, register_mail_watcher, register_phone_watcher;
+            register_age_watcher, register_major_watcher, register_id_watcher, register_mail_watcher, register_phone_watcher;
     private boolean login_has_username, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify,
             register_has_name, register_has_credit, register_has_sex, register_has_grade, had_login_in;
 
@@ -78,6 +79,12 @@ public class LoginRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
+
+        if(MainPartActivity.instance != null){
+            MainPartActivity.instance.finish();
+        }
+
+        instance = this;
 
         user_shared_preference = getSharedPreferences("user", 0);
         had_login_in = user_shared_preference.getBoolean("had_user",false);
@@ -109,7 +116,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         register_name = (EditText)findViewById(R.id.register_name);
         register_age = (EditText)findViewById(R.id.register_age);
         register_major = (EditText)findViewById(R.id.register_major);
-        register_credit = (EditText)findViewById(R.id.register_credit);
+        register_id = (EditText)findViewById(R.id.register_id);
         register_mail = (EditText)findViewById(R.id.register_mail);
         register_phone = (EditText)findViewById(R.id.register_phone);
 
@@ -122,7 +129,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         register_name_clear = (Button)findViewById(R.id.register_name_clear);
         register_age_clear = (Button)findViewById(R.id.register_age_clear);
         register_major_clear = (Button)findViewById(R.id.register_major_clear);
-        register_credit_clear = (Button)findViewById(R.id.register_credit_clear);
+        register_id_clear = (Button)findViewById(R.id.register_id_clear);
         register_mail_clear = (Button)findViewById(R.id.register_mail_clear);
         register_phone_clear = (Button)findViewById(R.id.register_phone_clear);
 
@@ -148,7 +155,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         register_name.addTextChangedListener(register_name_watcher);
         register_age.addTextChangedListener(register_age_watcher);
         register_major.addTextChangedListener(register_major_watcher);
-        register_credit.addTextChangedListener(register_credit_watcher);
+        register_id.addTextChangedListener(register_id_watcher);
         register_mail.addTextChangedListener(register_mail_watcher);
         register_phone.addTextChangedListener(register_phone_watcher);
 
@@ -157,6 +164,37 @@ public class LoginRegisterActivity extends AppCompatActivity {
         register_has_sex = false;
         register_has_grade = false;
 
+        initListener();
+    }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            super.handleMessage(msg);
+            if(msg.what == -1){
+                Toast.makeText(getApplicationContext(), "该用户名已被注册", Toast.LENGTH_SHORT).show();
+                register.setProgress(100);
+                register_area_4.setVisibility(View.GONE);
+                register_area_1.setVisibility(View.VISIBLE);
+            }
+            else if(msg.what == -2){
+                Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();
+                login_username.setText("");
+                login_password.setText("");
+            }
+            else {
+                register.setProgress(register.getProgress() + msg.what);
+                if(register.getProgress() == 100){
+                    Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                    register_area_4.setVisibility(View.GONE);
+                    login_area.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    };
+
+    //用来初始化各个按钮的Listener
+    private void initListener(){
         register_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -237,10 +275,10 @@ public class LoginRegisterActivity extends AppCompatActivity {
             }
         });
 
-        register_credit_clear.setOnClickListener(new View.OnClickListener() {
+        register_id_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                register_credit.setText("");
+                register_id.setText("");
                 register_has_credit = false;
                 register.setEnabled(false);
             }
@@ -300,7 +338,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     register_area_2.setVisibility(View.GONE);
                     register_area_3.setVisibility(View.VISIBLE);
                 }
-               else {
+                else {
                     Toast.makeText(getApplicationContext(), "请输入姓名", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -382,8 +420,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 final int sex = current_sex;
                 final int grade = current_grade;
                 final String major = register_major.getText().toString();
-                final String credit_temp = register_credit.getText().toString();
-                final int credit = Integer.parseInt(credit_temp);
+                final String id_temp = register_id.getText().toString();
+                final int id = Integer.parseInt(id_temp);
                 final String mail = register_mail.getText().toString();
                 final String phone_temp = register_phone.getText().toString();
                 final int phone;
@@ -450,12 +488,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         try {
-                            body.put("creditVal", credit);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("balance", 0);
+                            body.put("stuId", id);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -565,32 +598,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         });
     }
-
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            super.handleMessage(msg);
-            if(msg.what == -1){
-                Toast.makeText(getApplicationContext(), "该用户名已被注册", Toast.LENGTH_SHORT).show();
-                register.setProgress(100);
-                register_area_4.setVisibility(View.GONE);
-                register_area_1.setVisibility(View.VISIBLE);
-            }
-            else if(msg.what == -2){
-                Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();
-                login_username.setText("");
-                login_password.setText("");
-            }
-            else {
-                register.setProgress(register.getProgress() + msg.what);
-                if(register.getProgress() == 100){
-                    Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
-                    register_area_4.setVisibility(View.GONE);
-                    login_area.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-    };
 
     //用来判断edittext是否有内容，如果有再显示清除按钮
     private void initWatcher() {
@@ -707,17 +714,17 @@ public class LoginRegisterActivity extends AppCompatActivity {
             }
         };
 
-        register_credit_watcher = new TextWatcher() {
+        register_id_watcher = new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
             public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
             public void afterTextChanged(Editable s) {
                 if(s.toString().length()>0){
-                    register_credit_clear.setVisibility(View.VISIBLE);
+                    register_id_clear.setVisibility(View.VISIBLE);
                     register_has_credit = true;
                     if(register_has_nickname && register_has_password && register_has_password_clarify && register_has_name && register_has_credit)
                         register.setEnabled(true);
                 }else{
-                    register_credit_clear.setVisibility(View.INVISIBLE);
+                    register_id_clear.setVisibility(View.INVISIBLE);
                     register_has_credit = false;
                 }
             }
