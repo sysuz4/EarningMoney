@@ -1,4 +1,5 @@
 package com.example.asus.earingmoney;
+import com.example.asus.earingmoney.model.GetMissionsObj;
 import com.example.asus.earingmoney.model.Errand;
 import com.example.asus.earingmoney.model.GetTokenObj;
 import com.example.asus.earingmoney.model.Questionare;
@@ -28,9 +29,9 @@ public interface service{
     @GET("/tasks/{taskID}/questionares")
     Call<Questionare> get_questionare(@Path("taskID") int taskID);
 
-    @Headers("{token}")
-    @GET("/missions")
-    Observable<List<Mission>> getMissions(@Path("token") String token);
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/missions/AllMissions")
+    Observable<GetMissionsObj> getMissions(@Header("authorization") String token);
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}")

@@ -7,26 +7,23 @@ public class Mission {
     @SerializedName("missionId")
     private int missionId;
 
-    @SerializedName("missionStatus")
-    private int missionStatus;
+    @SerializedName("title")
+    private String title;
 
     @SerializedName("publishTime")
     private String publishTime;
 
-    @SerializedName("title")
-    private String title;
-
     @SerializedName("deadLine")
     private String deadLine;
 
-    @SerializedName("tags")
-    private String tags;
+    @SerializedName("taskType")
+    private String taskType;
 
-    @SerializedName("money")
-    private int money;
+    @SerializedName("description")
+    private String description;
 
-    @SerializedName("userId")
-    private int userId;
+    @SerializedName("avator")
+    private String avator;
 
     public String getTitle() {
         return title;
@@ -34,18 +31,6 @@ public class Mission {
 
     public int getMissionId() {
         return missionId;
-    }
-
-    public int getMissionStatus() {
-        return missionStatus;
-    }
-
-    public int getMoney() {
-        return money;
-    }
-
-    public int getUserId() {
-        return userId;
     }
 
     public String getDeadLine() {
@@ -56,7 +41,15 @@ public class Mission {
         return publishTime;
     }
 
-    public String getTags() {
-        return tags;
+    public String getAvator() {
+        return avator;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getTaskType() {
+        return taskType;
     }
 }

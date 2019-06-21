@@ -8,12 +8,15 @@ import android.view.MenuItem;
 
 public class MissionDetailActivity extends AppCompatActivity {
 
+    private int missionId;
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission_detail);
+
+        missionId = (int)getIntent().getExtras().get("missionId");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
