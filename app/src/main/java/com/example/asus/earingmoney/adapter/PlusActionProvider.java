@@ -1,11 +1,15 @@
-package com.example.asus.earingmoney;
+package com.example.asus.earingmoney.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.ActionProvider;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.Toast;
+
+import com.example.asus.earingmoney.creat_errand_activity;
+import com.example.asus.earingmoney.createQuestionare;
 
 public class PlusActionProvider extends ActionProvider {
     /**
@@ -32,6 +36,8 @@ public class PlusActionProvider extends ActionProvider {
                 .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        Intent intent = new Intent(getContext(),creat_errand_activity.class);
+                        getContext().startActivity(intent);
                         return true;
                     }
                 });
@@ -39,6 +45,8 @@ public class PlusActionProvider extends ActionProvider {
                 .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        Intent intent = new Intent(getContext(),createQuestionare.class);
+                        getContext().startActivity(intent);
                         return true;
                     }
                 });

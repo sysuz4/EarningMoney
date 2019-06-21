@@ -6,18 +6,18 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/questionDes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-        android:id="@+id/questionNumText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:text="1." />
+            android:id="@+id/questionNumText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="1." />
 
         <TextView
             android:id="@+id/questionTypeText"
@@ -41,23 +41,26 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/optionList"
-        android:layout_width="match_parent"
-        android:layout_height="377dp"
+    <TextView
+        android:id="@+id/optionListText"
+        android:layout_width="355dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:gravity="fill_vertical|center_horizontal"
+        android:text="TextView"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/questionDes" />
 
     <TextView
         android:id="@+id/jumpBtn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="33dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -69,6 +72,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/optionList" />
+        app:layout_constraintTop_toBottomOf="@+id/optionListText" />
 
 </android.support.constraint.ConstraintLayout>

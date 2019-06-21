@@ -1,8 +1,13 @@
 package com.example.asus.earingmoney;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.clj.memoryspinner.MemorySpinner;
+import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.adapter.MissionOrTaskListAdapter;
 import com.example.asus.earingmoney.model.MissionModel;
 import com.example.asus.earingmoney.model.MissionOrTask;
@@ -24,12 +30,24 @@ import com.example.asus.earingmoney.model.MissionOrTask;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class TasksFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
     private static final String ARG_SHOW_TEXT = "text";
 
     private String mContentText;
     private ListView missionOrTaskList;
     private MissionOrTaskListAdapter missionOrTaskListAdapter;
+
+    private ArrayList<MissionOrTask> missions;
+    private ArrayList<MissionOrTask> tasks;
+
     private ConstraintLayout missionPage;
     private ConstraintLayout questionarePage;
     private ConstraintLayout answerPage;
@@ -41,6 +59,8 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     private ImageView revertBtn;
     private ProgressBar completeness;
     private ListView displayQuestionareList;
+
+    SharedPreferences user_shared_preference;
 
     public TasksFragment() {
         // Required empty public constructor
@@ -62,6 +82,7 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,13 +91,14 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         setHasOptionsMenu(true);
         //TextView contentTv = rootView.findViewById(R.id.content_tv);
         //contentTv.setText(mContentText);
-        
-        initData();
         initView(rootView);
+        initData();
+
 
         return rootView;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initView(View rootView) {
         missionPage = rootView.findViewById(R.id.missionPage);
         questionarePage = rootView.findViewById(R.id.questionarePage);
@@ -87,6 +109,8 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         initAnswerPage(rootView);
         
         displayMissionPage();
+
+        Toast.makeText(getContext(), getToken(), Toast.LENGTH_SHORT).show();
     }
 
     private void initAnswerPage(View rootView) {
@@ -116,8 +140,7 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         completenessMS.setSelection(1);
 
         missionOrTaskList = rootView.findViewById(R.id.MissionOrTaskList);
-        missionOrTaskListAdapter = new MissionOrTaskListAdapter(mList, getContext());
-        missionOrTaskList.setAdapter(missionOrTaskListAdapter);
+
         missionOrTaskList.setOnItemClickListener(this);
     }
 
@@ -139,11 +162,45 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         answerPage.setVisibility(View.VISIBLE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initData() {
         mList = new ArrayList<>();
-        for (int i = 0; i < 5; ++i) {
-            mList.add(new MissionModel());
-        }
+
+        missionOrTaskListAdapter = new MissionOrTaskListAdapter(mList, getContext());
+        missionOrTaskList.setAdapter(missionOrTaskListAdapter);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+
+        UserService userService = retrofit.create(UserService.class);
+        Observable<ArrayList<MissionModel>> repoObservable = userService.getMissionsByUserId(getToken(),9);
+
+        repoObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ArrayList<MissionModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //Toast.makeText(getContext(), "request missions error!", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<MissionModel> missionModels) {
+                        Toast.makeText(getContext(), missionModels.get(0).getTitle(), Toast.LENGTH_SHORT).show();
+                        mList.clear();
+                        mList.addAll(missionModels);
+
+                        missionOrTaskListAdapter.update();
+                    }
+                });
     }
 
     @Override
@@ -164,5 +221,12 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
             displayMissionPage();
         }
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String getToken() {
+        user_shared_preference = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        String[] token = user_shared_preference.getString("token", "").split("\n");
+        return String.join("", token);
     }
 }

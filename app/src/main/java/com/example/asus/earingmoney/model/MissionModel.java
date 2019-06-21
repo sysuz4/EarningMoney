@@ -21,8 +21,8 @@ public class MissionModel extends MissionOrTask{
         deadLine = _deadLine;
         tags = _tags;
         money = _money;
-        userId = _userId;
         taskNum = _taskNum;
+        userId = _userId;
     }
 
     public MissionModel()

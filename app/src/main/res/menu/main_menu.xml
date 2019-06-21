@@ -12,5 +12,5 @@
         android:icon="@mipmap/icon_add"
         app:showAsAction="always"
         android:title="添加"
-        app:actionProviderClass="com.example.asus.earingmoney.PlusActionProvider"/>
+        app:actionProviderClass="com.example.asus.earingmoney.adapter.PlusActionProvider"/>
 </menu>
