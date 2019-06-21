@@ -1,15 +1,16 @@
 package com.example.asus.earingmoney;
 import com.example.asus.earingmoney.model.GetMissionsObj;
+import com.example.asus.earingmoney.model.Errand;
 import com.example.asus.earingmoney.model.GetTokenObj;
 import com.example.asus.earingmoney.model.Questionare;
 import org.json.JSONObject;
 import com.example.asus.earingmoney.model.Mission;
+import com.example.asus.earingmoney.model.Task;
+import com.google.gson.JsonArray;
 
 import java.util.List;
 
-import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -31,4 +32,17 @@ public interface service{
     @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/missions/AllMissions")
     Observable<GetMissionsObj> getMissions(@Header("authorization") String token);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/missions/{missionID}")
+    Call<Mission>getErrandMission(@Header("authorization") String token, @Path("missionID") int missionID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/missions/{missionID}/tasks")
+    Call<List<Task>>getTaskByMissionID(@Header("authorization") String token, @Path("missionID") int missionID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/tasks/{taskID}/errands")
+    Call<Errand>getErrandByTaskId(@Header("authorization") String token, @Path("taskID") int taskID);
+
 }
