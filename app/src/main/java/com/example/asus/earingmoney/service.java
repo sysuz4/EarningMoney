@@ -1,17 +1,24 @@
 package com.example.asus.earingmoney;
+import com.example.asus.earingmoney.model.GetTokenObj;
 import com.example.asus.earingmoney.model.Questionare;
 import org.json.JSONObject;
 import com.example.asus.earingmoney.model.Mission;
 
+<<<<<<< HEAD
 import java.time.Instant;
+=======
+>>>>>>> f388a6032de39c9181a77d42faa07360cab8c2c4
 import java.util.List;
-import okhttp3.ResponseBody;
+
+import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+<<<<<<< HEAD
 import retrofit2.http.HEAD;
 import retrofit2.http.Header;
+=======
+>>>>>>> f388a6032de39c9181a77d42faa07360cab8c2c4
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -20,8 +27,9 @@ import rx.Observable;
 
 public interface service{
 
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @POST("/tokens")
-    Observable<ResponseBody> post_to_get_token(@Query("username") String username, @Query("password") String password, @Body ResponseBody response);
+    Observable<GetTokenObj> post_to_get_token(@Query("username") String username, @Query("password") String password);
 
     //@HEAD()
     @GET("/tasks/{taskID}/questionares")
