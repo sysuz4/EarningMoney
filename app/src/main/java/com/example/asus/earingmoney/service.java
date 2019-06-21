@@ -1,4 +1,5 @@
 package com.example.asus.earingmoney;
+import com.example.asus.earingmoney.model.GetMissionsObj;
 import com.example.asus.earingmoney.model.GetTokenObj;
 import com.example.asus.earingmoney.model.Questionare;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -26,7 +28,7 @@ public interface service{
     @GET("/tasks/{taskID}/questionares")
     Call<Questionare> get_questionare(@Path("taskID") int taskID);
 
-    @Headers("{token}")
-    @GET("/missions")
-    Observable<List<Mission>> getMissions(@Path("token") String token);
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/missions/AllMissions")
+    Observable<GetMissionsObj> getMissions(@Header("authorization") String token);
 }
