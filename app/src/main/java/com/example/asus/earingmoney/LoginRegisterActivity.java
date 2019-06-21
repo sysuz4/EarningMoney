@@ -24,10 +24,10 @@ import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.example.asus.earingmoney.model.GetTokenObj;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.helper.HttpConnection;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -39,15 +39,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import okhttp3.MediaType;
-import okhttp3.ResponseBody;
-import okio.BufferedSource;
-import retrofit2.Response;
+import okhttp3.RequestBody;
+import okio.BufferedSink;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -790,25 +790,10 @@ public class LoginRegisterActivity extends AppCompatActivity {
     }
 
     public void getToken(final String username, final String password) {
-        myservice.post_to_get_token(username, password, new ResponseBody() {
-            @Override
-            public MediaType contentType() {
-                return null;
-            }
-
-            @Override
-            public long contentLength() {
-                return 0;
-            }
-
-            @Override
-            public BufferedSource source() {
-                return null;
-            }
-        })
+        myservice.post_to_get_token(username,password)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ResponseBody>() {
+                .subscribe(new Subscriber<GetTokenObj>() {
                     @Override
                     public void onCompleted() {
 
@@ -820,22 +805,21 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(ResponseBody response) {
-                        String jstr = null;
-                        try {
-                            jstr = new String(response.bytes());
-                            Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
-                            SharedPreferences.Editor editor = user_shared_preference.edit();
-                            editor.putString("token",jstr);
-                            editor.putString("username",username);
-                            editor.putBoolean("had_user",true);
-                            editor.commit();
-                            startActivity(intent);
-                        } catch (IOException e) {
-                            Toast.makeText(LoginRegisterActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
-                        }
-                        System.out.println(jstr);
+                    public void onNext(GetTokenObj response) {
+                        String token;
+                        int userId;
+                        token = response.getToken();
+                        userId = response.getUserId();
+                        System.out.println(token);
+                        System.out.println(userId);
+                        Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
+                        SharedPreferences.Editor editor = user_shared_preference.edit();
+                        editor.putString("token",token);
+                        editor.putInt("userId",userId);
+                        editor.putString("username",username);
+                        editor.putBoolean("had_user",true);
+                        editor.commit();
+                        startActivity(intent);
                     }
                 });
     }
