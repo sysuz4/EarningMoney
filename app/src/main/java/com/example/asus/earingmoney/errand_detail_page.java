@@ -14,16 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Util;
+import com.example.asus.earingmoney.model.Errand;
 import com.example.asus.earingmoney.model.Mission;
+import com.example.asus.earingmoney.model.Task;
+import com.google.gson.JsonArray;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,14 +36,16 @@ public class errand_detail_page extends AppCompatActivity {
 
 
     private Handler handler;
-    private Mission data;
+    private Mission mission;
     private JSONObject authorization_json;
     private String token;
+    private List<Task> task_list;
     private TextView errand_title;
     private TextView errand_description;
     private TextView private_info;
     private TextView deadline;
     private TextView reward;
+    private Errand errand;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +62,26 @@ public class errand_detail_page extends AppCompatActivity {
             }
         });
 
+        getComponentById();
+
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg){
+                super.handleMessage(msg);
+                if(msg.what == 1){
+                    String money_str = String.valueOf(mission.getMoney()) + "元";
+                    errand_title.setText(mission.getTitle());
+                    reward.setText(money_str);
+                    deadline.setText(mission.getDeadLine());
+                }
+                if(msg.what == 2){
+                    errand_description.setText(errand.getDescription());
+                    private_info.setText(errand.getPrivateInfo());
+                }
+
+            }
+        };
+
 
     }
 
@@ -74,18 +96,7 @@ public class errand_detail_page extends AppCompatActivity {
 
     public void loadData(View view)
     {
-        String authorization_str = Util.getToken(getApplicationContext());
-        try {
-            authorization_json = new JSONObject(authorization_str);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            token = authorization_json.getString("token");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        token = Util.getToken(getApplicationContext());
         OkHttpClient build = new OkHttpClient.Builder()
                 .connectTimeout(2, TimeUnit.SECONDS)
                 .readTimeout(2, TimeUnit.SECONDS)
@@ -101,9 +112,9 @@ public class errand_detail_page extends AppCompatActivity {
                 .client(build)
                 .build();
 
-        service myService = retrofit.create(service.class);
-        Call<Mission> myCall1 = myService.getErrandMission(token,2);
-        Call<List<Integer>> myCall2 = myService.getTaskByMissionID(token,2);
+        final service myService = retrofit.create(service.class);
+        Call<Mission> myCall1 = myService.getErrandMission(token,9);
+        Call<List<Task>> myCall2 = myService.getTaskByMissionID(token,9);
 
         myCall1.enqueue(new Callback<Mission>() {
             //请求成功时回调
@@ -114,8 +125,10 @@ public class errand_detail_page extends AppCompatActivity {
                 {
                     Toast.makeText(getApplicationContext(),
                             "get mission success", Toast.LENGTH_SHORT).show();
-                    data = response.body();
-                    setComponentValue(data);
+                    mission = response.body();
+//                    Log.d("mission", "onResponse: " + mission.getTitle());
+//                    Log.d("mission", "onResponse: " + mission.getDeadLine());
+//                    Log.d("mission", "onResponse: " + mission.getMoney());
                 }
                 else if(response.code() == 401)
                 {
@@ -138,16 +151,59 @@ public class errand_detail_page extends AppCompatActivity {
             }
         });
 
-        myCall2.enqueue(new Callback<List<Integer>>() {
+        myCall2.enqueue(new Callback<List<Task>>() {
             //请求成功时回调
             @Override
-            public void onResponse(Call<List<Integer>> call, final Response<List<Integer>> response) {
+            public void onResponse(Call<List<Task>> call, final Response<List<Task>> response) {
                 // 步骤7：处理返回的数据结果
                 if(response.code() == 200)
                 {
+
                     Toast.makeText(getApplicationContext(),
-                            "get errand success", Toast.LENGTH_SHORT).show();
-                    //setComponentValue(data);
+                            "get task success", Toast.LENGTH_SHORT).show();
+                    task_list = response.body();
+                    if(task_list != null){
+                        Call<Errand> myCall3 = myService.getErrandByTaskId(token,2);
+                        myCall3.enqueue(new Callback<Errand>() {
+                            //请求成功时回调
+                            @Override
+                            public void onResponse(Call<Errand> call, final Response<Errand> response) {
+                                // 步骤7：处理返回的数据结果
+                                if(response.code() == 200)
+                                {
+                                    Toast.makeText(getApplicationContext(),
+                                            "get errand success", Toast.LENGTH_SHORT).show();
+                                    errand = response.body();
+                                    Message msg = new Message();
+                                    msg.what = 2;
+                                    handler.sendMessage(msg);
+
+                                }
+                                else if(response.code() == 401)
+                                {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Invalid username/password supplied", Toast.LENGTH_SHORT).show();
+                                }
+                                else if(response.code() == 404){
+                                    Toast.makeText(getApplicationContext(),
+                                            "errand not found", Toast.LENGTH_SHORT).show();
+                                } else{
+                                    Toast.makeText(getApplicationContext(),
+                                            "Unknown error", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                            //请求失败时回调
+                            @Override
+                            public void onFailure(Call<Errand> call, Throwable throwable) {
+                                System.out.println("连接失败");
+                            }
+                        });
+                    }
+
+                    Message msg = new Message();
+                    msg.what = 1;
+                    handler.sendMessage(msg);
                 }
                 else if(response.code() == 401)
                 {
@@ -165,17 +221,11 @@ public class errand_detail_page extends AppCompatActivity {
             }
             //请求失败时回调
             @Override
-            public void onFailure(Call<List<Integer>> call, Throwable throwable) {
+            public void onFailure(Call<List<Task>> call, Throwable throwable) {
                 System.out.println("连接失败");
             }
         });
 
     }
-
-    public void setComponentValue(Mission mission){
-        errand_title.setText(mission.getTitle());
-
-    }
-
 
 }

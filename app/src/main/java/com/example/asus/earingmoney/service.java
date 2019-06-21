@@ -1,24 +1,17 @@
 package com.example.asus.earingmoney;
+import com.example.asus.earingmoney.model.Errand;
 import com.example.asus.earingmoney.model.GetTokenObj;
 import com.example.asus.earingmoney.model.Questionare;
 import org.json.JSONObject;
 import com.example.asus.earingmoney.model.Mission;
+import com.example.asus.earingmoney.model.Task;
+import com.google.gson.JsonArray;
 
-<<<<<<< HEAD
-import java.time.Instant;
-=======
->>>>>>> f388a6032de39c9181a77d42faa07360cab8c2c4
 import java.util.List;
 
-import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
-<<<<<<< HEAD
-import retrofit2.http.HEAD;
 import retrofit2.http.Header;
-=======
->>>>>>> f388a6032de39c9181a77d42faa07360cab8c2c4
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -45,5 +38,10 @@ public interface service{
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}/tasks")
-    Call<List<Integer>>getTaskByMissionID(@Header("authorization") String token, @Path("missionID") int missionID);
+    Call<List<Task>>getTaskByMissionID(@Header("authorization") String token, @Path("missionID") int missionID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/tasks/{taskID}/errands")
+    Call<Errand>getErrandByTaskId(@Header("authorization") String token, @Path("taskID") int taskID);
+
 }
