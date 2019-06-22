@@ -1,4 +1,5 @@
 package com.example.asus.earingmoney;
+import com.example.asus.earingmoney.model.GetMissionsObj;
 import com.example.asus.earingmoney.model.Errand;
 import com.example.asus.earingmoney.model.GetTokenObj;
 import com.example.asus.earingmoney.model.Questionare;
@@ -29,9 +30,12 @@ public interface service{
     @GET("/tasks/{taskID}/questionares")
     Call<Questionare> get_questionare(@Path("taskID") int taskID);
 
-    @Headers("{token}")
-    @GET("/missions")
-    Observable<List<Mission>> getMissions(@Path("token") String token);
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/missions/AllMissions")
+    Observable<GetMissionsObj> getMissions(@Header("authorization") String token);
+
+    @GET("/missions/{missionID}")
+    Observable<Mission> getMissionsDetail(@Path("missionID") int missionID);
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}")
@@ -44,10 +48,13 @@ public interface service{
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/tasks/{taskID}/errands")
     Call<Errand>getErrandByTaskId(@Header("authorization") String token, @Path("taskID") int taskID);
+<<<<<<< HEAD
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/users/{userID}")
     Call<User>getUserById(@Header("authorization") String token, @Path("userID") int userID);
 
 
+=======
+>>>>>>> f46c7028be385cc17c3a0fd7b31659844734e4df
 }

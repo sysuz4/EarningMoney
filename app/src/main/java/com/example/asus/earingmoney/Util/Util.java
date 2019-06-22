@@ -19,4 +19,9 @@ public class Util {
         SharedPreferences user_shared_preference = context.getSharedPreferences("user", 0);
         return user_shared_preference.getString("token","");
     }
+
+    public static int getUserId(Context context){
+        SharedPreferences user_shared_preference = context.getSharedPreferences("user", 0);
+        return user_shared_preference.getInt("userId",-1);
+    }
 }
