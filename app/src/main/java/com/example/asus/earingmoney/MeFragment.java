@@ -1,8 +1,12 @@
 package com.example.asus.earingmoney;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,12 +24,24 @@ import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.Util.Util;
+import com.example.asus.earingmoney.model.Image;
+import com.example.asus.earingmoney.model.Msg;
 import com.example.asus.earingmoney.model.User;
 import com.google.gson.Gson;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -52,14 +68,15 @@ public class MeFragment extends Fragment {
     EditText majorText;
     EditText mailText;
     EditText phoneText;
-    EditText balanceText;
-    EditText creditValueText;
+    TextView balanceText;
+    TextView creditValueText;
     EditText studentIdText;
     TextView pass;
     ImageView sexImage;
     CircleImageView header;
     Button logOut;
     SharedPreferences user_shared_preference;
+    String ImageName;
     private service myservice;
 
     public MeFragment() {
@@ -86,15 +103,15 @@ public class MeFragment extends Fragment {
     }
 
     private void initData() {
-        Call<User> getCall =  myservice.get_user(Util.getToken(getContext()), userID); //todo
+        Call<User> getCall =  myservice.get_user(Util.getToken(getContext()), Util.getUserId(getContext())); //todo
         getCall.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 User user = response.body();
                 if(response.code() == 200)
                 {
-                    Toast.makeText(getContext(), "200",
-                            Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "200",
+                            //Toast.LENGTH_SHORT).show();
 
                     usernameText.setText(user.getNickName());
                     realNameText.setText(user.getName());
@@ -106,7 +123,7 @@ public class MeFragment extends Fragment {
                     creditValueText.setText(user.getCreditVal());
                     studentIdText.setText(user.getstuId());
                     balanceText.setText("" + user.getBalance());
-                    MainPartActivity activity = (MainPartActivity)getContext();
+                    final MainPartActivity activity = (MainPartActivity)getContext();
                     if(user.getSex() == Constants.MALE){
                         sexImage.setImageResource(R.mipmap.boy);
                         activity.sex = Constants.MALE;
@@ -117,19 +134,35 @@ public class MeFragment extends Fragment {
                         activity.sex = Constants.FEMALE;
                     }
                     //todo avator image
+                    ImageName = user.getAvator();
+                    Log.e("name", ImageName);
+                    final String imgUrl = Constants.BASEURL + "images/" + ImageName;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            final Bitmap b = getImageBitmap(imgUrl);
+                            header.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    header.setImageBitmap(b);
+                                }
+                            });
+                        }
+                    }).start();
+
                 }
                 else if(response.code() == 401){
-                    Toast.makeText(getContext(), "401",
-                            Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "401",
+                            //Toast.LENGTH_SHORT).show();
                 }
                 else if(response.code() == 404){
-                    Toast.makeText(getContext(), "404",
-                            Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "404",
+                            //Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                    Toast.makeText(getContext(), String.valueOf(response.code()),
-                            Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), String.valueOf(response.code()),
+                            //Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -140,6 +173,27 @@ public class MeFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public Bitmap getImageBitmap(String url) {
+        URL imgUrl = null;
+        Bitmap bitmap = null;
+        try {
+            imgUrl = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) imgUrl
+                    .openConnection();
+            conn.setDoInput(true);
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            bitmap = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     @Override
@@ -166,6 +220,7 @@ public class MeFragment extends Fragment {
         balanceText = view.findViewById(R.id.balanceText);
         creditValueText = view.findViewById(R.id.creditValueText);
         studentIdText = view.findViewById(R.id.studentIdText);
+        ImageName = "";
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,7 +255,7 @@ public class MeFragment extends Fragment {
 
         initData();
 
-        finishModify();
+        //finishModify();
         return rootView;
     }
 
@@ -271,14 +326,66 @@ public class MeFragment extends Fragment {
         oldPasswordText.setVisibility(View.GONE);
         newPasswordText.setVisibility(View.GONE);
 
-        update_to_server();
+        MainPartActivity activity = (MainPartActivity)getContext();
+        String filePath = activity.headerUri.getPath();
+
+
+        File file = new File(filePath);
+        // 创建 RequestBody，用于封装构建RequestBody
+        // RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), file);
+
+        // MultipartBody.Part  和后端约定好Key，这里的partName是用file
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+
+        // 添加描述
+        String descriptionString = "hello, 这是文件描述";
+        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+
+        OkHttpClient build = new OkHttpClient.Builder()
+                .connectTimeout(2, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS)
+                .writeTimeout(2, TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASEURL)
+                // 本次实验不需要自定义Gson
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                // build 即为okhttp声明的变量，下文会讲
+                .client(build)
+                .build();
+
+        service myservice = retrofit.create(service.class);
+        // 执行请求
+        myservice.upload_pic(Util.getToken(getContext()), description, body).enqueue(new Callback<Image>() {
+            @Override
+            public void onResponse(Call<Image> call, Response<Image> response) {
+                if(response.code() == 201)
+                {
+                    Image image = response.body();
+                    Log.e("name", image.getImageName());
+                    update_to_server(image.getImageName());
+                }
+                else
+                {
+                    Log.e("error", response.raw().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<Image> call, Throwable t) {
+                Log.e("error", t.toString());
+            }
+        });
+
     }
 
-    private void update_to_server() {
-
+    private void update_to_server(String imageName) {
+        ImageName = imageName;
         MainPartActivity activity = (MainPartActivity)getContext();
 
-        User user = new User(userID, 0, realNameText.getText().toString(), "",
+        User user = new User(Util.getUserId(getContext()), 0, realNameText.getText().toString(), imageName,
                              usernameText.getText().toString(), Integer.valueOf(ageText.getText().toString()),
                              activity.sex, Integer.valueOf(gradeText.getText().toString()), majorText.getText().toString(),
                              mailText.getText().toString(), phoneText.getText().toString(), studentIdText.getText().toString(),
@@ -287,10 +394,11 @@ public class MeFragment extends Fragment {
         Gson gson = new Gson();
         String jsonBody = gson.toJson(user);
         RequestBody reqBody = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=utf-8"),jsonBody);
-        Call<String> putCall =  myservice.modify_user(Util.getToken(getContext()), userID, reqBody); //todo
-        putCall.enqueue(new Callback<String>() {
+        Call<Msg> putCall =  myservice.modify_user(Util.getToken(getContext()), Util.getUserId(getContext()), oldPasswordText.getText().toString(),reqBody); //todo
+        putCall.enqueue(new Callback<Msg>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<Msg> call, Response<Msg> response) {
+                /*
                 if(response.code() == 200)
                 {
                     Toast.makeText(getContext(), "200",
@@ -308,13 +416,13 @@ public class MeFragment extends Fragment {
                 }
                 else
                 {
-                    Toast.makeText(getContext(), String.valueOf(response.code()),
-                            Toast.LENGTH_SHORT).show();
+                    Log.e("msg", response.raw().toString());
                 }
+                */
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<Msg> call, Throwable t) {
                 Log.e("s", t.toString());
                 Toast.makeText(getContext(), "fail",
                         Toast.LENGTH_SHORT).show();

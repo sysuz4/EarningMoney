@@ -2,7 +2,7 @@ package com.example.asus.earingmoney.model;
 
 public class CreateErrandModel {
     private Mission mission;
-    private Errand Errand;
+    private Errand errand;
     private Task task;
 
 
@@ -22,11 +22,11 @@ public class CreateErrandModel {
         this.task = task;
     }
 
-    public com.example.asus.earingmoney.model.Errand getErrand() {
-        return Errand;
+    public Errand getErrand() {
+        return errand;
     }
 
-    public void setErrand(com.example.asus.earingmoney.model.Errand errand) {
-        Errand = errand;
+    public void setErrand(Errand errand) {
+        this.errand = errand;
     }
 }

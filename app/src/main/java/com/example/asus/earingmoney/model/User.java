@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class User{
-    @SerializedName("id")
-    private int id;
+    @SerializedName("userId")
+    private int userId;
     @SerializedName("userType")
     private int userType;//判断是普通用户还是管理员
     @SerializedName("name")
@@ -40,7 +40,7 @@ public class User{
 
     public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _stuId,  float _balance, String _tags, String _password, String creditVal) {
 
-        id = _id;
+        userId = _id;
         userType = _userType;
         name = _name;
         avator = _avator;
@@ -58,8 +58,8 @@ public class User{
         this.creditVal = creditVal;
     }
 
-    public int getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
     public int getUserType() {
@@ -138,8 +138,8 @@ public class User{
         this.grade = grade;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(int id) {
+        this.userId = id;
     }
 
     public void setMailAddr(String mailAddr) {

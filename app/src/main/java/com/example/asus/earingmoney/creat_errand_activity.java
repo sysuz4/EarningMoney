@@ -14,14 +14,23 @@ import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.model.CreateErrandModel;
 import com.example.asus.earingmoney.model.CreateQuestionareModel;
 import com.example.asus.earingmoney.model.Errand;
+import com.example.asus.earingmoney.model.Image;
 import com.example.asus.earingmoney.model.Mission;
+import com.example.asus.earingmoney.model.Msg;
 import com.example.asus.earingmoney.model.Questionare;
 import com.example.asus.earingmoney.model.Task;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -40,6 +49,9 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
     public String finishDate;
     public Float money;
     public int taskNum;
+
+    public Map<Integer, String> photoArray = new HashMap<>();
+    public List<String> imagesName = new ArrayList<>();
 
     private service myservice;
 
@@ -68,7 +80,7 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
         button.setOnLongClickListener(this);
 
         titleText = findViewById(R.id.titleText);
-        descripText = findViewById(R.id.descripText);
+        descripText = findViewById(R.id.errandContentText);
         errandContactText = findViewById(R.id.errandContactText);
         finishDate = "";
         money = -1.f;
@@ -115,6 +127,8 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
             intent.setType("image/*");
             currentBtn = view.getId();
             startActivityForResult(intent, 0);
+
+
     }
 
     @Override
@@ -137,6 +151,9 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
                 android.widget.ImageButton btn = findViewById(currentBtn);
                 btn.setImageURI(image_file_uri);
 
+                //保存uri
+                photoArray.put(currentBtn, image_file_uri.getPath());
+
                 Toast.makeText(this, "长按可删除图片", Toast.LENGTH_SHORT).show();
 
                 out.flush();
@@ -155,7 +172,8 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
     @Override
     public boolean onLongClick(View view) {
         ImageButton button = (ImageButton)view;
-        button.setImageResource(R.mipmap.addd);
+        button.setImageResource(R.mipmap.blue_add);
+        photoArray.put(view.getId(), "");
         return false;
     }
 
@@ -168,10 +186,19 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
 
         errand.setDescription(descripText.getText().toString());
         errand.setPrivateInfo(errandContactText.getText().toString());
+        String pic = "";
+        for(int i = 0; i < imagesName.size(); i++)
+        {
+            pic += imagesName.get(i);
+            if(i != imagesName.size()-1)
+                pic+=Constants.PHOTO_SPLIT;
+        }
+        errand.setPic(pic);
 
         task.setFinishTime(finishDate);
         task.setTaskType(Constants.TASK_QUESTIONARE);
         task.setTaskStatus(Constants.TO_DO);
+        task.setPubUserId(Util.getUserId(this));
 
         mission.setDeadLine(finishDate);
         mission.setMoney(money);
@@ -180,7 +207,7 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
         mission.setTaskNum(taskNum);
         mission.setPublishTime(Util.convertDate2String(new Date()));
         mission.setMissionStatus(Constants.NEED_MORE_PEOPLE);
-        mission.setUserId(); //todo
+        mission.setUserId(Util.getUserId(this));
 
         createErrandModel.setErrand(errand);
         createErrandModel.setMission(mission);
@@ -188,12 +215,13 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
 
         Gson gson=new Gson();
         String jsonBody = gson.toJson(createErrandModel);
+        Log.e("s", jsonBody);
         RequestBody reqBody = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=utf-8"),jsonBody);
 
-        Call<String> postCall =  myservice.create_errand(Util.getToken(this), reqBody);
-        postCall.enqueue(new Callback<String>() {
+        Call<Msg> postCall =  myservice.create_errand(Util.getToken(this), reqBody);
+        postCall.enqueue(new Callback<Msg>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<Msg> call, Response<Msg> response) {
                 if(response.code() == 200)
                 {
                     Toast.makeText(getApplicationContext(), "200",
@@ -215,11 +243,63 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<Msg> call, Throwable t) {
                 Log.e("s", t.toString());
                 Toast.makeText(getApplicationContext(), "fail",
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void uploadPhotos() {
+        int i = 0;
+        Log.e("photoSize: ", "" + photoArray.size());
+        for (Map.Entry<Integer, String> entry :  photoArray.entrySet()) {
+            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+
+            if(entry.getValue() != "")
+            {
+                String filePath = entry.getValue();
+
+                File file = new File(filePath);
+                // 创建 RequestBody，用于封装构建RequestBody
+                // RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), file);
+
+                // MultipartBody.Part  和后端约定好Key，这里的partName是用file
+                MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+
+                // 添加描述
+                String descriptionString = "hello, 这是文件描述";
+                RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+
+                // 执行请求
+                final int finalI = i;
+                myservice.upload_pic(Util.getToken(this), description, body).enqueue(new Callback<Image>() {
+                    @Override
+                    public void onResponse(Call<Image> call, Response<Image> response) {
+                        if(response.code() == 201)
+                        {
+                            Image image = response.body();
+                            Log.e("name", image.getImageName());
+                            imagesName.add(image.getImageName());
+                            if(finalI == photoArray.size()-1)
+                                create_errand_to_server();
+                        }
+                        else
+                        {
+                            Log.e("error", response.raw().toString());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Image> call, Throwable t) {
+                        Log.e("error", t.toString());
+                    }
+                });
+            }
+
+
+            i++;
+        }
     }
 }

@@ -1,8 +1,11 @@
 package com.example.asus.earingmoney;
 
+import android.database.Cursor;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -26,11 +29,18 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.asus.earingmoney.Util.Constants;
+import com.example.asus.earingmoney.Util.Util;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.ResponseBody;
 
 public class MainPartActivity extends AppCompatActivity {
 
@@ -175,6 +185,27 @@ public class MainPartActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void upload_header_to_server()
+    {
+        /*
+        String res = null;
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(headerUri, proj, null, null, null);
+        if(cursor.moveToFirst()){;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        */
+        if(headerUri != null)
+        {
+            Log.e("uri", headerUri.getPath());
+            //Util.uploadImgs(headerUri.getPath(), this);
+        }
+
+    }
+
+
     public void changeSex(View view) {
         ImageView sexImage = findViewById(R.id.sexImage);
         if(sex == Constants.MALE)
@@ -220,4 +251,9 @@ public class MainPartActivity extends AppCompatActivity {
 
     }
 
+    public void writeResponseBodyToDisk(String imageName, ResponseBody body) {
+
+
+
+    }
 }

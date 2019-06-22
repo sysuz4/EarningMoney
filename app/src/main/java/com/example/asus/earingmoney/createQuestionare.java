@@ -24,6 +24,7 @@ import com.example.asus.earingmoney.lib.QueryDialog;
 import com.example.asus.earingmoney.lib.SingleChooseDialog;
 import com.example.asus.earingmoney.model.CreateQuestionareModel;
 import com.example.asus.earingmoney.model.Mission;
+import com.example.asus.earingmoney.model.Msg;
 import com.example.asus.earingmoney.model.Question;
 import com.example.asus.earingmoney.model.QuestionModel;
 import com.example.asus.earingmoney.model.Questionare;
@@ -310,6 +311,7 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
 
     public void create_questinoare_to_server()
     {
+        Log.e("s", "" + Util.getUserId(this));
         CreateQuestionareModel createQuestionareModel = new CreateQuestionareModel();
         Mission mission = new Mission();
         Task task = new Task();
@@ -323,6 +325,7 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
         task.setFinishTime(finishDate);
         task.setTaskType(Constants.TASK_QUESTIONARE);
         task.setTaskStatus(Constants.TO_DO);
+        task.setPubUserId(Util.getUserId(this));
 
         mission.setDeadLine(finishDate);
         mission.setMoney(money);
@@ -331,28 +334,28 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
         mission.setTaskNum(taskNum);
         mission.setPublishTime(Util.convertDate2String(new Date()));
         mission.setMissionStatus(Constants.NEED_MORE_PEOPLE);
-        mission.setUserId(); //todo
+        mission.setUserId(Util.getUserId(this)); //todo
 
         createQuestionareModel.setMission(mission);
         createQuestionareModel.setTask(task);
         createQuestionareModel.setQuestionare(questionare);
 
         Gson gson=new Gson();
-        String jsonBody = gson.toJson(createQuestionareModel);
+        final String jsonBody = gson.toJson(createQuestionareModel);
+        Log.e("t", jsonBody);
         RequestBody reqBody = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=utf-8"),jsonBody);
 
-        Call<String> postCall =  myservice.create_questionare(Util.getToken(this), reqBody);
-        postCall.enqueue(new Callback<String>() {
+        Call<Msg> postCall =  myservice.create_questionare(Util.getToken(this), reqBody);
+        postCall.enqueue(new Callback<Msg>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<Msg> call, Response<Msg> response) {
                 if(response.code() == 200)
                 {
                     Toast.makeText(getApplicationContext(), "200",
                             Toast.LENGTH_SHORT).show();
                 }
                 else if(response.code() == 401){
-                    Toast.makeText(getApplicationContext(), "401",
-                            Toast.LENGTH_SHORT).show();
+                    Log.e("t", response.raw().toString());
                 }
                 else if(response.code() == 404){
                     Toast.makeText(getApplicationContext(), "404",
@@ -362,11 +365,12 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
                 {
                     Toast.makeText(getApplicationContext(), String.valueOf(response.code()),
                             Toast.LENGTH_SHORT).show();
+                    Log.e("t", jsonBody);
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<Msg> call, Throwable t) {
                 Log.e("s", t.toString());
                 Toast.makeText(getApplicationContext(), "fail",
                         Toast.LENGTH_SHORT).show();

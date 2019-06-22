@@ -15,6 +15,9 @@ public class Constants {
     final public static int MULTI_CHOOSE_QUESTION = 1;
     final public static String CHOICE_SPLIT = "|";
 
+
+    final public static String PHOTO_SPLIT = "|";
+
     //User类
     //前两个是userType的类别，依次对应：用户、管理员
     // 后两个是sex的类别，依次对应为：男性、女性

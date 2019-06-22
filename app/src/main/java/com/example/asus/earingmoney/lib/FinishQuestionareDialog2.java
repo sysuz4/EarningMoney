@@ -72,7 +72,7 @@ public class FinishQuestionareDialog2 extends BaseDialog<FinishQuestionareDialog
                 {
                     creat_errand_activity activity = (creat_errand_activity)mContext;
                     activity.finishDate = date;
-                    activity.create_errand_to_server();
+                    activity.uploadPhotos();
                 }
                 else
                     Log.e("context:", "cant solve this context in finishiQuesionare dialog2");
