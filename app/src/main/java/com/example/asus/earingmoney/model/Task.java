@@ -18,11 +18,11 @@ public class Task {
     }
 
     public int getMissionId() {
-        return MissionId;
+        return missionId;
     }
 
     public void setMissionId(int missionId) {
-        MissionId = missionId;
+        this.missionId = missionId;
     }
 
     public int getPubUserId() {
@@ -32,7 +32,7 @@ public class Task {
     public void setPubUserId(int pubUserId) {
         this.pubUserId = pubUserId;
     }
-
+  
     public int getAccUserId() {
         return accUserId;
     }

@@ -28,6 +28,7 @@ public class Mission {
     @SerializedName("money")
     private float money;
 
+
     @SerializedName("userId")
     private int userId;
   
@@ -37,6 +38,17 @@ public class Mission {
     public void setMissionId(int missionId) {
         this.missionId = missionId;
     }
+
+    @SerializedName("taskNum")
+    private int taskNum;
+
+
+    public int getTaskNum() {
+        return taskNum;
+    }
+
+    public void setTaskNum(int taskNum) {
+        this.taskNum = taskNum;
 
     public void setTitle(String title) {
         this.title = title;
@@ -66,9 +78,28 @@ public class Mission {
         this.money = money;
     }
 
-    public int getMissionStatus() {
-        return missionStatus;
+    public int getUserId() {
+        return userId;
     }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public Float getMoney() {
+        return money;
+    }
+
+    public void setMoney(Float money) {
+        this.money = money;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
 
     public void setMissionStatus(int missionStatus) {
         this.missionStatus = missionStatus;
@@ -86,12 +117,36 @@ public class Mission {
         return deadLine;
     }
 
+    public void setDeadLine(String deadLine) {
+        this.deadLine = deadLine;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getPublishTime() {
         return publishTime;
     }
 
-    public String getAvator() {
-        return avator;
+    public void setPublishTime(String publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public int getMissionStatus() {
+        return missionStatus;
+    }
+
+    public void setMissionStatus(int missionStatus) {
+        this.missionStatus = missionStatus;
+    }
+
+    public int getMissionId() {
+        return missionId;
     }
 
     public String getDescription() {
