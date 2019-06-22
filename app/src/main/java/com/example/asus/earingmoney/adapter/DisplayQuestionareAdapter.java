@@ -15,11 +15,14 @@ import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.model.QuestionModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class DisplayQuestionareAdapter extends BaseAdapter {
     private ArrayList<QuestionModel> list;
     private Context context;
-
+    private int finishNum = 1;
     public DisplayQuestionareAdapter(ArrayList<QuestionModel> list, Context context) {
         this.list = list;
         this.context = context;
@@ -49,6 +52,10 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void setFinishNum(int finishNum) {
+        this.finishNum = finishNum;
+    }
+
     public void setList(ArrayList<QuestionModel> questions) {
         this.list.clear();
         this.list.addAll(questions);
@@ -66,7 +73,7 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
             convertView= LayoutInflater.from(context).inflate(R.layout.display_question_item, null);
             viewHolder = new DisplayQuestionareAdapter.ViewHolder();
             viewHolder.questionDes = (LinearLayout) convertView.findViewById(R.id.questionDes);
-            viewHolder.optionListText = (TextView) convertView.findViewById(R.id.optionListText);
+            viewHolder.optionList = (TextView) convertView.findViewById(R.id.optionListText);
             viewHolder.jumpBtn = (TextView) convertView.findViewById(R.id.jumpBtn);
             convertView.setTag(viewHolder); // 用setTag方法将处理好的viewHolder放入view中
         } else {
@@ -78,27 +85,61 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
         TextView questionNum = viewHolder.questionDes.findViewById(R.id.questionNumText);
         TextView questionType = viewHolder.questionDes.findViewById(R.id.questionTypeText);
         TextView question = viewHolder.questionDes.findViewById(R.id.questionText);
+
         questionNum.setText(Integer.toString(i + 1) + ".");
         Log.e("question == null:", list.get(i).getQuestion() == null ? "null" : "not null");
         question.setText(list.get(i).getQuestion());
         if (list.get(i).getQuestionType() == Constants.QUERY_QUESTION) {
             questionType.setText("[问答]");
-            viewHolder.optionListText.setVisibility(View.GONE);
+            viewHolder.optionList.setVisibility(View.GONE);
         } else if (list.get(i).getQuestionType() == Constants.SINGLE_CHOOSE_QUESTION){
             questionType.setText("[单选]");
             viewHolder.jumpBtn.setVisibility(View.GONE);
+            viewHolder.optionList.setText(getOptionListText(i));
         } else {
             questionType.setText("[多选]");
             viewHolder.jumpBtn.setVisibility(View.GONE);
+            viewHolder.optionList.setText(getOptionListText(i));
         }
 
         // 将这个处理好的view返回
         return convertView;
     }
 
+    private String getOptionListText(int i) {
+        StringBuilder sb= new StringBuilder();
+        String options = list.get(i).getAnswer();
+        Map<String, Integer> map = new HashMap<>();
+        for (int j = 0; j < options.length(); ++j) {
+            String option = options.substring(j, j+1);
+            if (map.get(option) == null) {
+                map.put(option, 1);
+            } else {
+                map.put(option, map.get(option) + 1);
+            }
+        }
+
+        Iterator iter= map.entrySet().iterator();
+        while(iter.hasNext()){
+            Map.Entry<String,Integer> entry=(Map.Entry<String,Integer>)iter.next();
+            sb.append(entry.getKey());
+            sb.append(": ");
+            if (finishNum != 0) {
+                sb.append(Double.toString((double) entry.getValue() / finishNum * 100));
+                sb.append("%\n");
+            } else {
+                sb.append("无人作答\n");
+            }
+
+        }
+        return sb.toString();
+    }
+
+
+
     private class ViewHolder {
         public LinearLayout questionDes;
-        public TextView optionListText;
+        public TextView optionList;
         public TextView jumpBtn;
     }
 }

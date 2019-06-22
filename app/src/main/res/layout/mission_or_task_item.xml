@@ -23,7 +23,6 @@
                 android:id="@+id/titleText"
                 android:layout_width="95dp"
                 android:layout_height="23dp"
-                android:layout_marginStart="8dp"
                 android:gravity="center"
                 android:paddingRight="10dp"
                 android:text="任务标题"
@@ -47,7 +46,7 @@
                 android:id="@+id/deadLineText"
                 android:layout_width="114dp"
                 android:layout_height="23dp"
-                android:layout_marginEnd="24dp"
+
                 android:gravity="center"
                 android:text="止2019-07-19"
                 app:layout_constraintBottom_toTopOf="@+id/descriptionText"
@@ -66,7 +65,7 @@
                 android:id="@+id/avator"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginStart="16dp"
+
                 app:layout_constraintBottom_toTopOf="@+id/missionStatusText"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:srcCompat="@tools:sample/avatars" />
@@ -75,7 +74,7 @@
                 android:id="@+id/descriptionText"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="204dp"
+
                 android:paddingLeft="30dp"
                 android:paddingTop="10dp"
                 android:text="任务概述"
@@ -98,10 +97,9 @@
                 android:id="@+id/missionStatusText"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:layout_marginStart="16dp"
+
                 android:layout_weight="1"
                 android:gravity="left"
-                android:paddingLeft="20dp"
                 android:text="待接受"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -110,7 +108,7 @@
                 android:id="@+id/taskNumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="需30人"

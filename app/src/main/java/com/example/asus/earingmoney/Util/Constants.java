@@ -1,15 +1,35 @@
 package com.example.asus.earingmoney.Util;
 
 public class Constants {
+
+    /**
+     * baseURL
+     */
+
+    final public static String BASEURL = "http://106.14.225.59/";
+    /**
+     * 选择题的类型
+     */
     final public static int QUERY_QUESTION = 2;
     final public static int SINGLE_CHOOSE_QUESTION = 0;
     final public static int MULTI_CHOOSE_QUESTION = 1;
     final public static String CHOICE_SPLIT = "|";
 
+
     final public static String BASE_URL = "http://106.14.225.59";
 
     //User类
     // 后两个是sex的类别，依次对应为：男性、女性
+
+
+    final public static String PHOTO_SPLIT = "|";
+
+    //User类
+    //前两个是userType的类别，依次对应：用户、管理员
+    // 后两个是sex的类别，依次对应为：男性、女性
+    public static final int USER = 0;
+    public static final int ADMINISTRATOR = 1;
+
     public static final int MALE = 0;
     public static final int FEMALE = 1;
 
@@ -18,6 +38,7 @@ public class Constants {
     public static final int NEED_MORE_PEOPLE = 0;
     public static final int MAX_PEOPLE = 1;
     public static final int OVERDUE = 2;
+    public static final int MAX_PEOPLE_DONE = 3;
 
     //Task类
     //taskSatus的四个状态，依次对应为：此任务未被人接收、此任务已被人接收且正在执行、此任务已被接收者执行完毕但发布者还未确认、此任务已被上方确认完成
@@ -27,8 +48,10 @@ public class Constants {
     public static final int DONE_BUT_NOT_CONFIRM = 2;
     public static final int DONE_AND_CONFIRM = 3;
 
+
     public static final int TASK_ERRAND = 0;
     public static final int TASK_QUESTIONARE = 1;
+
 
 
     //Report类
@@ -43,4 +66,10 @@ public class Constants {
 
     //定义日期格式
     public static final String DATA_FORMAT = "yyyy-MM-dd";
+
+    //public static final int FILTER_BASE = 100;
+    public static final int FILTER_ALL = 100;
+    public static final int FILTER_COMPLETED = 101;
+    public static final int FILTER_NOT_COMPLETED = 102;
+    public static final int FILTER_OVERDUE = 103;
 }

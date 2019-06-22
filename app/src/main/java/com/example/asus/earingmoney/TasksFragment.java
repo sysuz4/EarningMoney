@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -31,7 +32,9 @@ import com.example.asus.earingmoney.model.MissionOrTask;
 import com.example.asus.earingmoney.model.QAsummary;
 import com.example.asus.earingmoney.model.Question;
 import com.example.asus.earingmoney.model.QuestionModel;
+import com.example.asus.earingmoney.model.TaskModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -53,7 +56,8 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     private DisplayAnswerAdapter answerAdapter;
 
     private ArrayList<MissionOrTask> missions;
-    //private ArrayList<MissionOrTask> tasks;
+    private ArrayList<MissionOrTask> tasks;
+    private ArrayList<MissionOrTask> list;
 
     private ArrayList<QuestionModel> questions;
     private ArrayList<String> answers;
@@ -64,18 +68,24 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     private ConstraintLayout answerPage;
     private ArrayList<MissionOrTask> mList;
 
-    private MemorySpinner missionOrTaskMS;
-    private MemorySpinner completenessMS;
+    private Spinner missionOrTaskSpinner;
+    private Spinner completenessSpinner;
 
     private ImageView revertBtn;
     private ProgressBar completeness;
     private ListView displayQuestionareList;
+
+    private ImageView answerRevertBtn;
+    private ListView answerList;
 
     private TextView QATitle;
     private TextView QADes;
     private ProgressBar QABar;
     private TextView QAPercent;
 
+    private int lastMissionId;
+
+    private boolean displayMission = true;
     String token = "";
     int userId = -1;
     SharedPreferences user_shared_preference;
@@ -132,6 +142,14 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     }
 
     private void initAnswerPage(View rootView) {
+        answerRevertBtn = rootView.findViewById(R.id.answerRevertBtn);
+        answerList = rootView.findViewById(R.id.displayAnswerList);
+        answers = new ArrayList<String>();
+        answerAdapter = new DisplayAnswerAdapter(answers, getContext());
+        answerList.setAdapter(answerAdapter);
+        answerRevertBtn.setOnClickListener(this);
+
+
     }
 
     private void initQuestionPage(View rootView) {
@@ -152,28 +170,77 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         questionareAdapter = new DisplayQuestionareAdapter(questions, getContext());
         displayQuestionareList.setAdapter(questionareAdapter);
 
-
+        displayQuestionareList.setOnItemClickListener(this);
 
     }
 
     private void initMissionPage(View rootView) {
-        missionOrTaskMS = rootView.findViewById(R.id.missionOrTaskMS);
-        ArrayList<String> list1 = new ArrayList<>(Arrays.asList("我发布的", "我接受的"));
-        missionOrTaskMS.setMemoryCount(1);
-        missionOrTaskMS.setData(null, list1);
+        missionOrTaskSpinner = rootView.findViewById(R.id.missionOrTaskSpinner);
+        completenessSpinner = rootView.findViewById(R.id.completenessSpinner);
 
-        missionOrTaskMS.setSelection(1);
+        String []mItems1 = getResources().getStringArray(R.array.missionOrTask);
+        String []mItems2 = getResources().getStringArray(R.array.completeness);
 
-        completenessMS = rootView.findViewById(R.id.completenessMS);
-        ArrayList<String> list2 = new ArrayList<>(Arrays.asList("全部","已完成", "未完成"));
-        completenessMS.setMemoryCount(1);
-        completenessMS.setData(null, list2);
+        ArrayAdapter<String> adapter1=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems1);
+        ArrayAdapter<String> adapter2=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems2);
 
-        completenessMS.setSelection(1);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        missionOrTaskSpinner.setAdapter(adapter1);
+        completenessSpinner.setAdapter(adapter2);
+
 
         missionOrTaskList = rootView.findViewById(R.id.MissionOrTaskList);
 
         missionOrTaskList.setOnItemClickListener(this);
+
+        missionOrTaskSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                list.clear();
+                if (position == 0) {
+                    displayMission = true;
+                    list.addAll(missions);
+
+                } else if (position == 1) {
+                    displayMission = false;
+                    //list.addAll(tasks);
+                }
+                completenessSpinner.setSelection(0);
+                missionOrTaskListAdapter.update();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        completenessSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                list.clear();
+                if (position == 0) {
+                    list.addAll(filter(Constants.FILTER_ALL));
+                } else if (position == 1) {
+                    list.addAll(filter(Constants.FILTER_COMPLETED));
+                } else if (position == 2) {
+                    list.addAll(filter(Constants.FILTER_NOT_COMPLETED));
+                } else {
+                    list.addAll(filter(Constants.OVERDUE));
+                }
+
+                missionOrTaskListAdapter.update();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void displayMissionPage() {
@@ -183,10 +250,8 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     }
 
     private void displayQuestionarePage(int missionId) {
-        missionPage.setVisibility(View.GONE);
-        questionarePage.setVisibility(View.VISIBLE);
-        answerPage.setVisibility(View.GONE);
         initQAsummary(missionId);
+
     }
 
     private void initQAsummary(int missionId) {
@@ -215,6 +280,7 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
                     @Override
                     public void onNext(QAsummary qAsummary) {
+                        questionareAdapter.setFinishNum(qAsummary.getFinishNum());
                         QATitle.setText(qAsummary.getQATitle());
                         QADes.setText(qAsummary.getQADes());
                         QABar.setMax(qAsummary.getTaskNum());
@@ -226,6 +292,10 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                         questions.clear();
                         questions.addAll(qAsummary.getQuestions());
                         questionareAdapter.update();
+                        missionPage.setVisibility(View.GONE);
+                        answerPage.setVisibility(View.GONE);
+                        questionarePage.setVisibility(View.VISIBLE);
+
                     }
                 });
     }
@@ -234,13 +304,26 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         missionPage.setVisibility(View.GONE);
         questionarePage.setVisibility(View.GONE);
         answerPage.setVisibility(View.VISIBLE);
+
+        answers.clear();
+        Log.e("ans:", questions.get(index).getAnswer());
+        String[] ans = questions.get(index).getAnswer().split("\\;");
+        /*
+        answers.add("sdhfksdj");
+        answers.add("dasjk");
+        answers.add("fhejh");
+        */
+        answers.addAll(Arrays.asList(ans));
+        answerAdapter.update();
+
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initData() {
+        list = new ArrayList<>();
         missions = new ArrayList<>();
+        tasks = new ArrayList<>();
 
-        missionOrTaskListAdapter = new MissionOrTaskListAdapter(missions, getContext());
+        missionOrTaskListAdapter = new MissionOrTaskListAdapter(list, getContext());
         missionOrTaskList.setAdapter(missionOrTaskListAdapter);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -250,10 +333,8 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                 .build();
 
         UserService userService = retrofit.create(UserService.class);
-        Observable<ArrayList<MissionModel>> repoObservable = userService.getMissionsByUserId(getToken(),getUserId());
-        Log.e("userId", Integer.toString(getUserId()));
-        Log.e("token", getToken());
-        repoObservable.subscribeOn(Schedulers.newThread())
+        Observable<ArrayList<MissionModel>> missionObservable = userService.getMissionsByUserId(getToken(),getUserId());
+        missionObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ArrayList<MissionModel>>() {
                     @Override
@@ -272,7 +353,35 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                         //Toast.makeText(getContext(), Integer.toString(missionModels.size()), Toast.LENGTH_SHORT).show();
                         missions.clear();
                         missions.addAll(missionModels);
-                        missionOrTaskListAdapter.update();
+
+                        if (displayMission) {
+                            list.clear();
+                            list.addAll(missions);
+                            missionOrTaskListAdapter.update();
+                        }
+
+                    }
+                });
+
+        Observable<ArrayList<TaskModel>> taskObservable = userService.getTasksByUserId(getToken(),getUserId());
+        taskObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ArrayList<TaskModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getContext(), "获取我的任务错误!", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<TaskModel> taskModels) {
+                        tasks.clear();
+                        tasks.addAll(taskModels);
                     }
                 });
     }
@@ -286,8 +395,15 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (missions.get(i).isMission() && ((MissionModel)missions.get(i)).getTaskType() == Constants.TASK_QUESTIONARE) {
-            displayQuestionarePage(((MissionModel)missions.get(i)).getMissionId());
+        if (adapterView.getId() == R.id.MissionOrTaskList) {
+            if (list.get(i).isMission() && ((MissionModel) list.get(i)).getTaskType() == Constants.TASK_QUESTIONARE) {
+                lastMissionId = ((MissionModel) list.get(i)).getMissionId();
+                displayQuestionarePage(lastMissionId);
+            }
+        } else if (adapterView.getId() == R.id.displayQuestionareList) {
+            if (questions.get(i).getQuestionType() == Constants.QUERY_QUESTION) {
+                displayAnswerPage(i);
+            }
         }
     }
 
@@ -297,13 +413,15 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
             displayMissionPage();
         }
 
+        if (view.getId() == R.id.answerRevertBtn) {
+            displayQuestionarePage(lastMissionId);
+        }
     }
 
     private String getToken() {
         if (token.isEmpty()) {
             user_shared_preference = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
             token = user_shared_preference.getString("token", "");
-
         }
         return token;
     }
@@ -313,7 +431,42 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
             user_shared_preference = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
             userId = user_shared_preference.getInt("userId", -1);
         }
-
         return userId;
+    }
+
+    private ArrayList<MissionOrTask> filter(int mode) {
+
+        if (displayMission) {
+            int status;
+            ArrayList<MissionOrTask> ret = new ArrayList<>();
+            if (mode == Constants.FILTER_ALL) {
+                return missions;
+            } else if (mode == Constants.FILTER_COMPLETED) {
+                for (MissionOrTask m: missions) {
+                    if (((MissionModel)m).getMissionStatus() == Constants.MAX_PEOPLE_DONE) {
+                        ret.add(m);
+                    }
+                }
+            } else if (mode == Constants.FILTER_OVERDUE) {
+                for (MissionOrTask m: missions) {
+                    if (((MissionModel)m).getMissionStatus() == Constants.OVERDUE) {
+                        ret.add(m);
+                    }
+                }
+
+            } else {
+                for (MissionOrTask m: missions) {
+                    if (((MissionModel)m).getMissionStatus() == Constants.NEED_MORE_PEOPLE ||
+                            ((MissionModel)m).getMissionStatus() == Constants.MAX_PEOPLE) {
+                        ret.add(m);
+                    }
+                }
+            }
+
+            return ret;
+        } else {
+            return new ArrayList<MissionOrTask>();
+        }
+
     }
 }

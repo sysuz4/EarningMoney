@@ -23,15 +23,15 @@ import com.example.asus.earingmoney.R;
 import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.createQuestionare;
-import com.example.asus.earingmoney.model.QuestionModel;
+import com.example.asus.earingmoney.model.Question;
 
 import java.util.List;
 
 public class MyAdapter extends BaseAdapter {
-    private List<QuestionModel> dataList;
+    private List<Question> dataList;
     private Context context;
 
-    public  MyAdapter(List<QuestionModel> list, Context context)
+    public  MyAdapter(List<Question> list, Context context)
     {
         this.dataList = list;
         this.context = context;
@@ -55,7 +55,7 @@ public class MyAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         CustomViewHolder cvh;
-        QuestionModel item = (QuestionModel) this.getItem(position);
+        Question item = (Question) this.getItem(position);
 
         if (convertView == null) {
             cvh = new CustomViewHolder();

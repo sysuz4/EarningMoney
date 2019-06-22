@@ -16,13 +16,14 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:gravity="center"
             android:text="121."
+            android:textSize="18sp"
             android:textStyle="bold|italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="8dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/answerText"
@@ -30,17 +31,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginEnd="236dp"
+            android:layout_marginRight="236dp"
             android:gravity="left|center_vertical"
             android:text="哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
-            android:textSize="12sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/answerIdText"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="236dp" />
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

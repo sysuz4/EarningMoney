@@ -66,15 +66,17 @@ public class FinishQuestionareDialog2 extends BaseDialog<FinishQuestionareDialog
                 {
                     createQuestionare activity = (createQuestionare)mContext;
                     activity.finishDate = date;
+                    activity.create_questinoare_to_server();
                 }
                 else if(mContext instanceof creat_errand_activity)
                 {
                     creat_errand_activity activity = (creat_errand_activity)mContext;
                     activity.finishDate = date;
+                    activity.uploadPhotos();
                 }
                 else
                     Log.e("context:", "cant solve this context in finishiQuesionare dialog2");
-                toast(" " + date);
+                //toast(" " + date);
                 dismiss();
             }
         });

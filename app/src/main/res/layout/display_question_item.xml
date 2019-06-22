@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="1." />
+            android:text="1."
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/questionTypeText"
@@ -28,6 +29,7 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="[单选]"
+            android:textSize="18sp"
             tools:layout_editor_absoluteX="58dp"
             tools:layout_editor_absoluteY="0dp" />
 
@@ -38,6 +40,7 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="这是第一题的题目描述"
+            android:textSize="18sp"
             tools:layout_editor_absoluteX="175dp"
             tools:layout_editor_absoluteY="0dp" />
 
@@ -53,7 +56,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="fill_vertical|center_horizontal"
-        android:text="TextView"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

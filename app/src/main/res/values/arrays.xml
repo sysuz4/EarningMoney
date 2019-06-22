@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="spin1">
-        <item>任务类型</item>
+        <item>所有类型</item>
         <item>问卷任务</item>
         <item>跑腿任务</item>
     </string-array>
@@ -14,13 +14,25 @@
 
     <string-array name="spin3">
         <item>截止时间</item>
-        <item>升序</item>
-        <item>降序</item>
+        <item>时间充裕</item>
+        <item>时间急迫</item>
     </string-array>
 
     <string-array name="spin4">
         <item>tag</item>
         <item>tag1</item>
         <item>tag2</item>
+    </string-array>
+
+    <string-array name="missionOrTask">
+        <item>我发布的</item>
+        <item>我接受的</item>
+    </string-array>
+
+    <string-array name="completeness">
+        <item>全部</item>
+        <item>已完成</item>
+        <item>未完成</item>
+        <item>已过期</item>
     </string-array>
 </resources>

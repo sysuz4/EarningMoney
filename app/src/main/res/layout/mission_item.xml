@@ -11,13 +11,20 @@
         android:layout_height="80dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <android.support.constraint.ConstraintLayout
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="80dp"
+            android:layout_height="77dp" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_gravity="center">
+            android:layout_height="80dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
 
             <TextView
                 android:id="@+id/titleText"
@@ -25,34 +32,48 @@
                 android:layout_height="32.5dp"
                 android:text="标题"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="32.5dp"
-                app:layout_constraintRight_toRightOf="parent"
-                android:text="发布时间"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-        <View android:background="@color/divider"
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4.5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="32.5dp"
-                android:text="任务概述："/>
-
-            <TextView
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="32.5dp"
-                android:text="XXXXX"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center">
+
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32.5dp"
+                    android:text="标题"/>
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32.5dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:text="发布时间"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4.5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="32.5dp"
+                    android:text="任务概述："/>
+
+                <TextView
+                    android:id="@+id/detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="32.5dp"
+                    android:text="XXXXX"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.asus.earingmoney.R;
+import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.model.MissionModel;
 import com.example.asus.earingmoney.model.MissionOrTask;
 
@@ -81,12 +82,24 @@ public class MissionOrTaskListAdapter extends BaseAdapter {
         }
         // 从viewHolder中取出对应的对象，然后赋值给他们
         if (list.get(i).isMission()) {
-            viewHolder.avator.setImageResource(R.mipmap.me);
+            if (((MissionModel)list.get(i)).getTaskType() == Constants.TASK_QUESTIONARE) {
+                viewHolder.avator.setImageResource(R.mipmap.questionare);
+            } else {
+                viewHolder.avator.setImageResource(R.mipmap.errand);
+            }
+
             viewHolder.title.setText(((MissionModel)list.get(i)).getTitle());
             viewHolder.publishTime.setText("起:"+((MissionModel)list.get(i)).getPublishTime());
             viewHolder.deadLine.setText("止:"+((MissionModel)list.get(i)).getDeadLine());
-
-            viewHolder.missionStatus.setText("状态");
+            if (((MissionModel)list.get(i)).getMissionStatus() == Constants.NEED_MORE_PEOPLE) {
+                viewHolder.missionStatus.setText("人数不够");
+            } else if (((MissionModel)list.get(i)).getMissionStatus() == Constants.MAX_PEOPLE) {
+                viewHolder.missionStatus.setText("人数达上限");
+            } else if (((MissionModel)list.get(i)).getMissionStatus() == Constants.OVERDUE){
+                viewHolder.missionStatus.setText("已经过期");
+            } else {
+                viewHolder.missionStatus.setText("全部完成");
+            }
             viewHolder.taskNum.setText("需" + ((MissionModel)list.get(i)).getTaskNum() + "人");
             viewHolder.money.setText("奖励金:" + ((MissionModel)list.get(i)).getMoney());
             viewHolder.description.setText(((MissionModel)list.get(i)).getDescription());
