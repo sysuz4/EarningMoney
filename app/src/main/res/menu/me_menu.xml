@@ -2,9 +2,18 @@
 <menu android:name="menu1" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:enabled="false"
+        android:visible="false"
+        android:id="@+id/cancelBtn"
+        android:icon="@mipmap/cha"
+        app:showAsAction="always"
+        android:title="取消"
+        app:actionProviderClass="com.example.asus.earingmoney.menuActionProvider.meFragementActionProvider"/>
+    <item
         android:id="@+id/modifyBtn"
         android:icon="@mipmap/modify"
         app:showAsAction="always"
         android:title="修改"
         app:actionProviderClass="com.example.asus.earingmoney.menuActionProvider.meFragementActionProvider"/>
+
 </menu>

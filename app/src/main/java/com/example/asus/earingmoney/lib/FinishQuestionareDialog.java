@@ -87,7 +87,7 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
                     }
                     else
                         Log.e("context:", "cant solve this context in finishiQuesionare dialog");
-                    toast(money + " " + taskNum);
+                    //toast(money + " " + taskNum);
                     dismiss();
                     final FinishQuestionareDialog2 dialog = new FinishQuestionareDialog2(mContext);
                     dialog.showAnim(new FadeEnter())//
