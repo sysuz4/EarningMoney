@@ -34,7 +34,7 @@ public class Mission {
   
     @SerializedName("missionStatus")
     private int missionStatus;
-  
+
     public void setMissionId(int missionId) {
         this.missionId = missionId;
     }
