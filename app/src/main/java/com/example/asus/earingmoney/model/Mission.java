@@ -25,6 +25,9 @@ public class Mission {
     @SerializedName("avator")
     private String avator;
 
+    @SerializedName("money")
+    private float money;
+
     public String getTitle() {
         return title;
     }
@@ -51,5 +54,9 @@ public class Mission {
 
     public String getTaskType() {
         return taskType;
+    }
+
+    public float getMoney() {
+        return money;
     }
 }

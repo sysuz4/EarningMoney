@@ -33,6 +33,9 @@ public interface service{
     @GET("/missions/AllMissions")
     Observable<GetMissionsObj> getMissions(@Header("authorization") String token);
 
+    @GET("/missions/{missionID}")
+    Observable<Mission> getMissionsDetail(@Path("missionID") int missionID);
+
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}")
     Call<Mission>getErrandMission(@Header("authorization") String token, @Path("missionID") int missionID);
@@ -44,5 +47,4 @@ public interface service{
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/tasks/{taskID}/errands")
     Call<Errand>getErrandByTaskId(@Header("authorization") String token, @Path("taskID") int taskID);
-
 }
