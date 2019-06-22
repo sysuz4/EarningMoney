@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class User{
-    @SerializedName("id")
+    @SerializedName("userId")
     private int id;
     @SerializedName("userType")
     private int userType;//判断是普通用户还是管理员
@@ -32,11 +32,11 @@ public class User{
     @SerializedName("balance")
     private int balance;//余额
     @SerializedName("tags")
-    private ArrayList<String> tags;//标签，用于分类
+    private String tags;//标签，用于分类
     @SerializedName("password")
     private String password;
 
-    public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _stuId, int _balance, ArrayList<String> _tags, String _password) {
+    public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _stuId, int _balance, String _tags, String _password) {
 
         id = _id;
         userType = _userType;
@@ -87,7 +87,7 @@ public class User{
         return grade;
     }
 
-    public ArrayList<String> getTags() {
+    public String getTags() {
         return tags;
     }
 
@@ -167,7 +167,7 @@ public class User{
         this.sex = sex;
     }
 
-    public void setTags(ArrayList<String> tags) {
+    public void setTags(String tags) {
         this.tags = tags;
     }
 

@@ -28,6 +28,9 @@ public class Mission {
     @SerializedName("money")
     private float money;
 
+    @SerializedName("userId")
+    private int userId;
+
     public String getTitle() {
         return title;
     }
@@ -58,5 +61,9 @@ public class Mission {
 
     public float getMoney() {
         return money;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 }
