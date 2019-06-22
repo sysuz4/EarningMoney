@@ -28,6 +28,12 @@ public class Mission {
     @SerializedName("money")
     private float money;
 
+    @SerializedName("userId")
+    private int userId;
+  
+    @SerializedName("missionStatus")
+    private int missionStatus;
+  
     public void setMissionId(int missionId) {
         this.missionId = missionId;
     }
@@ -68,9 +74,6 @@ public class Mission {
         this.missionStatus = missionStatus;
     }
 
-    @SerializedName("missionStatus")
-    private int missionStatus;
-
     public String getTitle() {
         return title;
     }
@@ -101,5 +104,9 @@ public class Mission {
 
     public float getMoney() {
         return money;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 }

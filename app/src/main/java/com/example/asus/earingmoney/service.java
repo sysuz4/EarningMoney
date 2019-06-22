@@ -35,7 +35,11 @@ public interface service{
     Observable<GetMissionsObj> getMissions(@Header("authorization") String token);
 
     @GET("/missions/{missionID}")
-    Observable<Mission> getMissionsDetail(@Path("missionID") int missionID);
+    Observable<Mission> getMissionDetail(@Path("missionID") int missionID);
+
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/users/{userID}")
+    Observable<User> getUserDetail(@Header("authorization") String token, @Path("userID") int userID);
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}")
