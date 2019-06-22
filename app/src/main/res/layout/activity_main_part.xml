@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/colorPrimary"
         android:background="?attr/colorPrimary"
-        app:navigationIcon="@mipmap/icon_add"
+        app:navigationIcon="@mipmap/logo"
         app:popupTheme="@style/PopWindowBackgroundStyle"
         app:theme="@style/PopWindowStyle"
         app:title="易闲圈"
