@@ -23,7 +23,7 @@ public class MissionDetailActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private service myservice;
     private ServiceFactory serviceFactory;
-    private TextView publish_time,detail,deadline,money,name;
+    private TextView publish_time,detail,deadline,money,name,title;
     private int userId;
 
     @Override
@@ -38,6 +38,7 @@ public class MissionDetailActivity extends AppCompatActivity {
         deadline = findViewById(R.id.deadline);
         money = findViewById(R.id.money);
         name = findViewById(R.id.name);
+        title = findViewById(R.id.title);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,6 +77,7 @@ public class MissionDetailActivity extends AppCompatActivity {
                 detail.setText(mission.getDescription());
                 deadline.setText(mission.getDeadLine());
                 money.setText(mission.getMoney() + "元");
+                title.setText(mission.getTitle());
             }
 
             @Override
@@ -108,7 +110,7 @@ public class MissionDetailActivity extends AppCompatActivity {
 
             @Override
             public void onNext(User user) {
-                System.out.println(user.getId());
+                //System.out.println(user.getUserId());
                 name.setText(user.getName());
             }
         };
