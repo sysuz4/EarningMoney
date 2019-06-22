@@ -1,5 +1,6 @@
 package com.example.asus.earingmoney;
 
+import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -196,7 +197,7 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
         errand.setPic(pic);
 
         task.setFinishTime(finishDate);
-        task.setTaskType(Constants.TASK_QUESTIONARE);
+        task.setTaskType(Constants.TASK_ERRAND);
         task.setTaskStatus(Constants.TO_DO);
         task.setPubUserId(Util.getUserId(this));
 
@@ -224,29 +225,24 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
             public void onResponse(Call<Msg> call, Response<Msg> response) {
                 if(response.code() == 200)
                 {
-                    Toast.makeText(getApplicationContext(), "200",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else if(response.code() == 401){
-                    Toast.makeText(getApplicationContext(), "401",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else if(response.code() == 404){
-                    Toast.makeText(getApplicationContext(), "404",
+                    Toast.makeText(getApplicationContext(), "创建成功",
                             Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                    Toast.makeText(getApplicationContext(), String.valueOf(response.code()),
+                    Toast.makeText(getApplicationContext(), "创建失败，请检查是否有足够的余额和日期是否正确",
                             Toast.LENGTH_SHORT).show();
+                    Log.e("createErrandError:", response.raw().toString());
                 }
+                finishActivity();
             }
 
             @Override
             public void onFailure(Call<Msg> call, Throwable t) {
-                Log.e("s", t.toString());
-                Toast.makeText(getApplicationContext(), "fail",
+                Toast.makeText(getApplicationContext(), "创建失败，请检查是否有足够的余额和日期是否正确",
                         Toast.LENGTH_SHORT).show();
+                Log.e("createErrandError:", t.toString());
+                finishActivity();
             }
         });
     }
@@ -254,6 +250,11 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
     public void uploadPhotos() {
         int i = 0;
         Log.e("photoSize: ", "" + photoArray.size());
+        if(photoArray.size() == 0)
+        {
+            create_errand_to_server();
+            return;
+        }
         for (Map.Entry<Integer, String> entry :  photoArray.entrySet()) {
             System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
 
@@ -302,4 +303,11 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
             i++;
         }
     }
+
+
+    private void finishActivity()
+    {
+        creat_errand_activity.this.finish();
+    }
+
 }

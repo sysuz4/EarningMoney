@@ -76,7 +76,7 @@ public class FinishQuestionareDialog2 extends BaseDialog<FinishQuestionareDialog
                 }
                 else
                     Log.e("context:", "cant solve this context in finishiQuesionare dialog2");
-                toast(" " + date);
+                //toast(" " + date);
                 dismiss();
             }
         });
