@@ -11,7 +11,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import rx.Observable;
 
-public interface QAsumaryService {
+public interface QAsummaryService {
     @Headers({"Content-Type: application/json","Accept: application/json"})
     @GET("/missions/{missionId}/QAsummary")
     Observable<QAsummary> getQAsummary( @Header("authorization") String token, @Path("missionId") int missionId);

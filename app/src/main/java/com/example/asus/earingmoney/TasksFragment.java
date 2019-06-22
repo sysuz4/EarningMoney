@@ -23,9 +23,14 @@ import android.widget.Toast;
 
 import com.clj.memoryspinner.MemorySpinner;
 import com.example.asus.earingmoney.Util.Constants;
+import com.example.asus.earingmoney.adapter.DisplayAnswerAdapter;
+import com.example.asus.earingmoney.adapter.DisplayQuestionareAdapter;
 import com.example.asus.earingmoney.adapter.MissionOrTaskListAdapter;
 import com.example.asus.earingmoney.model.MissionModel;
 import com.example.asus.earingmoney.model.MissionOrTask;
+import com.example.asus.earingmoney.model.QAsummary;
+import com.example.asus.earingmoney.model.Question;
+import com.example.asus.earingmoney.model.QuestionModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,10 +49,16 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     private String mContentText;
     private ListView missionOrTaskList;
     private MissionOrTaskListAdapter missionOrTaskListAdapter;
+    private DisplayQuestionareAdapter questionareAdapter;
+    private DisplayAnswerAdapter answerAdapter;
 
     private ArrayList<MissionOrTask> missions;
-    private ArrayList<MissionOrTask> tasks;
+    //private ArrayList<MissionOrTask> tasks;
 
+    private ArrayList<QuestionModel> questions;
+    private ArrayList<String> answers;
+
+    //private QAsummary qAsummary;
     private ConstraintLayout missionPage;
     private ConstraintLayout questionarePage;
     private ConstraintLayout answerPage;
@@ -60,6 +71,13 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     private ProgressBar completeness;
     private ListView displayQuestionareList;
 
+    private TextView QATitle;
+    private TextView QADes;
+    private ProgressBar QABar;
+    private TextView QAPercent;
+
+    String token = "";
+    int userId = -1;
     SharedPreferences user_shared_preference;
 
     public TasksFragment() {
@@ -110,7 +128,7 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         
         displayMissionPage();
 
-        Toast.makeText(getContext(), getToken(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), getToken(), Toast.LENGTH_SHORT).show();
     }
 
     private void initAnswerPage(View rootView) {
@@ -121,7 +139,21 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         completeness = rootView.findViewById(R.id.completeness);
         displayQuestionareList = rootView.findViewById(R.id.displayQuestionareList);
 
+        QATitle = rootView.findViewById(R.id.titleText);
+        QADes = rootView.findViewById(R.id.descriptionText);
+        QABar = rootView.findViewById(R.id.completeness);
+        QAPercent = rootView.findViewById(R.id.percent);
+
         revertBtn.setOnClickListener(this);
+        questions = new ArrayList<QuestionModel>();
+        //questions.add(new QuestionModel(0, Constants.SINGLE_CHOOSE_QUESTION, "单选题题干。", "", 4, "ABCAA",  2));
+        //questions.add(new QuestionModel(0, Constants.MULTI_CHOOSE_QUESTION, "多选题题干。", "", 4, "ABCAA",  2));
+        //questions.add(new QuestionModel(0, Constants.QUERY_QUESTION, "问答题题干。", "", 4, "ABCAA",  2));
+        questionareAdapter = new DisplayQuestionareAdapter(questions, getContext());
+        displayQuestionareList.setAdapter(questionareAdapter);
+
+
+
     }
 
     private void initMissionPage(View rootView) {
@@ -150,13 +182,55 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         answerPage.setVisibility(View.GONE);
     }
 
-    private void displayQuestionarePage() {
+    private void displayQuestionarePage(int missionId) {
         missionPage.setVisibility(View.GONE);
         questionarePage.setVisibility(View.VISIBLE);
         answerPage.setVisibility(View.GONE);
+        initQAsummary(missionId);
     }
 
-    private void displayAnswerPage() {
+    private void initQAsummary(int missionId) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+
+        QAsummaryService qAsummaryService = retrofit.create(QAsummaryService.class);
+        Observable<QAsummary> repoObservable = qAsummaryService.getQAsummary(getToken(), missionId);
+
+        repoObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<QAsummary>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getContext(), "获取问卷填写结果错误!", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(QAsummary qAsummary) {
+                        QATitle.setText(qAsummary.getQATitle());
+                        QADes.setText(qAsummary.getQADes());
+                        QABar.setMax(qAsummary.getTaskNum());
+                        QABar.setProgress(qAsummary.getFinishNum());
+                        double percent = (double)qAsummary.getFinishNum() / qAsummary.getTaskNum();
+                        percent *= 100;
+                        QAPercent.setText(Double.toString(percent) + "%");
+
+                        questions.clear();
+                        questions.addAll(qAsummary.getQuestions());
+                        questionareAdapter.update();
+                    }
+                });
+    }
+
+    private void displayAnswerPage(int index) {
         missionPage.setVisibility(View.GONE);
         questionarePage.setVisibility(View.GONE);
         answerPage.setVisibility(View.VISIBLE);
@@ -164,9 +238,9 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initData() {
-        mList = new ArrayList<>();
+        missions = new ArrayList<>();
 
-        missionOrTaskListAdapter = new MissionOrTaskListAdapter(mList, getContext());
+        missionOrTaskListAdapter = new MissionOrTaskListAdapter(missions, getContext());
         missionOrTaskList.setAdapter(missionOrTaskListAdapter);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -176,8 +250,9 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                 .build();
 
         UserService userService = retrofit.create(UserService.class);
-        Observable<ArrayList<MissionModel>> repoObservable = userService.getMissionsByUserId(getToken(),9);
-
+        Observable<ArrayList<MissionModel>> repoObservable = userService.getMissionsByUserId(getToken(),getUserId());
+        Log.e("userId", Integer.toString(getUserId()));
+        Log.e("token", getToken());
         repoObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ArrayList<MissionModel>>() {
@@ -188,16 +263,15 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
                     @Override
                     public void onError(Throwable e) {
-                        //Toast.makeText(getContext(), "request missions error!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "获取我的任务错误!", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(ArrayList<MissionModel> missionModels) {
-                        Toast.makeText(getContext(), missionModels.get(0).getTitle(), Toast.LENGTH_SHORT).show();
-                        mList.clear();
-                        mList.addAll(missionModels);
-
+                        //Toast.makeText(getContext(), Integer.toString(missionModels.size()), Toast.LENGTH_SHORT).show();
+                        missions.clear();
+                        missions.addAll(missionModels);
                         missionOrTaskListAdapter.update();
                     }
                 });
@@ -212,7 +286,9 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        displayQuestionarePage();
+        if (missions.get(i).isMission() && ((MissionModel)missions.get(i)).getTaskType() == Constants.TASK_QUESTIONARE) {
+            displayQuestionarePage(((MissionModel)missions.get(i)).getMissionId());
+        }
     }
 
     @Override
@@ -223,10 +299,21 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private String getToken() {
-        user_shared_preference = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-        String[] token = user_shared_preference.getString("token", "").split("\n");
-        return String.join("", token);
+        if (token.isEmpty()) {
+            user_shared_preference = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+            token = user_shared_preference.getString("token", "");
+
+        }
+        return token;
+    }
+
+    private int getUserId() {
+        if (userId == -1) {
+            user_shared_preference = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+            userId = user_shared_preference.getInt("userId", -1);
+        }
+
+        return userId;
     }
 }

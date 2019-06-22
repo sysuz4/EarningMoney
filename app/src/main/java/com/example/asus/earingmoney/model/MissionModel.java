@@ -10,9 +10,12 @@ public class MissionModel extends MissionOrTask{
     private int money;
     private int userId;
     private int taskNum;
+    private int taskType;
+    private String description;
 
     public MissionModel(int _missionId, String _publishTime, int _missionStatus, String _title,
-                        String _deadLine, String _tags, int _money, int _userId, int _taskNum) {
+                        String _deadLine, String _tags, int _money, int _userId, int _taskNum,
+                        int _taskType, String _description) {
         super(true);
         missionId = _missionId;
         publishTime = _publishTime;
@@ -23,6 +26,8 @@ public class MissionModel extends MissionOrTask{
         money = _money;
         taskNum = _taskNum;
         userId = _userId;
+        taskType = _taskType;
+        description = _description;
     }
 
     public MissionModel()
@@ -99,5 +104,21 @@ public class MissionModel extends MissionOrTask{
 
     public void setTaskNum(int taskNum) {
         this.taskNum = taskNum;
+    }
+
+    public int getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(int taskType) {
+        this.taskType = taskType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

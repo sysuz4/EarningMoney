@@ -1,6 +1,7 @@
 package com.example.asus.earingmoney.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,10 +45,14 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
         return list.get(i);
     }
 
+    public void update() {
+        notifyDataSetChanged();
+    }
+
     public void setList(ArrayList<QuestionModel> questions) {
         this.list.clear();
         this.list.addAll(questions);
-        notifyDataSetChanged();
+        update();
     }
 
     @Override
@@ -72,8 +77,9 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
 
         TextView questionNum = viewHolder.questionDes.findViewById(R.id.questionNumText);
         TextView questionType = viewHolder.questionDes.findViewById(R.id.questionTypeText);
-        TextView question = viewHolder.questionDes.findViewById(R.id.questinoText);
-        questionNum.setText(Integer.toString(i));
+        TextView question = viewHolder.questionDes.findViewById(R.id.questionText);
+        questionNum.setText(Integer.toString(i + 1) + ".");
+        Log.e("question == null:", list.get(i).getQuestion() == null ? "null" : "not null");
         question.setText(list.get(i).getQuestion());
         if (list.get(i).getQuestionType() == Constants.QUERY_QUESTION) {
             questionType.setText("[问答]");

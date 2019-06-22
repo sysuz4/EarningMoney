@@ -85,10 +85,11 @@ public class MissionOrTaskListAdapter extends BaseAdapter {
             viewHolder.title.setText(((MissionModel)list.get(i)).getTitle());
             viewHolder.publishTime.setText("起:"+((MissionModel)list.get(i)).getPublishTime());
             viewHolder.deadLine.setText("止:"+((MissionModel)list.get(i)).getDeadLine());
+
             viewHolder.missionStatus.setText("状态");
             viewHolder.taskNum.setText("需" + ((MissionModel)list.get(i)).getTaskNum() + "人");
             viewHolder.money.setText("奖励金:" + ((MissionModel)list.get(i)).getMoney());
-            viewHolder.description.setText("这里是任务描述，6666666666666666666666666666666666666");
+            viewHolder.description.setText(((MissionModel)list.get(i)).getDescription());
         }
 
 
