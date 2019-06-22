@@ -22,12 +22,14 @@ public class GetMissionsObj {
 
     public ArrayList<Mission> getAllMissions() {
         ArrayList<Mission> missions = new ArrayList<Mission>();
+        //System.out.println(MissionNum);
         for(JsonElement i : AllMissions){
             Mission mission = new Mission();
             Gson gson = new Gson();
             String json = i.toString();
             mission = gson.fromJson(json,Mission.class);
             missions.add(mission);
+            //System.out.println(i);
         }
         return missions;
     }

@@ -3,6 +3,8 @@ package com.example.asus.earingmoney;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -91,12 +93,13 @@ public class MainFragment extends Fragment {
         listview = rootView.findViewById(R.id.list);
         adapter = new ListViewAdapter_missions(getActivity(), R.layout.mission_item, missionslist);
         listview.setAdapter(adapter);
+        Util.setListViewHeightBasedOnChildren(listview);
 
         Observer<GetMissionsObj> observer = new Observer<GetMissionsObj>() {
             @Override
             public void onNext(GetMissionsObj missions) {
                 for(Mission i : missions.getAllMissions()){
-                    System.out.println(i.getMissionId());
+                    //System.out.println(i.getMissionId());
                     missionslist.add(i);
                 }
                 adapter.notifyDataSetChanged();

@@ -135,7 +135,6 @@ public class MeFragment extends Fragment {
                     }
                     //todo avator image
                     ImageName = user.getAvator();
-                    Log.e("name", ImageName);
                     final String imgUrl = Constants.BASEURL + "images/" + ImageName;
                     new Thread(new Runnable() {
                         @Override
