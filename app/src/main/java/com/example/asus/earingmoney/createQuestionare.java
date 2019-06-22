@@ -351,31 +351,31 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
             public void onResponse(Call<Msg> call, Response<Msg> response) {
                 if(response.code() == 200)
                 {
-                    Toast.makeText(getApplicationContext(), "200",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else if(response.code() == 401){
-                    Log.e("t", response.raw().toString());
-                }
-                else if(response.code() == 404){
-                    Toast.makeText(getApplicationContext(), "404",
+                    Toast.makeText(getApplicationContext(), "创建成功",
                             Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                    Toast.makeText(getApplicationContext(), String.valueOf(response.code()),
+                    Toast.makeText(getApplicationContext(), "创建失败，请检查是否有足够的余额和日期是否正确",
                             Toast.LENGTH_SHORT).show();
-                    Log.e("t", jsonBody);
+                    Log.e("createQuestionareError:", jsonBody);
                 }
+                finishActivity();
             }
 
             @Override
             public void onFailure(Call<Msg> call, Throwable t) {
-                Log.e("s", t.toString());
-                Toast.makeText(getApplicationContext(), "fail",
+                Log.e("createQuestionareError", t.toString());
+                Toast.makeText(getApplicationContext(), "创建失败，请检查是否有足够的余额和日期是否正确",
                         Toast.LENGTH_SHORT).show();
+                finishActivity();
             }
         });
+    }
+
+    private void finishActivity()
+    {
+        createQuestionare.this.finish();
     }
 
 }
