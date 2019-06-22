@@ -17,7 +17,7 @@ public class Mission {
     private String deadLine;
 
     @SerializedName("taskType")
-    private String taskType;
+    private int taskType;
 
     @SerializedName("description")
     private String description;
@@ -34,15 +34,18 @@ public class Mission {
     @SerializedName("missionStatus")
     private int missionStatus;
 
-    public void setMissionId(int missionId) {
-        this.missionId = missionId;
-    }
-
     @SerializedName("taskNum")
     private int taskNum;
 
     @SerializedName("tags")
     private String tags;
+
+    @SerializedName("myAccept")
+    private boolean myAccept;
+
+    public void setMissionId(int missionId) {
+        this.missionId = missionId;
+    }
 
     public int getTaskNum() {
         return taskNum;
@@ -64,7 +67,7 @@ public class Mission {
         this.deadLine = deadLine;
     }
 
-    public void setTaskType(String taskType) {
+    public void setTaskType(int taskType) {
         this.taskType = taskType;
     }
 
@@ -132,7 +135,7 @@ public class Mission {
         return description;
     }
 
-    public String getTaskType() {
+    public int getTaskType() {
         return taskType;
     }
 
@@ -140,4 +143,7 @@ public class Mission {
         return avator;
     }
 
+    public boolean isMyAccept() {
+        return myAccept;
+    }
 }
