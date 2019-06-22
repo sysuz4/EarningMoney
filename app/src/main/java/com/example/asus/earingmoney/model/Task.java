@@ -2,7 +2,7 @@ package com.example.asus.earingmoney.model;
 
 public class Task {
     private int taskId;
-    private int MissionId;
+    private int missionId;
     private int pubUserId;
     private int accUserId;
     private int taskStatus;
