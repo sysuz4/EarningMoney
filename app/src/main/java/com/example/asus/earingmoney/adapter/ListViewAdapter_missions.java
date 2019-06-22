@@ -44,51 +44,58 @@ public class ListViewAdapter_missions extends ArrayAdapter<Mission> {
         } else {
             view = convertView;
         }
-        final CircleImageView image = view.findViewById(R.id.image);
+        final ImageView image = view.findViewById(R.id.image);
 
-        final Handler handler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.what == 0)
-                    image.setImageResource(R.mipmap.me);
-                if (msg.what == 1)
-                    image.setImageBitmap((Bitmap) msg.obj);
-            }
-        };
+        if(contact.getTaskType() == 0){
+            image.setImageResource(R.mipmap.errand);
+        }
+        else {
+            image.setImageResource(R.mipmap.questionare);
+        }
 
-        new Thread(new Runnable() {
-            Bitmap bitmap = null;
-            @Override
-            public void run() {
-                URL url = null;
-                //System.out.println(contact.getAvator());
-                if(contact.getAvator() == null || contact.getAvator().equals("")){
-                    Message msg = new Message();
-                    msg.what = 0;
-                    handler.sendMessage(msg);
-                }
-                else {
-                    try {
-                        url = new URL(contact.getAvator());
-                        InputStream is = null;
-                        BufferedInputStream bis = null;
-                        try {
-                            is = url.openConnection().getInputStream();
-                            bis = new BufferedInputStream(is);
-                            bitmap = BitmapFactory.decodeStream(bis);
-                            Message msg = new Message();
-                            msg.what = 1;
-                            msg.obj = bitmap;
-                            handler.sendMessage(msg);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
+//        final Handler handler = new Handler(){
+//            @Override
+//            public void handleMessage(Message msg) {
+//                if (msg.what == 0)
+//                    image.setImageResource(R.mipmap.me);
+//                if (msg.what == 1)
+//                    image.setImageBitmap((Bitmap) msg.obj);
+//            }
+//        };
+//
+//        new Thread(new Runnable() {
+//            Bitmap bitmap = null;
+//            @Override
+//            public void run() {
+//                URL url = null;
+//                //System.out.println(contact.getAvator());
+//                if(contact.getAvator() == null || contact.getAvator().equals("")){
+//                    Message msg = new Message();
+//                    msg.what = 0;
+//                    handler.sendMessage(msg);
+//                }
+//                else {
+//                    try {
+//                        url = new URL(contact.getAvator());
+//                        InputStream is = null;
+//                        BufferedInputStream bis = null;
+//                        try {
+//                            is = url.openConnection().getInputStream();
+//                            bis = new BufferedInputStream(is);
+//                            bitmap = BitmapFactory.decodeStream(bis);
+//                            Message msg = new Message();
+//                            msg.what = 1;
+//                            msg.obj = bitmap;
+//                            handler.sendMessage(msg);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    } catch (MalformedURLException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
 
         TextView title = view.findViewById(R.id.title);
         title.setText(contact.getTitle());

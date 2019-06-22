@@ -80,6 +80,10 @@ public interface service{
     @GET("/users/{userID}")
     Observable<User> getUserDetail(@Header("authorization") String token, @Path("userID") int userID);
 
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/missions/{missionID}/accept")
+    Observable<ResponseBody> acceptMission(@Header("authorization") String token, @Path("missionID") int userID);
+
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}")
     Call<Mission>getErrandMission(@Header("authorization") String token, @Path("missionID") int missionID);
