@@ -17,7 +17,7 @@ import com.example.asus.earingmoney.R;
 import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.adapter.MyAdapter;
-import com.example.asus.earingmoney.model.QuestionModel;
+import com.example.asus.earingmoney.model.Question;
 import com.flyco.dialog.utils.CornerUtils;
 import com.flyco.dialog.widget.base.BaseDialog;
 
@@ -34,7 +34,7 @@ public class MultiChooseDialog extends BaseDialog<MultiChooseDialog> {
     private EditText tempChooseText;
     private Toast mToast;
     private EditText numberPicker;
-    private List<QuestionModel> questionModelList;
+    private List<Question> questionModelList;
 
     private static int chooseNum = 0;
     private int modifyPosition;
@@ -43,7 +43,7 @@ public class MultiChooseDialog extends BaseDialog<MultiChooseDialog> {
     //用于将添加的radiobutton的id保存，用于removeView
     private List<Integer> idList;
 
-    public MultiChooseDialog(Context context, List<QuestionModel> questionModelList) {
+    public MultiChooseDialog(Context context, List<Question> questionModelList) {
         super(context);
         this.questionModelList = questionModelList;
         this.modifyPosition= -1;
@@ -77,7 +77,7 @@ public class MultiChooseDialog extends BaseDialog<MultiChooseDialog> {
 
         if(modifyPosition != -1)
         {
-            QuestionModel questionModel = questionModelList.get(modifyPosition);
+            Question questionModel = questionModelList.get(modifyPosition);
             questionText.setText(questionModel.getQuestion());
             numberPicker.setText(String.valueOf(questionModel.getChoiceNum()));
 
@@ -124,7 +124,7 @@ public class MultiChooseDialog extends BaseDialog<MultiChooseDialog> {
 
                     if(modifyPosition != -1)
                     {
-                        QuestionModel questionModel = questionModelList.get(modifyPosition);
+                        Question questionModel = questionModelList.get(modifyPosition);
                         questionModel.setQuestion(question);
                         questionModel.setChoiceStr(choiceStr);
                         questionModel.setChoiceNum(choiceNum);
@@ -132,7 +132,7 @@ public class MultiChooseDialog extends BaseDialog<MultiChooseDialog> {
                     }
                     else
                     {
-                        QuestionModel questionModel = new QuestionModel(Constants.MULTI_CHOOSE_QUESTION, question, choiceStr, choiceNum);
+                        Question questionModel = new Question(Constants.MULTI_CHOOSE_QUESTION, question, choiceStr, choiceNum);
                         questionModelList.add(questionModel);
                     }
 

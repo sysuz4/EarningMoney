@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class GetTokenObj {
 
-    @SerializedName("useId")
+    @SerializedName("userId")
     private int userId;
 
     @SerializedName("token")
@@ -16,5 +16,13 @@ public class GetTokenObj {
 
     public String getToken() {
         return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

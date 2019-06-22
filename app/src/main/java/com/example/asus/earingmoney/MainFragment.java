@@ -1,36 +1,39 @@
 package com.example.asus.earingmoney;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.adapter.ListViewAdapter_missions;
+import com.example.asus.earingmoney.model.GetMissionsObj;
 import com.example.asus.earingmoney.model.Mission;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class MainFragment extends Fragment {
     private static final String ARG_SHOW_TEXT = "text";
 
-    private String token;
     private Spinner spinner1, spinner2, spinner3, spinner4;
     private service myservice;
     private ServiceFactory serviceFactory;
-    private SharedPreferences user_shared_preference;
     private List<Mission> missionslist = new ArrayList<Mission>();
     public ListViewAdapter_missions adapter;
     private ListView listview;
@@ -84,56 +87,49 @@ public class MainFragment extends Fragment {
 //        TextView contentTv = rootView.findViewById(R.id.content_tv);
 //        contentTv.setText(mContentText);
 
-//        serviceFactory = new ServiceFactory();
-//        myservice = serviceFactory.CreatService();
-//
-//        listview = rootView.findViewById(R.id.list);
-//        adapter = new ListViewAdapter_missions(getActivity(), R.layout.mission_item, missionslist);
-//        listview.setAdapter(adapter);
-//
-//        user_shared_preference = getActivity().getSharedPreferences("user", 0);
-//        token = user_shared_preference.getString("token",null);
-//
-//        Observer<List<Mission>> observer = new Observer<List<Mission>>() {
-//            @Override
-//            public void onNext(List<Mission> missions) {
-//                for(Mission i : missions){
-//                    if(i.getTitle().toUpperCase().equals(songname.toUpperCase())){
-//                        number = i.getNumber();
-//                        getGithubComments(number);
-//                        if(i.getComments().equals("0"))
-//                            Toast.makeText(ChatActivity.this,"目前还没有任何评论", Toast.LENGTH_SHORT).show();
-//                        haveissue = true;
-//                    }
-//                }
-//                if(!haveissue){
-//                    postGithubIssue(songname);
-//                }
-//            }
-//
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//        };
-//        myservice.getMissions(token)
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(observer);
+        serviceFactory = new ServiceFactory();
+        myservice = serviceFactory.CreatService();
 
-        Button button = rootView.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        listview = rootView.findViewById(R.id.list);
+        adapter = new ListViewAdapter_missions(getActivity(), R.layout.mission_item, missionslist);
+        listview.setAdapter(adapter);
+        Util.setListViewHeightBasedOnChildren(listview);
+
+        Observer<GetMissionsObj> observer = new Observer<GetMissionsObj>() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),MissionDetailActivity.class);
-                startActivity(intent);
+            public void onNext(GetMissionsObj missions) {
+                for(Mission i : missions.getAllMissions()){
+                    //System.out.println(i.getMissionId());
+                    missionslist.add(i);
+                }
+                adapter.notifyDataSetChanged();
             }
-        });
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(getContext().getApplicationContext(), "加载任务失败", Toast.LENGTH_SHORT).show();
+            }
+        };
+        myservice.getMissions(Util.getToken(getActivity()))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+
+        listview.setOnItemClickListener(new MyOnItemClickListener());
+
+//        Button button = rootView.findViewById(R.id.button);
+////        button.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View v) {
+////                Intent intent = new Intent(getActivity(),MissionDetailActivity.class);
+////                startActivity(intent);
+////            }
+////        });
         return rootView;
     }
 
@@ -144,4 +140,14 @@ public class MainFragment extends Fragment {
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+    private class MyOnItemClickListener implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent,View view,int position, long id) {
+            if(position >= 0) {
+                Intent intent = new Intent(getActivity(), MissionDetailActivity.class);
+                intent.putExtra("missionId", missionslist.get(position).getMissionId());
+                startActivity(intent);
+            }
+        }
+    }
 }
