@@ -7,26 +7,37 @@ public class Mission {
     @SerializedName("missionId")
     private int missionId;
 
-    @SerializedName("missionStatus")
-    private int missionStatus;
+    @SerializedName("title")
+    private String title;
 
     @SerializedName("publishTime")
     private String publishTime;
 
-    @SerializedName("title")
-    private String title;
-
     @SerializedName("deadLine")
     private String deadLine;
 
-    @SerializedName("tags")
-    private String tags;
+    @SerializedName("taskType")
+    private String taskType;
+
+    @SerializedName("description")
+    private String description;
+
+    @SerializedName("avator")
+    private String avator;
 
     @SerializedName("money")
-    private Float money;
+    private float money;
+
 
     @SerializedName("userId")
     private int userId;
+  
+    @SerializedName("missionStatus")
+    private int missionStatus;
+  
+    public void setMissionId(int missionId) {
+        this.missionId = missionId;
+    }
 
     @SerializedName("taskNum")
     private int taskNum;
@@ -38,6 +49,33 @@ public class Mission {
 
     public void setTaskNum(int taskNum) {
         this.taskNum = taskNum;
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPublishTime(String publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public void setDeadLine(String deadLine) {
+        this.deadLine = deadLine;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setAvator(String avator) {
+        this.avator = avator;
+    }
+
+    public void setMoney(float money) {
+        this.money = money;
     }
 
     public int getUserId() {
@@ -62,6 +100,17 @@ public class Mission {
 
     public void setTags(String tags) {
         this.tags = tags;
+
+    public void setMissionStatus(int missionStatus) {
+        this.missionStatus = missionStatus;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getMissionId() {
+        return missionId;
     }
 
     public String getDeadLine() {
@@ -100,7 +149,19 @@ public class Mission {
         return missionId;
     }
 
-    public void setMissionId(int missionId) {
-        this.missionId = missionId;
+    public String getDescription() {
+        return description;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public float getMoney() {
+        return money;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 }

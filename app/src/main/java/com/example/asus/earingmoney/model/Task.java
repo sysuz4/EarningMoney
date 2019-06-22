@@ -2,8 +2,9 @@ package com.example.asus.earingmoney.model;
 
 public class Task {
     private int taskId;
-    private int missionId;
+    private int MissionId;
     private int pubUserId;
+    private int accUserId;
     private int taskStatus;
     private String finishTime;
     private int taskType;
@@ -31,6 +32,14 @@ public class Task {
     public void setPubUserId(int pubUserId) {
         this.pubUserId = pubUserId;
     }
+  
+    public int getAccUserId() {
+        return accUserId;
+    }
+
+    public void setAccUSerId(int accUSerId) {
+        this.accUserId = accUSerId;
+    }
 
     public int getTaskStatus() {
         return taskStatus;
@@ -55,4 +64,5 @@ public class Task {
     public void setTaskType(int taskType) {
         this.taskType = taskType;
     }
+
 }

@@ -1,4 +1,6 @@
 package com.example.asus.earingmoney;
+import com.example.asus.earingmoney.model.GetMissionsObj;
+import com.example.asus.earingmoney.model.Errand;
 import com.example.asus.earingmoney.model.GetTokenObj;
 import com.example.asus.earingmoney.model.Image;
 import com.example.asus.earingmoney.model.Msg;
@@ -12,8 +14,13 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import com.example.asus.earingmoney.model.Task;
+import com.example.asus.earingmoney.model.User;
+import com.google.gson.JsonArray;
+
+import java.util.List;
+
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
 import retrofit2.http.Header;
@@ -38,11 +45,6 @@ public interface service{
     @GET("/tasks/{taskID}/questionares")
     Call<Questionare> get_questionare(@Path("taskID") int taskID);
 
-    @Headers("{token}")
-    @GET("/missions")
-    Observable<List<Mission>> getMissions(@Path("token") String token);
-
-
     @Headers({"Content-Type: application/json;charset=utf8","Accept: application/json"})
     @POST("/missions/questionares")
     Call<Msg> create_questionare(@Header("authorization") String token, @Body RequestBody questionare);
@@ -65,4 +67,32 @@ public interface service{
     @Streaming
     @GET
     Call<ResponseBody> downloadLatestFeature(@Url String fileUrl);
+  
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/missions/AllMissions")
+    Observable<GetMissionsObj> getMissions(@Header("authorization") String token);
+
+    @GET("/missions/{missionID}")
+    Observable<Mission> getMissionDetail(@Path("missionID") int missionID);
+
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/users/{userID}")
+    Observable<User> getUserDetail(@Header("authorization") String token, @Path("userID") int userID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/missions/{missionID}")
+    Call<Mission>getErrandMission(@Header("authorization") String token, @Path("missionID") int missionID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/missions/{missionID}/tasks")
+    Call<List<Task>>getTaskByMissionID(@Header("authorization") String token, @Path("missionID") int missionID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/tasks/{taskID}/errands")
+    Call<Errand>getErrandByTaskId(@Header("authorization") String token, @Path("taskID") int taskID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/users/{userID}")
+    Call<User>getUserById(@Header("authorization") String token, @Path("userID") int userID);
+
 }
