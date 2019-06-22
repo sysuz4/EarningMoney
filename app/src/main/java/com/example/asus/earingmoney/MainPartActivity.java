@@ -66,6 +66,9 @@ public class MainPartActivity extends AppCompatActivity {
         if(LoginRegisterActivity.instance != null){
             LoginRegisterActivity.instance.finish();
         }
+        if(MissionDetailActivity.instance != null){
+            MissionDetailActivity.instance.finish();
+        }
 
         fragment_vp = findViewById(R.id.fragment_vp);
         tabs_rg = findViewById(R.id.tabs_rg);

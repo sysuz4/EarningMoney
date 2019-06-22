@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.asus.earingmoney.Util.MissionsSortUtil;
 import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.adapter.ListViewAdapter_missions;
 import com.example.asus.earingmoney.model.GetMissionsObj;
@@ -35,8 +36,12 @@ public class MainFragment extends Fragment {
     private service myservice;
     private ServiceFactory serviceFactory;
     private List<Mission> missionslist = new ArrayList<Mission>();
+    private List<Mission> totallist = new ArrayList<Mission>();
+    private List<Mission> questionare_missionslist = new ArrayList<Mission>();
+    private List<Mission> errand_missionslist = new ArrayList<Mission>();
     public ListViewAdapter_missions adapter;
     private ListView listview;
+    private String[] mItems1,mItems2,mItems3,mItems4;
 
 
     public MainFragment() {
@@ -67,10 +72,10 @@ public class MainFragment extends Fragment {
         spinner2 = rootView.findViewById(R.id.spinner2);
         spinner3 = rootView.findViewById(R.id.spinner3);
         spinner4 = rootView.findViewById(R.id.spinner4);
-        String[] mItems1 = getResources().getStringArray(R.array.spin1);
-        String[] mItems2 = getResources().getStringArray(R.array.spin2);
-        String[] mItems3 = getResources().getStringArray(R.array.spin3);
-        String[] mItems4 = getResources().getStringArray(R.array.spin4);
+        mItems1 = getResources().getStringArray(R.array.spin1);
+        mItems2 = getResources().getStringArray(R.array.spin2);
+        mItems3 = getResources().getStringArray(R.array.spin3);
+        mItems4 = getResources().getStringArray(R.array.spin4);
         ArrayAdapter<String> adapter1=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems1);
         ArrayAdapter<String> adapter2=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems2);
         ArrayAdapter<String> adapter3=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems3);
@@ -84,6 +89,8 @@ public class MainFragment extends Fragment {
         spinner2.setAdapter(adapter2);
         spinner3.setAdapter(adapter3);
         spinner4.setAdapter(adapter4);
+
+        iniSpiner();
 //        TextView contentTv = rootView.findViewById(R.id.content_tv);
 //        contentTv.setText(mContentText);
 
@@ -93,14 +100,31 @@ public class MainFragment extends Fragment {
         listview = rootView.findViewById(R.id.list);
         adapter = new ListViewAdapter_missions(getActivity(), R.layout.mission_item, missionslist);
         listview.setAdapter(adapter);
-        Util.setListViewHeightBasedOnChildren(listview);
+//        Util.setListViewHeightBasedOnChildren(listview);
 
         Observer<GetMissionsObj> observer = new Observer<GetMissionsObj>() {
             @Override
             public void onNext(GetMissionsObj missions) {
                 for(Mission i : missions.getAllMissions()){
+                    boolean have_this_mission = false;
                     //System.out.println(i.getMissionId());
-                    missionslist.add(i);
+                    if(!i.isMyAccept()){//判断该任务是否已经接受，或是否为自己创建的，如是则不显示
+                        for(Mission j :missionslist){
+                            if(j.getMissionId() == i.getMissionId())
+                                have_this_mission = true;
+                        }
+                        if(!have_this_mission){
+                            totallist.add(i);
+                            missionslist.add(i);
+                            if(i.getTaskType() == 0){
+                                questionare_missionslist.add(i);
+                            }
+                            else {
+                                errand_missionslist.add(i);
+                            }
+                        }
+
+                    }
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -146,8 +170,80 @@ public class MainFragment extends Fragment {
             if(position >= 0) {
                 Intent intent = new Intent(getActivity(), MissionDetailActivity.class);
                 intent.putExtra("missionId", missionslist.get(position).getMissionId());
+                intent.putExtra("taskType", missionslist.get(position).getTaskType());
                 startActivity(intent);
             }
         }
+    }
+
+    private void iniSpiner(){
+
+        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    missionslist.clear();
+                    missionslist.addAll(totallist);
+                }
+                else if(position == 1){
+                    missionslist.clear();
+                    missionslist.addAll(questionare_missionslist);
+                }
+                else{
+                    missionslist.clear();
+                    missionslist.addAll(errand_missionslist);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    MissionsSortUtil.sortById(missionslist);
+                }
+                else if(position == 1){
+                    MissionsSortUtil.sortByPriceUp(missionslist);
+                }
+                else {
+                    MissionsSortUtil.sortByPriceDown(missionslist);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    MissionsSortUtil.sortById(missionslist);
+                }
+                else if(position == 1){
+                    MissionsSortUtil.sortByTimeUp(missionslist);
+                }
+                else {
+                    MissionsSortUtil.sortByTimeDown(missionslist);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 }
