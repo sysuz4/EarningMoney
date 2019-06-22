@@ -5,6 +5,7 @@ import com.example.asus.earingmoney.model.Questionare;
 import org.json.JSONObject;
 import com.example.asus.earingmoney.model.Mission;
 import com.example.asus.earingmoney.model.Task;
+import com.example.asus.earingmoney.model.User;
 import com.google.gson.JsonArray;
 
 import java.util.List;
@@ -43,5 +44,10 @@ public interface service{
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/tasks/{taskID}/errands")
     Call<Errand>getErrandByTaskId(@Header("authorization") String token, @Path("taskID") int taskID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/users/{userID}")
+    Call<User>getUserById(@Header("authorization") String token, @Path("userID") int userID);
+
 
 }

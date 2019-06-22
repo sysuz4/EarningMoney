@@ -20,11 +20,6 @@
             android:name=".errand_status_page"
             android:label="@string/title_activity_errand_status_page"
             android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity
-            android:name=".errand_detail_page"
-            android:label="@string/title_activity_errand_detail_page"
-            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,8 +27,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".errand_detail_page"
+            android:label="@string/title_activity_errand_detail_page"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
             android:name=".fill_in_questionare_page"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme">
+        </activity>
         <activity
             android:name=".LoginRegisterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
