@@ -79,6 +79,8 @@ public class MeFragment extends Fragment {
     String ImageName;
     private service myservice;
 
+    Menu mymenu;
+
     public MeFragment() {
         // Required empty public constructor
     }
@@ -150,25 +152,17 @@ public class MeFragment extends Fragment {
                     }).start();
 
                 }
-                else if(response.code() == 401){
-                    //Toast.makeText(getContext(), "401",
-                            //Toast.LENGTH_SHORT).show();
-                }
-                else if(response.code() == 404){
-                    //Toast.makeText(getContext(), "404",
-                            //Toast.LENGTH_SHORT).show();
-                }
                 else
                 {
-                    //Toast.makeText(getContext(), String.valueOf(response.code()),
-                            //Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "something wrong",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Log.e("s", t.toString());
-                Toast.makeText(getContext(), "fail",
+                Toast.makeText(getContext(), "网络错误，请刷新",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -254,8 +248,24 @@ public class MeFragment extends Fragment {
         myservice = retrofit.create(service.class);
 
         initData();
+        modifyStatus = false;
+        MainPartActivity activity = (MainPartActivity)getContext();
+        activity.headerUri = null;
 
-        //finishModify();
+        usernameText.setEnabled(false);
+        realNameText.setEnabled(false);
+        ageText.setEnabled(false);
+        gradeText.setEnabled(false);
+        majorText.setEnabled(false);
+        mailText.setEnabled(false);
+        phoneText.setEnabled(false);
+
+        header.setEnabled(false);
+        sexImage.setEnabled(false);
+
+        pass.setVisibility(View.GONE);
+        oldPasswordText.setVisibility(View.GONE);
+        newPasswordText.setVisibility(View.GONE);
         return rootView;
     }
 
@@ -263,8 +273,10 @@ public class MeFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.me_menu, menu);
+        mymenu = menu;
         super.onCreateOptionsMenu(menu,inflater);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -275,12 +287,40 @@ public class MeFragment extends Fragment {
                     modifyInfo();
                     item.setIcon(R.mipmap.tick);
                     modifyStatus=true;
+                    MenuItem item2 = mymenu.findItem(R.id.cancelBtn);
+
+                    item2.setVisible(true);
+                    item2.setEnabled(true);
                 }
                 else
                 {
-                    finishModify();
-                    item.setIcon(R.mipmap.modify);
-                    modifyStatus=false;
+                    if(finishModify())
+                    {
+                        item.setIcon(R.mipmap.modify);
+                        modifyStatus=false;
+                        MenuItem item2 = mymenu.findItem(R.id.cancelBtn);
+                        item2.setVisible(false);
+                        item2.setEnabled(false);
+                    }
+
+                }
+                break;
+            case R.id.cancelBtn:
+                if(modifyStatus)
+                {
+                    modifyStatus = false;
+
+                    MainPartActivity activity = (MainPartActivity)getContext();
+                    activity.headerUri = null;
+
+                    initData();
+
+                    MenuItem item2 = mymenu.findItem(R.id.modifyBtn);
+                    item2.setIcon(R.mipmap.modify);
+                    item.setVisible(false);
+                    item.setEnabled(false);
+
+                    cancelModifyInfo();
                 }
                 break;
             default:
@@ -309,8 +349,35 @@ public class MeFragment extends Fragment {
         newPasswordText.setVisibility(View.VISIBLE);
     }
 
-    public void finishModify()
+    public void cancelModifyInfo()
     {
+        Toast.makeText(getActivity(), "取消修改成功", Toast.LENGTH_SHORT).show();
+
+        usernameText.setEnabled(false);
+        realNameText.setEnabled(false);
+        ageText.setEnabled(false);
+        gradeText.setEnabled(false);
+        majorText.setEnabled(false);
+        mailText.setEnabled(false);
+        phoneText.setEnabled(false);
+
+        header.setEnabled(false);
+        sexImage.setEnabled(false);
+
+        pass.setVisibility(View.GONE);
+        oldPasswordText.setVisibility(View.GONE);
+        newPasswordText.setVisibility(View.GONE);
+    }
+
+    public boolean finishModify()
+    {
+        if(oldPasswordText.getText().toString().isEmpty() || newPasswordText.getText().toString().isEmpty())
+        {
+            Toast.makeText(getContext(), "请输入密码后确认修改",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+
         usernameText.setEnabled(false);
         realNameText.setEnabled(false);
         ageText.setEnabled(false);
@@ -327,58 +394,65 @@ public class MeFragment extends Fragment {
         newPasswordText.setVisibility(View.GONE);
 
         MainPartActivity activity = (MainPartActivity)getContext();
-        String filePath = activity.headerUri.getPath();
+        if(activity.headerUri != null)
+        {
+            String filePath = activity.headerUri.getPath();
 
 
-        File file = new File(filePath);
-        // 创建 RequestBody，用于封装构建RequestBody
-        // RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), file);
+            File file = new File(filePath);
+            // 创建 RequestBody，用于封装构建RequestBody
+            // RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), file);
 
-        // MultipartBody.Part  和后端约定好Key，这里的partName是用file
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            // MultipartBody.Part  和后端约定好Key，这里的partName是用file
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
-        // 添加描述
-        String descriptionString = "hello, 这是文件描述";
-        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+            // 添加描述
+            String descriptionString = "hello, 这是文件描述";
+            RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
 
-        OkHttpClient build = new OkHttpClient.Builder()
-                .connectTimeout(2, TimeUnit.SECONDS)
-                .readTimeout(2, TimeUnit.SECONDS)
-                .writeTimeout(2, TimeUnit.SECONDS)
-                .build();
+            OkHttpClient build = new OkHttpClient.Builder()
+                    .connectTimeout(2, TimeUnit.SECONDS)
+                    .readTimeout(2, TimeUnit.SECONDS)
+                    .writeTimeout(2, TimeUnit.SECONDS)
+                    .build();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASEURL)
-                // 本次实验不需要自定义Gson
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                // build 即为okhttp声明的变量，下文会讲
-                .client(build)
-                .build();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Constants.BASEURL)
+                    // 本次实验不需要自定义Gson
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    // build 即为okhttp声明的变量，下文会讲
+                    .client(build)
+                    .build();
 
-        service myservice = retrofit.create(service.class);
-        // 执行请求
-        myservice.upload_pic(Util.getToken(getContext()), description, body).enqueue(new Callback<Image>() {
-            @Override
-            public void onResponse(Call<Image> call, Response<Image> response) {
-                if(response.code() == 201)
-                {
-                    Image image = response.body();
-                    Log.e("name", image.getImageName());
-                    update_to_server(image.getImageName());
+            service myservice = retrofit.create(service.class);
+            // 执行请求
+            myservice.upload_pic(Util.getToken(getContext()), description, body).enqueue(new Callback<Image>() {
+                @Override
+                public void onResponse(Call<Image> call, Response<Image> response) {
+                    if(response.code() == 201)
+                    {
+                        Image image = response.body();
+                        Log.e("name", image.getImageName());
+                        update_to_server(image.getImageName());
+                    }
+                    else
+                    {
+                        Log.e("error", response.raw().toString());
+                    }
                 }
-                else
-                {
-                    Log.e("error", response.raw().toString());
+                @Override
+                public void onFailure(Call<Image> call, Throwable t) {
+                    Log.e("error", t.toString());
                 }
-            }
-            @Override
-            public void onFailure(Call<Image> call, Throwable t) {
-                Log.e("error", t.toString());
-            }
-        });
-
+            });
+        }
+        else
+        {
+            update_to_server(ImageName);
+        }
+        return true;
     }
 
     private void update_to_server(String imageName) {
@@ -398,33 +472,25 @@ public class MeFragment extends Fragment {
         putCall.enqueue(new Callback<Msg>() {
             @Override
             public void onResponse(Call<Msg> call, Response<Msg> response) {
-                /*
+
                 if(response.code() == 200)
                 {
-                    Toast.makeText(getContext(), "200",
-                            Toast.LENGTH_SHORT).show();
-
-
-                }
-                else if(response.code() == 401){
-                    Toast.makeText(getContext(), "401",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else if(response.code() == 404){
-                    Toast.makeText(getContext(), "404",
+                    Toast.makeText(getContext(), "修改成功",
                             Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                    Log.e("msg", response.raw().toString());
+                    Toast.makeText(getContext(), "修改失败",
+                            Toast.LENGTH_SHORT).show();
+                    Log.e("modifyPersonalInfo:", response.raw().toString());
                 }
-                */
+
             }
 
             @Override
             public void onFailure(Call<Msg> call, Throwable t) {
-                Log.e("s", t.toString());
-                Toast.makeText(getContext(), "fail",
+                Log.e("modifyPersonalInfo:", t.toString());
+                Toast.makeText(getContext(), "修改失败",
                         Toast.LENGTH_SHORT).show();
             }
         });
