@@ -108,7 +108,7 @@ public class MissionDetailActivity extends AppCompatActivity {
 
             @Override
             public void onNext(User user) {
-                System.out.println(user.getId());
+                System.out.println(user.getUserId());
                 name.setText(user.getName());
             }
         };

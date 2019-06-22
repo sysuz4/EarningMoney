@@ -20,7 +20,7 @@ import com.example.asus.earingmoney.R;
 import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.adapter.MyAdapter;
-import com.example.asus.earingmoney.model.QuestionModel;
+import com.example.asus.earingmoney.model.Question;
 import com.flyco.dialog.utils.CornerUtils;
 import com.flyco.dialog.widget.base.BaseDialog;
 
@@ -37,7 +37,7 @@ public class SingleChooseDialog extends BaseDialog<SingleChooseDialog> {
     private EditText tempChooseText;
     private Toast mToast;
 
-    private List<QuestionModel> questionModelList;
+    private List<Question> questionModelList;
 
     private static int chooseNum = 0;
 
@@ -47,7 +47,7 @@ public class SingleChooseDialog extends BaseDialog<SingleChooseDialog> {
     //用于将添加的radiobutton的id保存，用于removeView
     private List<Integer> idList;
 
-    public SingleChooseDialog(Context context, List<QuestionModel> questionModelList) {
+    public SingleChooseDialog(Context context, List<Question> questionModelList) {
         super(context);
         this.questionModelList = questionModelList;
         this.modifyPosition= -1;
@@ -79,7 +79,7 @@ public class SingleChooseDialog extends BaseDialog<SingleChooseDialog> {
 
         if(modifyPosition != -1)
         {
-            QuestionModel questionModel = questionModelList.get(modifyPosition);
+            Question questionModel = questionModelList.get(modifyPosition);
             questionText.setText(questionModel.getQuestion());
 
             List<String> choices = Util.decodeChoiceStr(questionModel.getChoiceStr());
@@ -122,14 +122,14 @@ public class SingleChooseDialog extends BaseDialog<SingleChooseDialog> {
 
                     if(modifyPosition != -1)
                     {
-                        QuestionModel questionModel = questionModelList.get(modifyPosition);
+                        Question questionModel = questionModelList.get(modifyPosition);
                         questionModel.setQuestion(question);
                         questionModel.setChoiceStr(choiceStr);
                         myAdapter.notifyDataSetChanged();
                     }
                    else
                     {
-                        QuestionModel questionModel = new QuestionModel(Constants.SINGLE_CHOOSE_QUESTION, question, choiceStr, 1);
+                        Question questionModel = new Question(Constants.SINGLE_CHOOSE_QUESTION, question, choiceStr, 1);
                         questionModelList.add(questionModel);
                     }
 

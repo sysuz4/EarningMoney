@@ -23,20 +23,20 @@ public class Errand {
         this.description = description;
     }
 
-    public int getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
-    }
-
     public String getPrivateInfo() {
         return privateInfo;
     }
 
     public void setPrivateInfo(String privateInfo) {
         this.privateInfo = privateInfo;
+    }
+
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
     }
 
     public String getPic() {

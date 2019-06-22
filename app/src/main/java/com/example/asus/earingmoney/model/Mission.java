@@ -38,6 +38,20 @@ public class Mission {
         this.missionId = missionId;
     }
 
+    @SerializedName("taskNum")
+    private int taskNum;
+
+    @SerializedName("tags")
+    private String tags;
+
+    public int getTaskNum() {
+        return taskNum;
+    }
+
+    public void setTaskNum(int taskNum) {
+        this.taskNum = taskNum;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -66,16 +80,32 @@ public class Mission {
         this.money = money;
     }
 
-    public int getMissionStatus() {
-        return missionStatus;
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public Float getMoney() {
+        return money;
+    }
+
+    public void setMoney(Float money) {
+        this.money = money;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     public void setMissionStatus(int missionStatus) {
         this.missionStatus = missionStatus;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public int getMissionId() {
@@ -86,12 +116,16 @@ public class Mission {
         return deadLine;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public String getPublishTime() {
         return publishTime;
     }
 
-    public String getAvator() {
-        return avator;
+    public int getMissionStatus() {
+        return missionStatus;
     }
 
     public String getDescription() {
@@ -102,11 +136,8 @@ public class Mission {
         return taskType;
     }
 
-    public float getMoney() {
-        return money;
+    public String getAvator() {
+        return avator;
     }
 
-    public int getUserId() {
-        return userId;
-    }
 }

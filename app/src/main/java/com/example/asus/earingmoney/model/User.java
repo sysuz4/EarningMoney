@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class User{
     @SerializedName("userId")
-    private int id;
+    private int userId;
     @SerializedName("userType")
     private int userType;//判断是普通用户还是管理员
     @SerializedName("name")
@@ -30,15 +30,17 @@ public class User{
     @SerializedName("stuId")
     private String stuId;//学号
     @SerializedName("balance")
-    private int balance;//余额
+    private float balance;//余额
     @SerializedName("tags")
     private String tags;//标签，用于分类
     @SerializedName("password")
     private String password;
+    @SerializedName("creditVal")
+    private String creditVal;
 
-    public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _stuId, int _balance, String _tags, String _password) {
+    public User(int _id, int _userType, String _name, String _avator, String _nickName, int _age, int _sex, int _grade, String _major, String _mailAddr, String _phoneNum, String _stuId,  float _balance, String _tags, String _password, String creditVal) {
 
-        id = _id;
+        userId = _id;
         userType = _userType;
         name = _name;
         avator = _avator;
@@ -53,10 +55,11 @@ public class User{
         balance = _balance;
         tags = _tags;
         password = _password;
+        this.creditVal = creditVal;
     }
 
-    public int getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
     public int getUserType() {
@@ -91,7 +94,7 @@ public class User{
         return tags;
     }
 
-    public int getBalance() {
+    public  float getBalance() {
         return balance;
     }
 
@@ -123,7 +126,7 @@ public class User{
         this.avator = avator;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance( float balance) {
         this.balance = balance;
     }
 
@@ -135,8 +138,8 @@ public class User{
         this.grade = grade;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(int id) {
+        this.userId = id;
     }
 
     public void setMailAddr(String mailAddr) {
@@ -175,4 +178,11 @@ public class User{
         this.userType = userType;
     }
 
+    public String getCreditVal() {
+        return creditVal;
+    }
+
+    public void setCreditVal(String creditVal) {
+        this.creditVal = creditVal;
+    }
 }

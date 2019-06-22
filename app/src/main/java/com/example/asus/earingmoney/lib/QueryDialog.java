@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.example.asus.earingmoney.R;
 import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.adapter.MyAdapter;
-import com.example.asus.earingmoney.model.QuestionModel;
+import com.example.asus.earingmoney.model.Question;
 import com.flyco.animation.Attention.Swing;
 import com.flyco.dialog.utils.CornerUtils;
 import com.flyco.dialog.widget.base.BaseDialog;
@@ -22,12 +22,12 @@ public class QueryDialog extends BaseDialog<QueryDialog> {
     private TextView tv_yes;
     private TextView tv_exit;
     private Toast mToast;
-    private List<QuestionModel> questionModelList;
+    private List<Question> questionModelList;
 
     private int modifyPosition;
     private MyAdapter myAdapter;
 
-    public QueryDialog(Context context, List<QuestionModel> questionModelList) {
+    public QueryDialog(Context context, List<Question> questionModelList) {
         super(context);
         this.questionModelList = questionModelList;
         this.modifyPosition= -1;
@@ -77,7 +77,7 @@ public class QueryDialog extends BaseDialog<QueryDialog> {
                     }
                     else
                     {
-                        QuestionModel questionModel = new QuestionModel(Constants.QUERY_QUESTION, questionText.getText().toString());
+                        Question questionModel = new Question(Constants.QUERY_QUESTION, questionText.getText().toString());
                         questionModelList.add(questionModel);
                         dismiss();
                     }
