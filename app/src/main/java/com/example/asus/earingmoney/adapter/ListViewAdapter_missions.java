@@ -29,24 +29,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ListViewAdapter_missions extends ArrayAdapter<Mission> {
     private int resourceId;
-    private OnItemClickListener mOnItemClickListener;
 
     public ListViewAdapter_missions(Context context, int textViewResourceId, List<Mission> objects) {
         super(context, textViewResourceId, objects);
         resourceId = textViewResourceId;
     }
 
-    public interface OnItemClickListener {
-        void onClick(int position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final Mission contact = getItem(position);
+        final Mission contact = getItem(position );
         View view;
         if (convertView == null) {
             view= LayoutInflater.from(getContext()).inflate(resourceId, null);
@@ -70,7 +61,7 @@ public class ListViewAdapter_missions extends ArrayAdapter<Mission> {
             @Override
             public void run() {
                 URL url = null;
-                System.out.println(contact.getAvator());
+                //System.out.println(contact.getAvator());
                 if(contact.getAvator() == null || contact.getAvator().equals("")){
                     Message msg = new Message();
                     msg.what = 0;
