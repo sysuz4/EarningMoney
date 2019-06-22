@@ -52,4 +52,13 @@ public interface service{
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/tasks/{taskID}/errands")
     Call<Errand>getErrandByTaskId(@Header("authorization") String token, @Path("taskID") int taskID);
+<<<<<<< HEAD
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/users/{userID}")
+    Call<User>getUserById(@Header("authorization") String token, @Path("userID") int userID);
+
+
+=======
+>>>>>>> f46c7028be385cc17c3a0fd7b31659844734e4df
 }

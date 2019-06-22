@@ -123,9 +123,10 @@ public class errand_detail_page extends AppCompatActivity {
                 // 步骤7：处理返回的数据结果
                 if(response.code() == 200)
                 {
-                    Toast.makeText(getApplicationContext(),
-                            "get mission success", Toast.LENGTH_SHORT).show();
                     mission = response.body();
+                    Message msg = new Message();
+                    msg.what = 1;
+                    handler.sendMessage(msg);
 //                    Log.d("mission", "onResponse: " + mission.getTitle());
 //                    Log.d("mission", "onResponse: " + mission.getDeadLine());
 //                    Log.d("mission", "onResponse: " + mission.getMoney());
@@ -159,11 +160,9 @@ public class errand_detail_page extends AppCompatActivity {
                 if(response.code() == 200)
                 {
 
-                    Toast.makeText(getApplicationContext(),
-                            "get task success", Toast.LENGTH_SHORT).show();
                     task_list = response.body();
                     if(task_list != null){
-                        Call<Errand> myCall3 = myService.getErrandByTaskId(token,2);
+                        Call<Errand> myCall3 = myService.getErrandByTaskId(token,task_list.get(0).getTaskId());
                         myCall3.enqueue(new Callback<Errand>() {
                             //请求成功时回调
                             @Override
@@ -171,8 +170,6 @@ public class errand_detail_page extends AppCompatActivity {
                                 // 步骤7：处理返回的数据结果
                                 if(response.code() == 200)
                                 {
-                                    Toast.makeText(getApplicationContext(),
-                                            "get errand success", Toast.LENGTH_SHORT).show();
                                     errand = response.body();
                                     Message msg = new Message();
                                     msg.what = 2;
@@ -182,7 +179,7 @@ public class errand_detail_page extends AppCompatActivity {
                                 else if(response.code() == 401)
                                 {
                                     Toast.makeText(getApplicationContext(),
-                                            "Invalid username/password supplied", Toast.LENGTH_SHORT).show();
+                                            "errand Invalid username/password supplied", Toast.LENGTH_SHORT).show();
                                 }
                                 else if(response.code() == 404){
                                     Toast.makeText(getApplicationContext(),

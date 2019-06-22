@@ -30,6 +30,49 @@ public class Mission {
 
     @SerializedName("userId")
     private int userId;
+  
+    @SerializedName("missionStatus")
+    private int missionStatus;
+  
+    public void setMissionId(int missionId) {
+        this.missionId = missionId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPublishTime(String publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public void setDeadLine(String deadLine) {
+        this.deadLine = deadLine;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setAvator(String avator) {
+        this.avator = avator;
+    }
+
+    public void setMoney(float money) {
+        this.money = money;
+    }
+
+    public int getMissionStatus() {
+        return missionStatus;
+    }
+
+    public void setMissionStatus(int missionStatus) {
+        this.missionStatus = missionStatus;
+    }
 
     public String getTitle() {
         return title;

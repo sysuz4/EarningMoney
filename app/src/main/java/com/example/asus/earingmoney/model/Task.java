@@ -4,7 +4,7 @@ public class Task {
     private int taskId;
     private int MissionId;
     private int pubUserId;
-    private int accUSerId;
+    private int accUserId;
     private int taskStatus;
     private String finishTime;
     private int taskType;
@@ -33,12 +33,12 @@ public class Task {
         this.pubUserId = pubUserId;
     }
 
-    public int getAccUSerId() {
-        return accUSerId;
+    public int getAccUserId() {
+        return accUserId;
     }
 
     public void setAccUSerId(int accUSerId) {
-        this.accUSerId = accUSerId;
+        this.accUserId = accUSerId;
     }
 
     public int getTaskStatus() {
