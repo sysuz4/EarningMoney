@@ -65,6 +65,4 @@ public class Util {
         String dateString = year + "-" + month + "-" + day;
         return dateString;
     }
-
-
 }

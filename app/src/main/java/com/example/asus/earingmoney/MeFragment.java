@@ -229,6 +229,7 @@ public class MeFragment extends Fragment {
                 SharedPreferences.Editor editor = user_shared_preference.edit();
                 editor.putString("token","");
                 editor.putString("username","");
+                editor.putInt("userId",-1);
                 editor.putBoolean("had_user",false);
                 editor.commit();
                 Intent intent = new Intent(getActivity(),LoginRegisterActivity.class);
