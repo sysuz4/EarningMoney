@@ -116,7 +116,7 @@ public class MainFragment extends Fragment {
                         if(!have_this_mission){
                             totallist.add(i);
                             missionslist.add(i);
-                            if(i.getTaskType() == 0){
+                            if(i.getTaskType() == 1){
                                 questionare_missionslist.add(i);
                             }
                             else {
@@ -164,19 +164,20 @@ public class MainFragment extends Fragment {
         super.onCreateOptionsMenu(menu,inflater);
     }
 
-    private class MyOnItemClickListener implements AdapterView.OnItemClickListener {
+    private class MyOnItemClickListener implements AdapterView.OnItemClickListener {//任务的点击事件，跳转到详情
         @Override
         public void onItemClick(AdapterView<?> parent,View view,int position, long id) {
             if(position >= 0) {
                 Intent intent = new Intent(getActivity(), MissionDetailActivity.class);
                 intent.putExtra("missionId", missionslist.get(position).getMissionId());
                 intent.putExtra("taskType", missionslist.get(position).getTaskType());
+                intent.putExtra("Description", missionslist.get(position).getDescription());
                 startActivity(intent);
             }
         }
     }
 
-    private void iniSpiner(){
+    private void iniSpiner(){//用于排序、筛选
 
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -34,6 +34,7 @@ public class MissionDetailActivity extends AppCompatActivity {
     private Button button;
     private ImageView image;
     private int userId;
+    private String description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class MissionDetailActivity extends AppCompatActivity {
 
         missionId = (int)getIntent().getExtras().get("missionId");
         taskType = (int)getIntent().getExtras().get("taskType");
+        description = (String) getIntent().getExtras().get("Description");
 
         publish_time = findViewById(R.id.publish_time);
         detail = findViewById(R.id.detail);
@@ -123,7 +125,7 @@ public class MissionDetailActivity extends AppCompatActivity {
                 userId = mission.getUserId();
                 getUserDetail();
                 publish_time.setText(mission.getPublishTime());
-                detail.setText(mission.getDescription());
+                detail.setText(description);
                 deadline.setText(mission.getDeadLine());
                 money.setText(mission.getMoney() + "元");
                 title.setText(mission.getTitle());
