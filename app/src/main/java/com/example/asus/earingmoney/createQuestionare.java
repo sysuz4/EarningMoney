@@ -324,7 +324,7 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
 
         task.setFinishTime(finishDate);
         task.setTaskType(Constants.TASK_QUESTIONARE);
-        task.setTaskStatus(Constants.TO_DO);
+        task.setTaskStatus(Constants.TASK_TO_DO);
         task.setPubUserId(Util.getUserId(this));
 
         mission.setDeadLine(finishDate);

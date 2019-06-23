@@ -5,6 +5,11 @@ public class TaskModel extends MissionOrTask{
     private int taskType;
     private int taskStatus;
     private String finishTime;
+    private String publishTime;
+    private String description;
+    private double aveMoney;
+    private String title;
+    private String deadLine;
     private int pubUserId;
     private int missionId;
     private int accUserId;
@@ -79,5 +84,45 @@ public class TaskModel extends MissionOrTask{
 
     public void setAccUserId(int accUserId) {
         this.accUserId = accUserId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getAveMoney() {
+        return aveMoney;
+    }
+
+    public void setAveMoney(double aveMoney) {
+        this.aveMoney = aveMoney;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDeadLine() {
+        return deadLine;
+    }
+
+    public void setDeadLine(String deadLine) {
+        this.deadLine = deadLine;
+    }
+
+    public String getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(String publishTime) {
+        this.publishTime = publishTime;
     }
 }

@@ -13,6 +13,8 @@ import com.example.asus.earingmoney.R;
 import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.model.MissionModel;
 import com.example.asus.earingmoney.model.MissionOrTask;
+import com.example.asus.earingmoney.model.Task;
+import com.example.asus.earingmoney.model.TaskModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +105,30 @@ public class MissionOrTaskListAdapter extends BaseAdapter {
             viewHolder.taskNum.setText("需" + ((MissionModel)list.get(i)).getTaskNum() + "人");
             viewHolder.money.setText("奖励金:" + ((MissionModel)list.get(i)).getMoney());
             viewHolder.description.setText(((MissionModel)list.get(i)).getDescription());
+        } else {
+            if (((TaskModel)list.get(i)).getTaskType() == Constants.TASK_QUESTIONARE) {
+                viewHolder.avator.setImageResource(R.mipmap.questionare);
+            } else {
+                viewHolder.avator.setImageResource(R.mipmap.errand);
+            }
+
+            if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_TO_DO) {
+                viewHolder.missionStatus.setText("待完成");
+            } else if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_DOING) {
+                viewHolder.missionStatus.setText("正在进行");
+            } else if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_DONE_BUT_NOT_CONFIRM) {
+                viewHolder.missionStatus.setText("提交等待确认");
+            } else if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_DONE_AND_CONFIRM) {
+                viewHolder.missionStatus.setText("已完成");
+            }
+            viewHolder.title.setText(((TaskModel)list.get(i)).getTitle());
+            viewHolder.publishTime.setText("起:" + ((TaskModel)list.get(i)).getPublishTime());
+            viewHolder.deadLine.setText("止:" + ((TaskModel)list.get(i)).getDeadLine());
+            if (((TaskModel)list.get(i)).getFinishTime() != null) {
+                viewHolder.taskNum.setText("完成于" + ((TaskModel)list.get(i)).getFinishTime());
+            }
+            viewHolder.money.setText("奖励金" + Double.toString(((TaskModel)list.get(i)).getAveMoney()));
+            viewHolder.description.setText(((TaskModel)list.get(i)).getDescription());
         }
 
 
