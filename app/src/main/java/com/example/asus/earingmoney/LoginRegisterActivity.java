@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.model.GetTokenObj;
 
 import org.json.JSONException;
@@ -357,11 +358,11 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 switch (checkedId){
                     case R.id.female:
                         register_has_sex = true;
-                        current_sex = 0;
+                        current_sex = Constants.FEMALE;
                         break;
                     case R.id.male:
                         register_has_sex = true;
-                        current_sex = 1;
+                        current_sex = Constants.MALE;
                         break;
                 }
             }
