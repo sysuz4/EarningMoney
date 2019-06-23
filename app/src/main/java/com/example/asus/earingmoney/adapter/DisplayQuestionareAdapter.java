@@ -15,15 +15,17 @@ import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.model.QuestionModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class DisplayQuestionareAdapter extends BaseAdapter {
-    private ArrayList<QuestionModel> list;
+    private List<QuestionModel> list;
     private Context context;
     private int finishNum = 1;
-    public DisplayQuestionareAdapter(ArrayList<QuestionModel> list, Context context) {
+    public DisplayQuestionareAdapter(List<QuestionModel> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -97,7 +99,12 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
             viewHolder.jumpBtn.setVisibility(View.GONE);
             viewHolder.optionList.setText(getOptionListText(i));
         } else {
-            questionType.setText("[多选]");
+            int num = list.get(i).getChoiceNum();
+            if (num != 0) {
+                questionType.setText("[" + Integer.toString(num) +"选]");
+            } else {
+                questionType.setText("[不定项]");
+            }
             viewHolder.jumpBtn.setVisibility(View.GONE);
             viewHolder.optionList.setText(getOptionListText(i));
         }
@@ -133,9 +140,33 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
 
         }
         return sb.toString();
+        /*
+        StringBuilder sb= new StringBuilder();
+        String options = list.get(i).getAnswer();
+        List<String> optionStr = Arrays.asList(list.get(i).getChoiceStr().split("\\|"));
+        Map<String, Integer> map = new HashMap<>();
+        for (int j = 0; j < optionStr.size(); ++i) {
+            map.put(String.valueOf('A' + j), 0);
+        }
+        for (int j = 0; j < options.length(); ++j) {
+            String option = options.substring(j, j+1);
+            map.put(option, map.get(option) + 1);
+        }
+
+        for (int j = 0; j < optionStr.size(); ++i) {
+            sb.append(String.valueOf('A' + j));
+            sb.append(": ");
+            sb.append(optionStr.get(j));
+            if (finishNum == 0) {
+                sb.append("无人作答\n");
+            } else {
+                sb.append(Double.toString((double) map.get(String.valueOf('A' + j)) / finishNum * 100));
+                sb.append("%\n");
+            }
+        }
+        return sb.toString();
+        */
     }
-
-
 
     private class ViewHolder {
         public LinearLayout questionDes;

@@ -43,10 +43,10 @@ public class Constants {
     //Task类
     //taskSatus的四个状态，依次对应为：此任务未被人接收、此任务已被人接收且正在执行、此任务已被接收者执行完毕但发布者还未确认、此任务已被上方确认完成
     //taskType的两个类型，依次为：跑腿任务、问卷任务
-    public static final int TO_DO = 0;
-    public static final int DOING = 1;
-    public static final int DONE_BUT_NOT_CONFIRM = 2;
-    public static final int DONE_AND_CONFIRM = 3;
+    public static final int TASK_TO_DO = 0;
+    public static final int TASK_DOING = 1;
+    public static final int TASK_DONE_BUT_NOT_CONFIRM = 2;
+    public static final int TASK_DONE_AND_CONFIRM = 3;
 
 
     public static final int TASK_ERRAND = 0;
