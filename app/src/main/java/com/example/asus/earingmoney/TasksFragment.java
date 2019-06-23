@@ -286,7 +286,8 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                         QABar.setProgress(qAsummary.getFinishNum());
                         double percent = (double)qAsummary.getFinishNum() / qAsummary.getTaskNum();
                         percent *= 100;
-                        QAPercent.setText(Double.toString(percent) + "%");
+                        String perStr = String.format("%.1f",percent);
+                        QAPercent.setText(perStr + "%");
 
                         questions.clear();
                         questions.addAll(qAsummary.getQuestions());

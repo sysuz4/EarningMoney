@@ -25,6 +25,9 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
     private List<QuestionModel> list;
     private Context context;
     private int finishNum = 1;
+
+    private static String ch = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
     public DisplayQuestionareAdapter(List<QuestionModel> list, Context context) {
         this.list = list;
         this.context = context;
@@ -114,6 +117,7 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
     }
 
     private String getOptionListText(int i) {
+        /*
         StringBuilder sb= new StringBuilder();
         String options = list.get(i).getAnswer();
         Map<String, Integer> map = new HashMap<>();
@@ -140,32 +144,43 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
 
         }
         return sb.toString();
-        /*
+        */
         StringBuilder sb= new StringBuilder();
         String options = list.get(i).getAnswer();
+        Log.e("op", options);
+
+
         List<String> optionStr = Arrays.asList(list.get(i).getChoiceStr().split("\\|"));
         Map<String, Integer> map = new HashMap<>();
-        for (int j = 0; j < optionStr.size(); ++i) {
-            map.put(String.valueOf('A' + j), 0);
-        }
-        for (int j = 0; j < options.length(); ++j) {
-            String option = options.substring(j, j+1);
-            map.put(option, map.get(option) + 1);
+        for (int j = 0; j < optionStr.size(); ++j) {
+            map.put(ch.substring(j, j+1), 0);
         }
 
-        for (int j = 0; j < optionStr.size(); ++i) {
-            sb.append(String.valueOf('A' + j));
+        for (int j = 0; j < options.length(); ++j) {
+            String option = options.substring(j, j+1);
+            if (map.get(option) != null) {
+                map.put(option, map.get(option) + 1);
+            }
+        }
+
+        for (int j = 0; j < optionStr.size(); ++j) {
+            sb.append(ch.substring(j, j+1));
             sb.append(": ");
             sb.append(optionStr.get(j));
             if (finishNum == 0) {
-                sb.append("无人作答\n");
+                sb.append(" 无人作答\n");
             } else {
-                sb.append(Double.toString((double) map.get(String.valueOf('A' + j)) / finishNum * 100));
+                sb.append(" ");
+                String percent = String.format("%.2f",(double) map.get(ch.substring(j, j+1)) / finishNum * 100);
+                sb.append(percent);
                 sb.append("%\n");
+
+
             }
         }
         return sb.toString();
-        */
+
+
     }
 
     private class ViewHolder {
