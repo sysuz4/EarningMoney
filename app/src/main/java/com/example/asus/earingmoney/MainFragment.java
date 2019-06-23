@@ -108,7 +108,7 @@ public class MainFragment extends Fragment {
                 for(Mission i : missions.getAllMissions()){
                     boolean have_this_mission = false;
                     //System.out.println(i.getMissionId());
-                    if(!i.isMyAccept()){//判断该任务是否已经接受，或是否为自己创建的，如是则不显示
+                    if(!(i.isMyAccept() || i.isMyAccept())){//判断该任务是否已经接受，或是否为自己创建的，如是则不显示
                         for(Mission j :missionslist){
                             if(j.getMissionId() == i.getMissionId())
                                 have_this_mission = true;

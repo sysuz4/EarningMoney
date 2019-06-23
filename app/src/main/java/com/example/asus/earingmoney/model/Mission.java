@@ -43,6 +43,9 @@ public class Mission {
     @SerializedName("myAccept")
     private boolean myAccept;
 
+    @SerializedName("myPub")
+    private boolean myPub;
+
     public void setMissionId(int missionId) {
         this.missionId = missionId;
     }
@@ -145,5 +148,9 @@ public class Mission {
 
     public boolean isMyAccept() {
         return myAccept;
+    }
+
+    public boolean isMyPub() {
+        return myPub;
     }
 }
