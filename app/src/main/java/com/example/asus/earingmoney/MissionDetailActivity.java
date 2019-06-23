@@ -30,7 +30,7 @@ public class MissionDetailActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private service myservice;
     private ServiceFactory serviceFactory;
-    private TextView publish_time,detail,deadline,money,name,title;
+    private TextView publish_time,detail,deadline,money,name,titleText;
     private Button button;
     private ImageView image;
     private int userId;
@@ -52,7 +52,7 @@ public class MissionDetailActivity extends AppCompatActivity {
         deadline = findViewById(R.id.deadline);
         money = findViewById(R.id.money);
         name = findViewById(R.id.name);
-        title = findViewById(R.id.title);
+        titleText = findViewById(R.id.titleText);
         button = findViewById(R.id.button);
         image = findViewById(R.id.image);
 
@@ -128,7 +128,7 @@ public class MissionDetailActivity extends AppCompatActivity {
                 detail.setText(description);
                 deadline.setText(mission.getDeadLine());
                 money.setText(mission.getMoney() + "元");
-                title.setText(mission.getTitle());
+                titleText.setText(mission.getTitle());
             }
 
             @Override
