@@ -18,7 +18,7 @@ public class User{
     @SerializedName("age")
     private int age;
     @SerializedName("sex")
-    private int sex;// 0 = female 1 = male 2 = not sure
+    private int sex;// 0 = male 1 = female 2 = not sure
     @SerializedName("grade")
     private int grade;
     @SerializedName("major")
