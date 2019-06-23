@@ -804,6 +804,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         token = response.getToken();
                         userId = response.getUserId();
                         System.out.println(token);
+                        //Log.e("666", token);
                         System.out.println(userId);
                         Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
                         SharedPreferences.Editor editor = user_shared_preference.edit();

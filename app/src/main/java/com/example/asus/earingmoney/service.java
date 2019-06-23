@@ -99,4 +99,5 @@ public interface service{
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/users/{userID}")
     Call<User>getUserById(@Header("authorization") String token, @Path("userID") int userID);
+
 }

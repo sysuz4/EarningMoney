@@ -16,6 +16,12 @@ public class Constants {
     final public static String CHOICE_SPLIT = "|";
 
 
+    final public static String BASE_URL = "http://106.14.225.59";
+
+    //User类
+    // 后两个是sex的类别，依次对应为：男性、女性
+
+
     final public static String PHOTO_SPLIT = "|";
 
     //User类
@@ -23,6 +29,7 @@ public class Constants {
     // 后两个是sex的类别，依次对应为：男性、女性
     public static final int USER = 0;
     public static final int ADMINISTRATOR = 1;
+
     public static final int MALE = 0;
     public static final int FEMALE = 1;
 
@@ -31,6 +38,7 @@ public class Constants {
     public static final int NEED_MORE_PEOPLE = 0;
     public static final int MAX_PEOPLE = 1;
     public static final int OVERDUE = 2;
+    public static final int MAX_PEOPLE_DONE = 3;
 
     //Task类
     //taskSatus的四个状态，依次对应为：此任务未被人接收、此任务已被人接收且正在执行、此任务已被接收者执行完毕但发布者还未确认、此任务已被上方确认完成
@@ -39,14 +47,12 @@ public class Constants {
     public static final int DOING = 1;
     public static final int DONE_BUT_NOT_CONFIRM = 2;
     public static final int DONE_AND_CONFIRM = 3;
+
+
     public static final int TASK_ERRAND = 0;
     public static final int TASK_QUESTIONARE = 1;
 
-    //Question类
-    //questionType的类别，依次分别为：单选题、多选题、问答题
-    public static final int SINGLE = 0;
-    public static final int MULTIPLE = 1;
-    public static final int QUESTION_AND_ANSWER = 2;
+
 
     //Report类
     //status的状态类别：mission没有被举报、mission被举报了
@@ -60,4 +66,10 @@ public class Constants {
 
     //定义日期格式
     public static final String DATA_FORMAT = "yyyy-MM-dd";
+
+    //public static final int FILTER_BASE = 100;
+    public static final int FILTER_ALL = 100;
+    public static final int FILTER_COMPLETED = 101;
+    public static final int FILTER_NOT_COMPLETED = 102;
+    public static final int FILTER_OVERDUE = 103;
 }

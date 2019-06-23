@@ -14,6 +14,16 @@ public class QuestionModel {
 
     }
 
+    public QuestionModel(long id, int questionType, String question, String answer, int choiceNum, String choiceStr, int questionareId) {
+        this.id = id;
+        this.questionType = questionType;
+        this.question = question;
+        this.answer = answer;
+        this.choiceNum = choiceNum;
+        this.choiceStr = choiceStr;
+        this.questionareId = questionareId;
+    }
+
     public QuestionModel(int questionType, String question){
         this.questionType = questionType;
         this.question = question;
