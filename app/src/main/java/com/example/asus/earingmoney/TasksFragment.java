@@ -1,6 +1,7 @@
 package com.example.asus.earingmoney;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -126,7 +127,7 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         return rootView;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     private void initView(View rootView) {
         missionPage = rootView.findViewById(R.id.missionPage);
         questionarePage = rootView.findViewById(R.id.questionarePage);
@@ -148,8 +149,6 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         answerAdapter = new DisplayAnswerAdapter(answers, getContext());
         answerList.setAdapter(answerAdapter);
         answerRevertBtn.setOnClickListener(this);
-
-
     }
 
     private void initQuestionPage(View rootView) {
@@ -206,7 +205,8 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
                 } else if (position == 1) {
                     displayMission = false;
-                    //list.addAll(tasks);
+                    list.addAll(tasks);
+                    //Toast.makeText(getContext(),  Integer.toString(tasks.size()), Toast.LENGTH_SHORT).show();
                 }
                 completenessSpinner.setSelection(0);
                 missionOrTaskListAdapter.update();
@@ -230,7 +230,7 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                 } else if (position == 2) {
                     list.addAll(filter(Constants.FILTER_NOT_COMPLETED));
                 } else {
-                    list.addAll(filter(Constants.OVERDUE));
+                    list.addAll(filter(Constants.FILTER_OVERDUE));
                 }
 
                 missionOrTaskListAdapter.update();
@@ -251,7 +251,6 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
     private void displayQuestionarePage(int missionId) {
         initQAsummary(missionId);
-
     }
 
     private void initQAsummary(int missionId) {
@@ -287,7 +286,8 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                         QABar.setProgress(qAsummary.getFinishNum());
                         double percent = (double)qAsummary.getFinishNum() / qAsummary.getTaskNum();
                         percent *= 100;
-                        QAPercent.setText(Double.toString(percent) + "%");
+                        String perStr = String.format("%.1f",percent);
+                        QAPercent.setText(perStr + "%");
 
                         questions.clear();
                         questions.addAll(qAsummary.getQuestions());
@@ -396,11 +396,30 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (adapterView.getId() == R.id.MissionOrTaskList) {
-            if (list.get(i).isMission() && ((MissionModel) list.get(i)).getTaskType() == Constants.TASK_QUESTIONARE) {
+            //点击我发布的问卷任务
+            if (displayMission && ((MissionModel) list.get(i)).getTaskType() == Constants.TASK_QUESTIONARE) {
                 lastMissionId = ((MissionModel) list.get(i)).getMissionId();
                 displayQuestionarePage(lastMissionId);
             }
+            //点击我发布的跑腿任务
+            else if (displayMission && ((MissionModel) list.get(i)).getTaskType() == Constants.TASK_ERRAND){
+
+            }
+            //点击我领取的问卷任务
+            else if (!displayMission && ((TaskModel) list.get(i)).getTaskType() == Constants.TASK_QUESTIONARE) {
+                int taskId = ((TaskModel) list.get(i)).getTaskId();
+                Bundle bundle = new Bundle();
+                Intent intent = new Intent(getActivity(), fill_in_questionare_page.class);
+                bundle.putInt("taskId", taskId);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+            //点击我领取的跑腿任务
+            else {
+
+            }
         } else if (adapterView.getId() == R.id.displayQuestionareList) {
+            //点击问卷中的问答题
             if (questions.get(i).getQuestionType() == Constants.QUERY_QUESTION) {
                 displayAnswerPage(i);
             }
@@ -437,7 +456,7 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     private ArrayList<MissionOrTask> filter(int mode) {
 
         if (displayMission) {
-            int status;
+
             ArrayList<MissionOrTask> ret = new ArrayList<>();
             if (mode == Constants.FILTER_ALL) {
                 return missions;
@@ -465,7 +484,26 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
             return ret;
         } else {
-            return new ArrayList<MissionOrTask>();
+            ArrayList<MissionOrTask> ret = new ArrayList<>();
+            if (mode == Constants.FILTER_ALL) {
+                return tasks;
+            } else if (mode == Constants.FILTER_COMPLETED) {
+                for (MissionOrTask m: tasks) {
+                    if (((TaskModel)m).getTaskStatus() == Constants.TASK_DONE_AND_CONFIRM) {
+                        ret.add(m);
+                    }
+                }
+            } else if (mode == Constants.FILTER_NOT_COMPLETED) {
+                for (MissionOrTask m: tasks) {
+                    if (((TaskModel)m).getTaskStatus() == Constants.TASK_DONE_BUT_NOT_CONFIRM ||
+                            ((TaskModel)m).getTaskStatus() == Constants.TASK_DOING ||
+                            ((TaskModel)m).getTaskStatus() == Constants.TASK_TO_DO) {
+                        ret.add(m);
+                    }
+                }
+            }
+
+            return ret;
         }
 
     }

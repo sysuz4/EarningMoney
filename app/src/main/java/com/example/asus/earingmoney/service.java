@@ -7,6 +7,7 @@ import com.example.asus.earingmoney.model.Msg;
 import com.example.asus.earingmoney.model.Questionare;
 import org.json.JSONObject;
 import com.example.asus.earingmoney.model.Mission;
+import com.example.asus.earingmoney.model.QuestionareCommitModel;
 import com.example.asus.earingmoney.model.User;
 
 import java.util.List;
@@ -99,5 +100,14 @@ public interface service{
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/users/{userID}")
     Call<User>getUserById(@Header("authorization") String token, @Path("userID") int userID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/tasks/{taskId}/questionares")
+    Observable<Questionare> getQuestionareByTaskId(@Header("authorization") String token, @Path("taskId") int taskId);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @POST("tasks/{taskId}/QAsubmit")
+    Observable<Msg> commitQuestionare(@Header("authorization") String token, @Path("taskId") int taskId, @Body RequestBody questionare);
+
 
 }

@@ -198,7 +198,7 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
 
         task.setFinishTime(finishDate);
         task.setTaskType(Constants.TASK_ERRAND);
-        task.setTaskStatus(Constants.TO_DO);
+        task.setTaskStatus(Constants.TASK_TO_DO);
         task.setPubUserId(Util.getUserId(this));
 
         mission.setDeadLine(finishDate);
