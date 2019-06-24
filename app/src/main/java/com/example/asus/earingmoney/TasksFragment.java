@@ -48,6 +48,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class TasksFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
     private static final String ARG_SHOW_TEXT = "text";
 
@@ -329,13 +331,18 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     }
 
     private void displayAnswerPage(int index) {
+        //Log.e("ans:", questions.get(index).getAnswer());
+        if (questions.get(index).getAnswer() == null || questions.get(index).getAnswer().isEmpty()) {
+            Toast.makeText(getContext(), "本题无人作答", Toast.LENGTH_SHORT).show();
+            return;
+        }
         missionPage.setVisibility(View.GONE);
         questionarePage.setVisibility(View.GONE);
         answerPage.setVisibility(View.VISIBLE);
-
         answers.clear();
-        Log.e("ans:", questions.get(index).getAnswer());
-        String[] ans = questions.get(index).getAnswer().split("\\;");
+
+
+        String[] ans = questions.get(index).getAnswer().substring(0, questions.get(index).getAnswer().length() -1).split("\\;");
         /*
         answers.add("sdhfksdj");
         answers.add("dasjk");
@@ -343,7 +350,6 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         */
         answers.addAll(Arrays.asList(ans));
         answerAdapter.update();
-
     }
 
     private void initData() {
@@ -434,6 +440,13 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
             }
             //点击我发布的跑腿任务
             else if (displayMission && ((MissionModel) list.get(i)).getTaskType() == Constants.TASK_ERRAND){
+                int missionId = ((MissionModel)list.get(i)).getMissionId();
+                Bundle bundle = new Bundle();
+                bundle.putInt("missionId",missionId);
+                Intent intent  = new Intent();
+                intent.setClass(getActivity(),errand_status_page.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
 
             }
             //点击我领取的问卷任务
@@ -446,8 +459,14 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                 startActivity(intent);
             }
             //点击我领取的跑腿任务
-            else {
-
+            else if(!displayMission && ((TaskModel) list.get(i)).getTaskType() == Constants.TASK_ERRAND){
+                int taskId = ((TaskModel) list.get(i)).getTaskId();
+                Bundle bundle = new Bundle();
+                bundle.putInt("taskId",taskId);
+                Intent intent  = new Intent();
+                intent.setClass(getActivity(),errand_detail_page.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         } else if (adapterView.getId() == R.id.displayQuestionareList) {
             //点击问卷中的问答题

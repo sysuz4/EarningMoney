@@ -214,6 +214,7 @@
                 android:background="@color/Blue"/>
 
             <info.hoang8f.widget.FButton
+                android:id="@+id/button1"
                 android:layout_marginTop="30dp"
                 android:layout_height="wrap_content"
                 android:layout_width="350dp"
@@ -224,7 +225,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view3"
-                android:onClick="loadData"/>
+                android:onClick="publisherFinishErrand" />
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>

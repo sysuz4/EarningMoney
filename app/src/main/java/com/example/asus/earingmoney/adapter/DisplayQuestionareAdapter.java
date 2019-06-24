@@ -27,7 +27,7 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
     private int finishNum = 1;
 
     private static String ch = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
+    private String[] chineseDigit = {"零","一", "双", "三", "四", "五", "六"};
     public DisplayQuestionareAdapter(List<QuestionModel> list, Context context) {
         this.list = list;
         this.context = context;
@@ -104,7 +104,7 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
         } else {
             int num = list.get(i).getChoiceNum();
             if (num != 0) {
-                questionType.setText("[" + Integer.toString(num) +"选]");
+                questionType.setText("[" + chineseDigit[num] +"选]");
             } else {
                 questionType.setText("[不定项]");
             }
@@ -147,7 +147,13 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
         */
         StringBuilder sb= new StringBuilder();
         String options = list.get(i).getAnswer();
-        Log.e("op", options);
+
+        /*
+        if (options == null) {
+            return "无人作答";
+        }
+        */
+        //Log.e("op", options);
 
 
         List<String> optionStr = Arrays.asList(list.get(i).getChoiceStr().split("\\|"));
@@ -155,11 +161,12 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
         for (int j = 0; j < optionStr.size(); ++j) {
             map.put(ch.substring(j, j+1), 0);
         }
-
-        for (int j = 0; j < options.length(); ++j) {
-            String option = options.substring(j, j+1);
-            if (map.get(option) != null) {
-                map.put(option, map.get(option) + 1);
+        if (options != null){
+            for (int j = 0; j < options.length(); ++j) {
+                String option = options.substring(j, j + 1);
+                if (map.get(option) != null) {
+                    map.put(option, map.get(option) + 1);
+                }
             }
         }
 
@@ -167,11 +174,12 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
             sb.append(ch.substring(j, j+1));
             sb.append(": ");
             sb.append(optionStr.get(j));
-            if (finishNum == 0) {
+            if (finishNum == 0 || options == null) {
                 sb.append(" 无人作答\n");
             } else {
                 sb.append(" ");
                 String percent = String.format("%.2f",(double) map.get(ch.substring(j, j+1)) / finishNum * 100);
+                sb.append("   ");
                 sb.append(percent);
                 sb.append("%\n");
 

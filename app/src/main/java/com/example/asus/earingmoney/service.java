@@ -83,7 +83,7 @@ public interface service{
 
     @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/missions/{missionID}/accept")
-    Observable<ResponseBody> acceptMission(@Header("authorization") String token, @Path("missionID") int userID);
+    Observable<ResponseBody> acceptMission(@Header("authorization") String token, @Path("missionID") int missionID);
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}")
@@ -106,8 +106,15 @@ public interface service{
     Observable<Questionare> getQuestionareByTaskId(@Header("authorization") String token, @Path("taskId") int taskId);
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/tasks/{taskID}")
+    Call<Task> getTaskByTaskId(@Header("authorization") String token, @Path("taskID") int taskID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @POST("tasks/{taskId}/QAsubmit")
     Observable<Msg> commitQuestionare(@Header("authorization") String token, @Path("taskId") int taskId, @Body RequestBody questionare);
 
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/tasks/{taskID}/finishErrand")
+    Call<ResponseBody> finishErrandTask(@Header("authorization") String token, @Path("taskID") int taskID);
 
 }
