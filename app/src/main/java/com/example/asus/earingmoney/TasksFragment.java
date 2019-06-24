@@ -301,13 +301,18 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     }
 
     private void displayAnswerPage(int index) {
+        //Log.e("ans:", questions.get(index).getAnswer());
+        if (questions.get(index).getAnswer() == null || questions.get(index).getAnswer().isEmpty()) {
+            Toast.makeText(getContext(), "本题无人作答", Toast.LENGTH_SHORT).show();
+            return;
+        }
         missionPage.setVisibility(View.GONE);
         questionarePage.setVisibility(View.GONE);
         answerPage.setVisibility(View.VISIBLE);
-
         answers.clear();
-        Log.e("ans:", questions.get(index).getAnswer());
-        String[] ans = questions.get(index).getAnswer().split("\\;");
+
+
+        String[] ans = questions.get(index).getAnswer().substring(0, questions.get(index).getAnswer().length() -1).split("\\;");
         /*
         answers.add("sdhfksdj");
         answers.add("dasjk");
@@ -315,7 +320,6 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         */
         answers.addAll(Arrays.asList(ans));
         answerAdapter.update();
-
     }
 
     private void initData() {
