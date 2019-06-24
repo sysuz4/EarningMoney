@@ -436,9 +436,9 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
             }
             //点击我发布的跑腿任务
             else if (displayMission && ((MissionModel) list.get(i)).getTaskType() == Constants.TASK_ERRAND){
-                int taskId = ((TaskModel) list.get(i)).getTaskId();
+                int missionId = ((MissionModel)list.get(i)).getMissionId();
                 Bundle bundle = new Bundle();
-                bundle.putInt("taskId",taskId);
+                bundle.putInt("missionId",missionId);
                 Intent intent  = new Intent();
                 intent.setClass(getActivity(),errand_status_page.class);
                 intent.putExtras(bundle);

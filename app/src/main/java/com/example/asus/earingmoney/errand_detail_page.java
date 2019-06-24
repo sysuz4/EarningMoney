@@ -59,6 +59,7 @@ public class errand_detail_page extends AppCompatActivity {
         setContentView(R.layout.activity_errand_detail_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("跑腿任务");
+        toolbar.setBackgroundColor(getResources().getColor(R.color.Blue));
         setSupportActionBar(toolbar);
 
         toolbar.setNavigationIcon(R.mipmap.back);

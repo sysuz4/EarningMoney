@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class errand_status_page extends AppCompatActivity {
     private List<Task> task_list;
     private User user;
     private int missionId;
+    private Button button;
     private int taskId;
 
 
@@ -59,6 +61,7 @@ public class errand_status_page extends AppCompatActivity {
         setContentView(R.layout.activity_errand_status_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("任务详情");
+        toolbar.setBackgroundColor(getResources().getColor(R.color.Blue));
         setSupportActionBar(toolbar);
 
         onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
@@ -87,7 +90,8 @@ public class errand_status_page extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
         getComponentById();
-
+        button.setEnabled(false);
+        button.setBackgroundColor(getResources().getColor(R.color.buttom_tv));
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg){
@@ -120,60 +124,22 @@ public class errand_status_page extends AppCompatActivity {
                     acc_user_info += "手机:" + user.getPhoneNum();
                     info1.setText(acc_user_info);
                 }
+                if(msg.what == 4){
+                    info1.setText("暂无人领取");
+                }
+                if(msg.what == 5){
+                    button.setBackgroundColor(getResources().getColor(R.color.Blue));
+                    button.setEnabled(true);
+                }
 
             }
         };
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        taskId = bundle.getInt("taskId");
+        missionId = bundle.getInt("missionId");
         token = Util.getToken(getApplicationContext());
-        OkHttpClient build = new OkHttpClient.Builder()
-                .connectTimeout(2, TimeUnit.SECONDS)
-                .readTimeout(2, TimeUnit.SECONDS)
-                .writeTimeout(2, TimeUnit.SECONDS)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://106.14.225.59/")
-                // 本次实验不需要自定义Gson
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                // build 即为okhttp声明的变量，下文会讲
-                .client(build)
-                .build();
-        service myService1 = retrofit.create(service.class);
-        Call<Task> myCall5 = myService1.getTaskByTaskId(token,taskId);
-        myCall5.enqueue(new Callback<Task>() {
-            //请求成功时回调
-            @Override
-            public void onResponse(Call<Task> call, final Response<Task> response) {
-                // 步骤7：处理返回的数据结果
-                if(response.code() == 200)
-                {
-                    missionId = response.body().getMissionId();
-                    loadData(missionId);
-                }
-                else if(response.code() == 401)
-                {
-                    Toast.makeText(getApplicationContext(),
-                            "Invalid username/password supplied", Toast.LENGTH_SHORT).show();
-                }
-                else if(response.code() == 404){
-                    Toast.makeText(getApplicationContext(),
-                            "task not found", Toast.LENGTH_SHORT).show();
-                } else{
-                    Toast.makeText(getApplicationContext(),
-                            "Unknown error", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-            //请求失败时回调
-            @Override
-            public void onFailure(Call<Task> call, Throwable throwable) {
-                System.out.println("连接失败");
-            }
-        });
+        loadData(missionId);
     }
 
     @Override
@@ -191,6 +157,7 @@ public class errand_status_page extends AppCompatActivity {
         errand_private_info1 = findViewById(R.id.errand_private_info1);
         errand_deadline1 = findViewById(R.id.errand_deadline1);
         payment1 = findViewById(R.id.payment1);
+        button = findViewById(R.id.button1);
 
     }
     public void loadData(int missionId){
@@ -221,8 +188,6 @@ public class errand_status_page extends AppCompatActivity {
                 if(response.code() == 200)
                 {
                     mission = response.body();
-//                    Toast.makeText(getApplicationContext(),
-//                            "get mission success", Toast.LENGTH_SHORT).show();
                     Message msg = new Message();
                     msg.what = 1;
                     handler.sendMessage(msg);
@@ -256,10 +221,16 @@ public class errand_status_page extends AppCompatActivity {
                 // 步骤7：处理返回的数据结果
                 if(response.code() == 200)
                 {
-//                    Toast.makeText(getApplicationContext(),
-//                            "get task success", Toast.LENGTH_SHORT).show();
                     task_list = response.body();
                     if(task_list != null){
+                        taskId = task_list.get(0).getTaskId();
+                        //Log.d("taskId", "onResponse: " + taskId);
+                        int status = task_list.get(0).getTaskStatus();
+                        if( status == 2){
+                            Message msg = new Message();
+                            msg.what = 2;
+                            handler.sendMessage(msg);
+                        }
                         Call<Errand> myCall3 = myService.getErrandByTaskId(token,task_list.get(0).getTaskId());
                         myCall3.enqueue(new Callback<Errand>() {
                             //请求成功时回调
@@ -318,8 +289,9 @@ public class errand_status_page extends AppCompatActivity {
                                             "Invalid username/password supplied", Toast.LENGTH_SHORT).show();
                                 }
                                 else if(response.code() == 404){
-                                    Toast.makeText(getApplicationContext(),
-                                            "user not found", Toast.LENGTH_SHORT).show();
+                                    Message msg = new Message();
+                                    msg.what = 4;
+                                    handler.sendMessage(msg);
                                 } else{
                                     Toast.makeText(getApplicationContext(),
                                             "Unknown error", Toast.LENGTH_SHORT).show();
@@ -376,6 +348,7 @@ public class errand_status_page extends AppCompatActivity {
                 .client(build)
                 .build();
         service myService2 = retrofit.create(service.class);
+        Log.d("taskId", "publisherFinishErrand: " + taskId);
         Call<ResponseBody> myCall6 = myService2.finishErrandTask(token,taskId);
         myCall6.enqueue(new Callback<ResponseBody>() {
             //请求成功时回调
