@@ -64,7 +64,7 @@ public interface service{
 
     @Multipart
     @POST("/images")
-    Call<Image> upload_pic(@Header("authorization") String token, @Part("description") RequestBody description, @Part MultipartBody.Part file);
+    Call<Image> upload_pic(@Part("description") RequestBody description, @Part MultipartBody.Part file);
 
     @Streaming
     @GET
