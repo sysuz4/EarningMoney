@@ -78,7 +78,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
             register_age_clear, register_major_clear, register_id_clear, register_mail_clear, register_phone_clear;
     private RadioGroup register_sex_group, register_grade_group;
     private ActionProcessButton log_in, register;
-    private TextWatcher login_credit_watcher, login_password_watcher, register_nickname_watcher, register_password_watcher , register_password_clarify_watcher, register_name_watcher,
+    private TextWatcher login_username_watcher, login_password_watcher, register_nickname_watcher, register_password_watcher , register_password_clarify_watcher, register_name_watcher,
             register_age_watcher, register_major_watcher, register_id_watcher, register_mail_watcher, register_phone_watcher;
     private boolean login_has_username, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify,
             register_has_name, register_has_credit, register_has_sex, register_has_grade, had_login_in;
@@ -160,7 +160,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         initWatcher();
 
-        login_username.addTextChangedListener(login_credit_watcher);
+        login_username.addTextChangedListener(login_username_watcher);
         login_password.addTextChangedListener(login_password_watcher);
         register_nickname.addTextChangedListener(register_nickname_watcher);
         register_password.addTextChangedListener(register_password_watcher);
@@ -422,197 +422,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 upload_img();
-                final String nickname = register_nickname.getText().toString();
-                final String password = register_password.getText().toString();
-                final String name = register_name.getText().toString();
-                final String age_temp = register_age.getText().toString();
-                final int age;
-                if(age_temp.isEmpty())
-                    age = -1;
-                else
-                    age = Integer.parseInt(age_temp);
-                final int sex = current_sex;
-                final int grade = current_grade;
-                final String major = register_major.getText().toString();
-                final String id_temp = register_id.getText().toString();
-                final int id = Integer.parseInt(id_temp);
-                final String mail = register_mail.getText().toString();
-                final String phone_temp = register_phone.getText().toString();
-                final int phone;
-                if(phone_temp.isEmpty())
-                    phone = -1;
-                else
-                    phone = Integer.parseInt(phone_temp);
-
-                register.setProgress(0);
-
-                new Thread(){
-                    @Override
-                    public void run () {
-                        //params.setUseJsonStreamer(true);
-                        JSONObject body = new JSONObject();
-                        try {
-                            body.put("userId", 4396);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("avator", image_name);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("userType", 0);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("name", name);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("nickName", nickname);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("age", age);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("sex", sex);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("grade", grade);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("major", major);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("mailAddr", mail);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("phoneNum", phone);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("stuId", id);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("tags", "0");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            body.put("password", password);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        Message msg1 = new Message();
-                        msg1.what = 20;
-                        handler.sendMessage(msg1);
-
-                        String urlPath = "http://106.14.225.59/users";
-                        URL url = null;
-                        try {
-                            url = new URL(urlPath);
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                        HttpURLConnection conn = null;
-                        try {
-                            conn = (HttpURLConnection) url.openConnection();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        conn.setConnectTimeout(5000);
-                        // 设置允许输出
-                        conn.setDoOutput(true);
-                        conn.setDoInput(true);
-                        try {
-                            conn.setRequestMethod("POST");
-                        } catch (ProtocolException e) {
-                            e.printStackTrace();
-                        }
-
-                        Message msg2 = new Message();
-                        msg2.what = 20;
-                        handler.sendMessage(msg2);
-
-                        // 设置contentType
-                        conn.setRequestProperty("Content-Type", "application/json");
-                        DataOutputStream os = null;
-                        try {
-                            os = new DataOutputStream(conn.getOutputStream());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        Message msg3 = new Message();
-                        msg3.what = 20;
-                        handler.sendMessage(msg3);
-
-                        String content = String.valueOf(body);
-                        try {
-                            os.writeBytes(content);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            os.flush();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            os.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            //System.out.println(conn.getResponseCode());
-                            if (conn.getResponseCode() == 201) {
-                                InputStreamReader in = new InputStreamReader(conn.getInputStream());
-                                BufferedReader bf = new BufferedReader(in);
-                                String recieveData = null;
-                                String result = "";
-                                while ((recieveData = bf.readLine()) != null) {
-                                    result += recieveData + "\n";
-                                }
-                                //System.out.println(result);
-                                in.close();
-                                conn.disconnect();
-
-                                Message msg4 = new Message();
-                                msg4.what = 40;
-                                handler.sendMessage(msg4);
-
-                                getToken(nickname,password);
-                            }
-                            else if(conn.getResponseCode() ==  409){
-                                Message msg5 = new Message();
-                                msg5.what = -1;
-                                handler.sendMessage(msg5);
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
-
             }
 
         });
@@ -620,7 +429,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
     //用来判断edittext是否有内容，如果有再显示清除按钮
     private void initWatcher() {
-        login_credit_watcher = new TextWatcher() {
+        login_username_watcher = new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
             public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
             public void afterTextChanged(Editable s) {
@@ -784,12 +593,12 @@ public class LoginRegisterActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                 //通过UUID生成字符串文件名
-                image_name = UUID.randomUUID().toString() + ".jpg";
+                String image_name_temp = UUID.randomUUID().toString() + ".jpg";
                 //存储图片
-                FileOutputStream out = openFileOutput(image_name, MODE_PRIVATE);
+                FileOutputStream out = openFileOutput(image_name_temp, MODE_PRIVATE);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                 //获取复制后文件的uri
-                Uri image_file_uri = Uri.fromFile(getFileStreamPath(image_name));
+                Uri image_file_uri = Uri.fromFile(getFileStreamPath(image_name_temp));
                 //图片预览
                 this.register_image.setImageURI(image_file_uri);
                 //保存该URI
@@ -884,6 +693,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         Image image = response.body();
                         image_name = image.getImageName();
                         System.out.println(image.getImageName());
+                        register_new_user();
                     }
                     else
                     {
@@ -896,5 +706,198 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void register_new_user(){
+        final String nickname = register_nickname.getText().toString();
+        final String password = register_password.getText().toString();
+        final String name = register_name.getText().toString();
+        final String age_temp = register_age.getText().toString();
+        final int age;
+        if(age_temp.isEmpty())
+            age = -1;
+        else
+            age = Integer.parseInt(age_temp);
+        final int sex = current_sex;
+        final int grade = current_grade;
+        final String major = register_major.getText().toString();
+        final String id_temp = register_id.getText().toString();
+        final int id = Integer.parseInt(id_temp);
+        final String mail = register_mail.getText().toString();
+        final String phone_temp = register_phone.getText().toString();
+        final int phone;
+        if(phone_temp.isEmpty())
+            phone = -1;
+        else
+            phone = Integer.parseInt(phone_temp);
+
+        register.setProgress(0);
+
+        new Thread(){
+            @Override
+            public void run () {
+                //params.setUseJsonStreamer(true);
+                JSONObject body = new JSONObject();
+                try {
+                    body.put("userId", 4396);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("avator", image_name);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("userType", 0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("name", name);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("nickName", nickname);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("age", age);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("sex", sex);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("grade", grade);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("major", major);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("mailAddr", mail);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("phoneNum", phone);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("stuId", id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("tags", "0");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    body.put("password", password);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Message msg1 = new Message();
+                msg1.what = 20;
+                handler.sendMessage(msg1);
+
+                String urlPath = "http://106.14.225.59/users";
+                URL url = null;
+                try {
+                    url = new URL(urlPath);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                HttpURLConnection conn = null;
+                try {
+                    conn = (HttpURLConnection) url.openConnection();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                conn.setConnectTimeout(5000);
+                // 设置允许输出
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+                try {
+                    conn.setRequestMethod("POST");
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+                }
+
+                Message msg2 = new Message();
+                msg2.what = 20;
+                handler.sendMessage(msg2);
+
+                // 设置contentType
+                conn.setRequestProperty("Content-Type", "application/json");
+                DataOutputStream os = null;
+                try {
+                    os = new DataOutputStream(conn.getOutputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Message msg3 = new Message();
+                msg3.what = 20;
+                handler.sendMessage(msg3);
+
+                String content = String.valueOf(body);
+                try {
+                    os.writeBytes(content);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    os.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    //System.out.println(conn.getResponseCode());
+                    if (conn.getResponseCode() == 201) {
+                        InputStreamReader in = new InputStreamReader(conn.getInputStream());
+                        BufferedReader bf = new BufferedReader(in);
+                        String recieveData = null;
+                        String result = "";
+                        while ((recieveData = bf.readLine()) != null) {
+                            result += recieveData + "\n";
+                        }
+                        //System.out.println(result);
+                        in.close();
+                        conn.disconnect();
+
+                        Message msg4 = new Message();
+                        msg4.what = 40;
+                        handler.sendMessage(msg4);
+
+                        getToken(nickname,password);
+                    }
+                    else if(conn.getResponseCode() ==  409){
+                        Message msg5 = new Message();
+                        msg5.what = -1;
+                        handler.sendMessage(msg5);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 }

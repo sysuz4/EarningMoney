@@ -271,4 +271,6 @@ public class MainFragment extends Fragment {
 
         swipeRefreshLayout.setRefreshing(false);
     }
+
+
 }
