@@ -44,6 +44,7 @@ public interface service{
     Observable<GetTokenObj> post_to_get_token(@Query("username") String username, @Query("password") String password);
 
     //@HEAD()
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/tasks/{taskID}/questionares")
     Call<Questionare> get_questionare(@Path("taskID") int taskID);
 
@@ -55,10 +56,11 @@ public interface service{
     @POST("/missions/errands")
     Call<Msg> create_errand(@Header("authorization") String token, @Body RequestBody errand);
 
-
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/users/{userID}")
     Call<User> get_user(@Header("authorization") String token, @Path("userID") int userID);
 
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @PUT("/users/{userID}")
     Call<Msg> modify_user(@Header("authorization") String token, @Path("userID") int userID, @Query("oldPassword") String oldPassword, @Body RequestBody requestBody);
 
@@ -74,6 +76,7 @@ public interface service{
     @GET("/missions/AllMissions")
     Observable<GetMissionsObj> getMissions(@Header("authorization") String token);
 
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/missions/{missionID}")
     Observable<Mission> getMissionDetail(@Path("missionID") int missionID);
 
