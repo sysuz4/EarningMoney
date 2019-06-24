@@ -127,8 +127,11 @@ public class FillInQuestionareAdapter  extends BaseAdapter
     private void fillItem(int type, int i, View rootview) {
         if (type == 0) {
             String answer = list.get(i).getAnswer();
+            //Log.e("an:", answer);
             if (answer != null && !answer.isEmpty()){
                 ((EditText) rootview).setText(answer);
+            } else {
+                ((EditText) rootview).setText("");
             }
             ((EditText) rootview).setId(i * 100);
         } else if (type == 1) {
