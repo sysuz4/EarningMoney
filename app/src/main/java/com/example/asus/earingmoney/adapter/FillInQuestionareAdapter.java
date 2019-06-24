@@ -34,6 +34,7 @@ public class FillInQuestionareAdapter  extends BaseAdapter
     private Context context;
     private static String ch = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    private String[] chineseDigit = {"零","一", "双", "三", "四", "五", "六"};
     public FillInQuestionareAdapter(List<Question> list, Context context) {
         this.list = list;
         this.context = context;
@@ -110,7 +111,7 @@ public class FillInQuestionareAdapter  extends BaseAdapter
         } else {
             int num = list.get(i).getChoiceNum();
             if (num != 0) {
-                questionType.setText("[" + Integer.toString(num) +"选]");
+                questionType.setText("[" + chineseDigit[num] +"选]");
             } else {
                 questionType.setText("[不定项]");
             }
