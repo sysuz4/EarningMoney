@@ -135,6 +135,7 @@ public class MeFragment extends Fragment {
                         sexImage.setImageResource(R.mipmap.girl);
                         activity.sex = Constants.FEMALE;
                     }
+                    final int gender = user.getSex();
                     //todo avator image
                     ImageName = user.getAvator();
                     final String imgUrl = Constants.BASEURL + "images/" + ImageName;
@@ -145,7 +146,17 @@ public class MeFragment extends Fragment {
                             header.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    header.setImageBitmap(b);
+                                    if(b == null){
+                                        if(gender == Constants.MALE){
+                                            header.setImageResource(R.mipmap.man);
+                                        }
+                                        else
+                                        {
+                                            header.setImageResource(R.mipmap.woman);
+                                        }
+                                    }
+                                    else
+                                        header.setImageBitmap(b);
                                 }
                             });
                         }
@@ -428,7 +439,7 @@ public class MeFragment extends Fragment {
 
             service myservice = retrofit.create(service.class);
             // 执行请求
-            myservice.upload_pic(Util.getToken(getContext()), description, body).enqueue(new Callback<Image>() {
+            myservice.upload_pic(description, body).enqueue(new Callback<Image>() {
                 @Override
                 public void onResponse(Call<Image> call, Response<Image> response) {
                     if(response.code() == 201)

@@ -24,13 +24,19 @@ import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.example.asus.earingmoney.Util.Constants;
+import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.model.GetTokenObj;
+import com.example.asus.earingmoney.model.Image;
+import com.example.asus.earingmoney.model.Msg;
+import com.example.asus.earingmoney.model.User;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,8 +46,19 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -53,7 +70,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
     public ServiceFactory serviceFactory;
     private ConstraintLayout login_area;
     private ScrollView register_area_1, register_area_2, register_area_3, register_area_4;
-    private CircleImageView login_image,register_image;
+    private CircleImageView register_image;
     private TextView register_button, login_button, continue_1, continue_2, continue_3;
     private EditText login_username, login_password, register_nickname, register_password, register_password_clarify, register_name,
             register_age, register_major, register_id, register_mail, register_phone;
@@ -66,7 +83,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
     private boolean login_has_username, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify,
             register_has_name, register_has_credit, register_has_sex, register_has_grade, had_login_in;
 
-    private String default_image = "android.resource://com.example.asus.work2/" + R.mipmap.me;
+    private String default_image = null;
+    private String image_name = null;
     private int current_sex, current_grade;
     SharedPreferences user_shared_preference;
 
@@ -403,6 +421,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                upload_img();
                 final String nickname = register_nickname.getText().toString();
                 final String password = register_password.getText().toString();
                 final String name = register_name.getText().toString();
@@ -434,6 +453,11 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         JSONObject body = new JSONObject();
                         try {
                             body.put("userId", 4396);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            body.put("avator", image_name);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -760,16 +784,16 @@ public class LoginRegisterActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                 //通过UUID生成字符串文件名
-                String image_name = UUID.randomUUID().toString() + ".jpg";
+                image_name = UUID.randomUUID().toString() + ".jpg";
                 //存储图片
                 FileOutputStream out = openFileOutput(image_name, MODE_PRIVATE);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                 //获取复制后文件的uri
                 Uri image_file_uri = Uri.fromFile(getFileStreamPath(image_name));
                 //图片预览
-                this.register_image.setImageURI(uri);
+                this.register_image.setImageURI(image_file_uri);
                 //保存该URI
-                default_image = image_file_uri.toString();
+                default_image = image_file_uri.getPath();
                 out.flush();
                 out.close();
             }
@@ -784,6 +808,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
     }
 
     public void getToken(final String username, final String password) {
+
         myservice.post_to_get_token(username,password)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -804,18 +829,72 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         int userId;
                         token = response.getToken();
                         userId = response.getUserId();
-                        System.out.println(token);
+                        //System.out.println(token);
                         //Log.e("666", token);
-                        System.out.println(userId);
-                        Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
+                        //System.out.println(userId);
                         SharedPreferences.Editor editor = user_shared_preference.edit();
                         editor.putString("token",token);
                         editor.putInt("userId",userId);
                         editor.putString("username",username);
                         editor.putBoolean("had_user",true);
                         editor.commit();
+                        Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
                         startActivity(intent);
                     }
                 });
+    }
+
+    private void upload_img(){
+        if(default_image != null){
+            File file = new File(default_image);
+            // 创建 RequestBody，用于封装构建RequestBody
+            // RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), file);
+
+            // MultipartBody.Part  和后端约定好Key，这里的partName是用file
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+
+            // 添加描述
+            String descriptionString = "hello, 这是文件描述";
+            RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+
+            OkHttpClient build = new OkHttpClient.Builder()
+                    .connectTimeout(2, TimeUnit.SECONDS)
+                    .readTimeout(2, TimeUnit.SECONDS)
+                    .writeTimeout(2, TimeUnit.SECONDS)
+                    .build();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Constants.BASEURL)
+                    // 本次实验不需要自定义Gson
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    // build 即为okhttp声明的变量，下文会讲
+                    .client(build)
+                    .build();
+
+            service myservice_2 = retrofit.create(service.class);
+            // 执行请求
+            System.out.println(Util.getToken(this));
+            myservice_2.upload_pic(description, body).enqueue(new Callback<Image>() {
+                @Override
+                public void onResponse(Call<Image> call, Response<Image> response) {
+                    if(response.code() == 201)
+                    {
+                        Image image = response.body();
+                        image_name = image.getImageName();
+                        System.out.println(image.getImageName());
+                    }
+                    else
+                    {
+                        System.out.println(response.raw().toString());
+                    }
+                }
+                @Override
+                public void onFailure(Call<Image> call, Throwable t) {
+                    System.out.println(t.toString());
+                }
+            });
+        }
     }
 }
