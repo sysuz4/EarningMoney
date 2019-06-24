@@ -1,5 +1,6 @@
 package com.example.asus.earingmoney;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,6 +49,9 @@ public class errand_status_page extends AppCompatActivity {
     private Errand errand;
     private List<Task> task_list;
     private User user;
+    private int missionId;
+    private int taskId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +123,57 @@ public class errand_status_page extends AppCompatActivity {
 
             }
         };
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        taskId = bundle.getInt("taskId");
+        token = Util.getToken(getApplicationContext());
+        OkHttpClient build = new OkHttpClient.Builder()
+                .connectTimeout(2, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS)
+                .writeTimeout(2, TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://106.14.225.59/")
+                // 本次实验不需要自定义Gson
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                // build 即为okhttp声明的变量，下文会讲
+                .client(build)
+                .build();
+        service myService1 = retrofit.create(service.class);
+        Call<Task> myCall5 = myService1.getTaskByTaskId(token,taskId);
+        myCall5.enqueue(new Callback<Task>() {
+            //请求成功时回调
+            @Override
+            public void onResponse(Call<Task> call, final Response<Task> response) {
+                // 步骤7：处理返回的数据结果
+                if(response.code() == 200)
+                {
+                    missionId = response.body().getMissionId();
+                    loadData(missionId);
+                }
+                else if(response.code() == 401)
+                {
+                    Toast.makeText(getApplicationContext(),
+                            "Invalid username/password supplied", Toast.LENGTH_SHORT).show();
+                }
+                else if(response.code() == 404){
+                    Toast.makeText(getApplicationContext(),
+                            "task not found", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(getApplicationContext(),
+                            "Unknown error", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            //请求失败时回调
+            @Override
+            public void onFailure(Call<Task> call, Throwable throwable) {
+                System.out.println("连接失败");
+            }
+        });
     }
 
     @Override
@@ -137,8 +193,7 @@ public class errand_status_page extends AppCompatActivity {
         payment1 = findViewById(R.id.payment1);
 
     }
-    public void loadData(View view){
-        token = Util.getToken(getApplicationContext());
+    public void loadData(int missionId){
         OkHttpClient build = new OkHttpClient.Builder()
                 .connectTimeout(2, TimeUnit.SECONDS)
                 .readTimeout(2, TimeUnit.SECONDS)
@@ -155,8 +210,8 @@ public class errand_status_page extends AppCompatActivity {
                 .build();
 
         final service myService = retrofit.create(service.class);
-        Call<Mission> myCall1 = myService.getErrandMission(token,9);
-        Call<List<Task>> myCall2 = myService.getTaskByMissionID(token,9);
+        Call<Mission> myCall1 = myService.getErrandMission(token,missionId);
+        Call<List<Task>> myCall2 = myService.getTaskByMissionID(token,missionId);
 
         myCall1.enqueue(new Callback<Mission>() {
             //请求成功时回调
@@ -251,8 +306,6 @@ public class errand_status_page extends AppCompatActivity {
                                 // 步骤7：处理返回的数据结果
                                 if(response.code() == 200)
                                 {
-//                                    Toast.makeText(getApplicationContext(),
-//                                            "get user success", Toast.LENGTH_SHORT).show();
                                     user = response.body();
                                     Message msg = new Message();
                                     msg.what = 3;
@@ -302,6 +355,59 @@ public class errand_status_page extends AppCompatActivity {
             //请求失败时回调
             @Override
             public void onFailure(Call<List<Task>> call, Throwable throwable) {
+                System.out.println("连接失败");
+            }
+        });
+    }
+
+    public void publisherFinishErrand(View view){
+        OkHttpClient build = new OkHttpClient.Builder()
+                .connectTimeout(2, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS)
+                .writeTimeout(2, TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://106.14.225.59/")
+                // 本次实验不需要自定义Gson
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                // build 即为okhttp声明的变量，下文会讲
+                .client(build)
+                .build();
+        service myService2 = retrofit.create(service.class);
+        Call<ResponseBody> myCall6 = myService2.finishErrandTask(token,taskId);
+        myCall6.enqueue(new Callback<ResponseBody>() {
+            //请求成功时回调
+            @Override
+            public void onResponse(Call<ResponseBody> call, final Response<ResponseBody> response) {
+                // 步骤7：处理返回的数据结果
+                if(response.code() == 200)
+                {
+                    Toast.makeText(getApplicationContext(),
+                            "提交成功，等待审核", Toast.LENGTH_SHORT).show();
+                    Message msg = new Message();
+                    msg.what = 3;
+                    handler.sendMessage(msg);
+
+                }
+                else if(response.code() == 401)
+                {
+                    Toast.makeText(getApplicationContext(),
+                            "Invalid username/password supplied", Toast.LENGTH_SHORT).show();
+                }
+                else if(response.code() == 404){
+                    Toast.makeText(getApplicationContext(),
+                            "failure", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(getApplicationContext(),
+                            "Unknown error", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            //请求失败时回调
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 System.out.println("连接失败");
             }
         });
