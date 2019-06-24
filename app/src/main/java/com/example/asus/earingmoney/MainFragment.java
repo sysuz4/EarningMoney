@@ -2,7 +2,10 @@ package com.example.asus.earingmoney;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.view.LayoutInflater;
@@ -25,6 +28,7 @@ import com.example.asus.earingmoney.model.Mission;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Completable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -42,6 +46,7 @@ public class MainFragment extends Fragment {
     public ListViewAdapter_missions adapter;
     private ListView listview;
     private String[] mItems1,mItems2,mItems3,mItems4;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     public MainFragment() {
@@ -67,6 +72,10 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.main_fragment, container, false);
         setHasOptionsMenu(true);
+
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeLayout);
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
+        swipeRefreshLayout.setProgressViewEndTarget(true, 200);
 
         spinner1 = rootView.findViewById(R.id.spinner1);
         spinner2 = rootView.findViewById(R.id.spinner2);
@@ -102,47 +111,7 @@ public class MainFragment extends Fragment {
         listview.setAdapter(adapter);
 //        Util.setListViewHeightBasedOnChildren(listview);
 
-        Observer<GetMissionsObj> observer = new Observer<GetMissionsObj>() {
-            @Override
-            public void onNext(GetMissionsObj missions) {
-                for(Mission i : missions.getAllMissions()){
-                    boolean have_this_mission = false;
-                    //System.out.println(i.getMissionId());
-                    if(!(i.isMyAccept() || i.isMyPub())){//判断该任务是否已经接受，或是否为自己创建的，如是则不显示
-                        for(Mission j :missionslist){
-                            if(j.getMissionId() == i.getMissionId())
-                                have_this_mission = true;
-                        }
-                        if(!have_this_mission){
-                            totallist.add(i);
-                            missionslist.add(i);
-                            if(i.getTaskType() == 1){
-                                questionare_missionslist.add(i);
-                            }
-                            else {
-                                errand_missionslist.add(i);
-                            }
-                        }
-
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Toast.makeText(getContext().getApplicationContext(), "加载任务失败", Toast.LENGTH_SHORT).show();
-            }
-        };
-        myservice.getMissions(Util.getToken(getActivity()))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+        getMissions();
 
         listview.setOnItemClickListener(new MyOnItemClickListener());
 
@@ -154,6 +123,15 @@ public class MainFragment extends Fragment {
 ////                startActivity(intent);
 ////            }
 ////        });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                getMissions();
+            }
+        });
+
         return rootView;
     }
 
@@ -246,5 +224,51 @@ public class MainFragment extends Fragment {
 
             }
         });
+    }
+
+    private void getMissions(){ //获取任务列表
+        Observer<GetMissionsObj> observer = new Observer<GetMissionsObj>() {
+            @Override
+            public void onNext(GetMissionsObj missions) {
+                for(Mission i : missions.getAllMissions()){
+                    boolean have_this_mission = false;
+                    //System.out.println(i.getMissionId());
+                    if(!(i.isMyAccept() || i.isMyPub())){//判断该任务是否已经接受，或是否为自己创建的，如是则不显示
+                        for(Mission j :missionslist){
+                            if(j.getMissionId() == i.getMissionId())
+                                have_this_mission = true;
+                        }
+                        if(!have_this_mission){
+                            totallist.add(i);
+                            missionslist.add(i);
+                            if(i.getTaskType() == 1){
+                                questionare_missionslist.add(i);
+                            }
+                            else {
+                                errand_missionslist.add(i);
+                            }
+                        }
+
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(getContext().getApplicationContext(), "加载任务失败", Toast.LENGTH_SHORT).show();
+            }
+        };
+        myservice.getMissions(Util.getToken(getActivity()))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
