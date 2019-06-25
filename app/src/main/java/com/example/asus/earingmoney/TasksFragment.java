@@ -53,7 +53,7 @@ import static android.support.constraint.Constraints.TAG;
 public class TasksFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
     private static final String ARG_SHOW_TEXT = "text";
 
-    private SwipeRefreshLayout swipeRefreshLayout1,swipeRefreshLayout2;
+    private SwipeRefreshLayout swipeRefreshLayout1;
 
     private String mContentText;
     private ListView missionOrTaskList;
@@ -131,9 +131,6 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
         swipeRefreshLayout1.setSize(SwipeRefreshLayout.DEFAULT);
         swipeRefreshLayout1.setProgressViewEndTarget(true, 200);
 
-        swipeRefreshLayout2 = rootView.findViewById(R.id.swipeLayout1);
-        swipeRefreshLayout2.setSize(SwipeRefreshLayout.DEFAULT);
-        swipeRefreshLayout2.setProgressViewEndTarget(true, 200);
 
         initView(rootView);
         initData();
@@ -142,14 +139,6 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
             @Override
             public void onRefresh() {
                 swipeRefreshLayout1.setRefreshing(true);
-                initData();
-            }
-        });
-
-        swipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout2.setRefreshing(true);
                 initData();
             }
         });
@@ -430,7 +419,7 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                 });
 
         swipeRefreshLayout1.setRefreshing(false);
-        swipeRefreshLayout2.setRefreshing(false);
+
     }
 
     @Override
