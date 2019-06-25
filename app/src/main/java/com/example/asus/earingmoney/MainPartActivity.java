@@ -150,7 +150,7 @@ public class MainPartActivity extends AppCompatActivity {
                 String image_name = java.util.UUID.randomUUID().toString() + ".jpg";
                 //存储图片
                 java.io.FileOutputStream out = openFileOutput(image_name, MODE_PRIVATE);
-                bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, out);
+                bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 10, out);
                 //获取复制后文件的uri
                 android.net.Uri image_file_uri = android.net.Uri.fromFile(getFileStreamPath(image_name));
                 //图片预览
