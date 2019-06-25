@@ -69,7 +69,6 @@
             android:drawableTop="@drawable/tab_me_selector"
             android:gravity="center"/>
 
-
     </RadioGroup>
 
 </android.support.constraint.ConstraintLayout>

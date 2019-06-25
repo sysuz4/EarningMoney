@@ -45,12 +45,14 @@ public class Util {
         return choices;
     }
 
+    //返回token值
     public static String getToken(Context context)
     {
         SharedPreferences user_shared_preference = context.getSharedPreferences("user", 0);
         return user_shared_preference.getString("token", "");
     }
 
+    //返回userId值
     public static int getUserId(Context context)
     {
         SharedPreferences user_shared_preference = context.getSharedPreferences("user", 0);

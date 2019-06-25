@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--下拉选择框的显示文件-->
 <resources>
     <string-array name="spin1">
         <item>所有类型</item>

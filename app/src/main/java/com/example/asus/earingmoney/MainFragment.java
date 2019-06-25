@@ -39,8 +39,8 @@ public class MainFragment extends Fragment {
     private Spinner spinner1, spinner2, spinner3, spinner4;
     private service myservice;
     private ServiceFactory serviceFactory;
-    private List<Mission> missionslist = new ArrayList<Mission>();
-    private List<Mission> totallist = new ArrayList<Mission>();
+    private List<Mission> missionslist = new ArrayList<Mission>();//missionslist为显示的内容，
+    private List<Mission> totallist = new ArrayList<Mission>();   //totallist为所有mission内容，ques_list和err_list分别为问卷任务和跑腿任务
     private List<Mission> questionare_missionslist = new ArrayList<Mission>();
     private List<Mission> errand_missionslist = new ArrayList<Mission>();
     public ListViewAdapter_missions adapter;
@@ -73,10 +73,12 @@ public class MainFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.main_fragment, container, false);
         setHasOptionsMenu(true);
 
+        //初始化下拉刷新组件
         swipeRefreshLayout = rootView.findViewById(R.id.swipeLayout);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         swipeRefreshLayout.setProgressViewEndTarget(true, 200);
 
+        //初始化下拉排序组件
         spinner1 = rootView.findViewById(R.id.spinner1);
         spinner2 = rootView.findViewById(R.id.spinner2);
         spinner3 = rootView.findViewById(R.id.spinner3);
@@ -111,6 +113,7 @@ public class MainFragment extends Fragment {
         listview.setAdapter(adapter);
 //        Util.setListViewHeightBasedOnChildren(listview);
 
+        //向后台请求任务数据
         getMissions();
 
         listview.setOnItemClickListener(new MyOnItemClickListener());
@@ -124,6 +127,7 @@ public class MainFragment extends Fragment {
 ////            }
 ////        });
 
+        //下拉刷新更新数据
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -157,7 +161,7 @@ public class MainFragment extends Fragment {
 
     private void iniSpiner(){//用于排序、筛选
 
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { //对问卷或跑腿任务进行筛选
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 0){
@@ -181,7 +185,7 @@ public class MainFragment extends Fragment {
             }
         });
 
-        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){ //对酬劳进行排序
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -203,7 +207,7 @@ public class MainFragment extends Fragment {
             }
         });
 
-        spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){ //对截止时间进行排序
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

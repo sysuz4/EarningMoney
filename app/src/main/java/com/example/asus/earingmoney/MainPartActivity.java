@@ -55,6 +55,7 @@ public class MainPartActivity extends AppCompatActivity {
         fragment_vp = findViewById(R.id.fragment_vp);
         tabs_rg = findViewById(R.id.tabs_rg);
 
+        //储存三个Fragments界面
         fragments = new ArrayList<>(3);
         fragments.add(MainFragment.newInstance("首页"));
         fragments.add(TasksFragment.newInstance("任务"));
@@ -77,7 +78,7 @@ public class MainPartActivity extends AppCompatActivity {
         fragment_vp.removeOnPageChangeListener(mPageChangeListener);
     }
 
-    private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
+    private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {//界面切换
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -95,6 +96,7 @@ public class MainPartActivity extends AppCompatActivity {
         }
     };
 
+    //点击下方按钮切换界面
     private RadioGroup.OnCheckedChangeListener mOnCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -205,6 +207,7 @@ public class MainPartActivity extends AppCompatActivity {
         }
     }
 
+    //自定义的fragmentAdapter
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private List<Fragment> mList;

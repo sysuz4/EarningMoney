@@ -8,8 +8,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+//用于通过mission的各个属性来进行比较
 public class MissionsSortUtil {
 
+    //通过id比较
     static Comparator<Mission> missionComparatorById = new Comparator<Mission>() {
         @Override
         public int compare(Mission lhs, Mission rhs) {
@@ -19,6 +21,7 @@ public class MissionsSortUtil {
         }
     };
 
+    //通过赏金比较
     static Comparator<Mission> missionComparatorByPriceUp = new Comparator<Mission>() {
         @Override
         public int compare(Mission lhs, Mission rhs) {
@@ -37,6 +40,7 @@ public class MissionsSortUtil {
         }
     };
 
+    //通过截止时间比较
     static Comparator<Mission> missionComparatorByTimeUp = new Comparator<Mission>() {
         @Override
         public int compare(Mission lhs, Mission rhs) {
