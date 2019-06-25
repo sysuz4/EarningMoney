@@ -59,6 +59,13 @@ public class Util {
         return user_shared_preference.getInt("userId", 0);
     }
 
+    //返回missionId值
+    public static int getMissionId(Context context)
+    {
+        SharedPreferences user_shared_preference = context.getSharedPreferences("user", 0);
+        return user_shared_preference.getInt("missionId", 0);
+    }
+
     public static  String convertDate2String(Date date)
     {
         String year = Integer.toString(date.getYear() + 1900);

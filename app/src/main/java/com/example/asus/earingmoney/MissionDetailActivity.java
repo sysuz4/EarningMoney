@@ -1,8 +1,9 @@
 package com.example.asus.earingmoney;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,8 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Util;
-import com.example.asus.earingmoney.model.GetMissionsObj;
-import com.example.asus.earingmoney.model.Image;
 import com.example.asus.earingmoney.model.Mission;
 import com.example.asus.earingmoney.model.User;
 
@@ -46,6 +45,11 @@ public class MissionDetailActivity extends AppCompatActivity {
         missionId = (int)getIntent().getExtras().get("missionId");
         taskType = (int)getIntent().getExtras().get("taskType");
         description = (String) getIntent().getExtras().get("Description");
+
+        SharedPreferences user_shared_preference = getSharedPreferences("user", 0);
+        SharedPreferences.Editor editor = user_shared_preference.edit();
+        editor.putInt("missionId",missionId);
+        editor.commit();
 
         publish_time = findViewById(R.id.publish_time);
         detail = findViewById(R.id.detail);
@@ -104,12 +108,14 @@ public class MissionDetailActivity extends AppCompatActivity {
         });
     }
 
+    //右上方小组件变化
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.missin_detail_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    //返回按钮
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -120,6 +126,7 @@ public class MissionDetailActivity extends AppCompatActivity {
         return true;
     }
 
+    //从后台获取mission详情
     private void getMissionDetail(){
         Observer<Mission> observer_mission = new Observer<Mission>() {
             @Override
@@ -149,6 +156,7 @@ public class MissionDetailActivity extends AppCompatActivity {
                 .subscribe(observer_mission);
     }
 
+    //通过userId获取用户昵称
     private void getUserDetail(){
         Observer<User> observer_user = new Observer<User>() {
             @Override

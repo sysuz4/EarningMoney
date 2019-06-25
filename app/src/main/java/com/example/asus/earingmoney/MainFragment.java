@@ -231,11 +231,17 @@ public class MainFragment extends Fragment {
     }
 
     private void getMissions(){ //获取任务列表
+        totallist.clear();
+        missionslist.clear();
+        questionare_missionslist.clear();
+        errand_missionslist.clear();
         Observer<GetMissionsObj> observer = new Observer<GetMissionsObj>() {
             @Override
             public void onNext(GetMissionsObj missions) {
                 for(Mission i : missions.getAllMissions()){
                     boolean have_this_mission = false;
+                    if(i.getReportNum() >= 4) //如果举报次数>=4就不显示
+                        continue;
                     //System.out.println(i.getMissionId());
                     if(!(i.isMyAccept() || i.isMyPub())){//判断该任务是否已经接受，或是否为自己创建的，如是则不显示
                         for(Mission j :missionslist){

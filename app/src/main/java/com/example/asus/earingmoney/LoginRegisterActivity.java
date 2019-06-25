@@ -912,7 +912,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         Observer<Response<ResponseBody>> observer_2 = new Observer<Response<ResponseBody>>() {
             @Override
             public void onNext(Response<ResponseBody> r) {
-                System.out.println(r.code());
+                //System.out.println(r.code());
                 if(r.code() == 200){
                     token_valid = true;
                 }
