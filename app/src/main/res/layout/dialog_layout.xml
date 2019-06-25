@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="20dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:text="年级"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"/>
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+        <Button
+            android:id="@+id/choice1"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="大一"
+            android:layout_marginRight="15dp"
+            android:background="@color/gray"/>
+        <Button
+            android:id="@+id/choice2"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="大二"
+            android:background="@color/gray"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/choice3"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="大三"
+            android:layout_marginRight="15dp"
+            android:background="@color/gray" />
+        <Button
+            android:id="@+id/choice4"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="大四"
+            android:background="@color/gray"/>
+    </LinearLayout>
+
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/continue_button"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:background="@color/blue"
+        android:layout_marginTop="15dp"/>
+
+
+</LinearLayout>
