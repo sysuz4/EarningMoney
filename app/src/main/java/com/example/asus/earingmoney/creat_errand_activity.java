@@ -276,7 +276,7 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
 
                 // 执行请求
                 final int finalI = i;
-                myservice.upload_pic(Util.getToken(this), description, body).enqueue(new Callback<Image>() {
+                myservice.upload_pic(description, body).enqueue(new Callback<Image>() {
                     @Override
                     public void onResponse(Call<Image> call, Response<Image> response) {
                         if(response.code() == 201)

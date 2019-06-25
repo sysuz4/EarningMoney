@@ -37,11 +37,17 @@ public class Mission {
     @SerializedName("taskNum")
     private int taskNum;
 
+    @SerializedName("reportNum")
+    private int reportNum;
+
     @SerializedName("tags")
     private String tags;
 
     @SerializedName("myAccept")
     private boolean myAccept;
+
+    @SerializedName("myPub")
+    private boolean myPub;
 
     public void setMissionId(int missionId) {
         this.missionId = missionId;
@@ -145,5 +151,13 @@ public class Mission {
 
     public boolean isMyAccept() {
         return myAccept;
+    }
+
+    public boolean isMyPub() {
+        return myPub;
+    }
+
+    public int getReportNum() {
+        return reportNum;
     }
 }
