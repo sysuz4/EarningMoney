@@ -94,6 +94,10 @@ public interface service{
     Observable<Response<ResponseBody>> check_token(@Header("authorization") String token);
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @POST("/report/{missionID}")
+    Observable<Response<ResponseBody>> commitReport(@Header("authorization") String token, @Path("missionID") int missionId, @Body RequestBody requestBody);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}")
     Call<Mission>getErrandMission(@Header("authorization") String token, @Path("missionID") int missionID);
 

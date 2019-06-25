@@ -37,6 +37,9 @@ public class Mission {
     @SerializedName("taskNum")
     private int taskNum;
 
+    @SerializedName("reportNum")
+    private int reportNum;
+
     @SerializedName("tags")
     private String tags;
 
@@ -152,5 +155,9 @@ public class Mission {
 
     public boolean isMyPub() {
         return myPub;
+    }
+
+    public int getReportNum() {
+        return reportNum;
     }
 }

@@ -1,8 +1,9 @@
 package com.example.asus.earingmoney;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,8 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Util;
-import com.example.asus.earingmoney.model.GetMissionsObj;
-import com.example.asus.earingmoney.model.Image;
 import com.example.asus.earingmoney.model.Mission;
 import com.example.asus.earingmoney.model.User;
 
@@ -46,6 +45,11 @@ public class MissionDetailActivity extends AppCompatActivity {
         missionId = (int)getIntent().getExtras().get("missionId");
         taskType = (int)getIntent().getExtras().get("taskType");
         description = (String) getIntent().getExtras().get("Description");
+
+        SharedPreferences user_shared_preference = getSharedPreferences("user", 0);
+        SharedPreferences.Editor editor = user_shared_preference.edit();
+        editor.putInt("missionId",missionId);
+        editor.commit();
 
         publish_time = findViewById(R.id.publish_time);
         detail = findViewById(R.id.detail);
@@ -111,6 +115,7 @@ public class MissionDetailActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    //返回按钮
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
