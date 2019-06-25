@@ -420,6 +420,12 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                     public void onNext(ArrayList<TaskModel> taskModels) {
                         tasks.clear();
                         tasks.addAll(taskModels);
+
+                        if (!displayMission) {
+                            list.clear();
+                            list.addAll(tasks);
+                            missionOrTaskListAdapter.update();
+                        }
                     }
                 });
 
