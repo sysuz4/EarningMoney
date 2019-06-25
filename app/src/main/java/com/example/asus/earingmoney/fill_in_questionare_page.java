@@ -67,7 +67,7 @@ public class fill_in_questionare_page extends AppCompatActivity implements View.
     private Button commitBtn;
     private Button cancelBtn;
 
-
+    private String[] chineseDigit = {"零","一", "双", "三", "四", "五", "六"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,8 +130,10 @@ public class fill_in_questionare_page extends AppCompatActivity implements View.
     public void onClick(View v) {
         if (v.getId() == R.id.commitBtn) {
             int wrongIndex = checkQuestionare();
-            if (wrongIndex != -1) {
+            if (wrongIndex != -1 && wrongIndex != -2) {
                 presentDialog(wrongIndex);
+            } else if (wrongIndex == -2){
+                Toast.makeText(getApplication(), "初始化中", Toast.LENGTH_SHORT).show();
             } else {
                 commitQuestionare();
             }
@@ -168,7 +170,7 @@ public class fill_in_questionare_page extends AppCompatActivity implements View.
             if (answer == null || answer.isEmpty()) {
                 message += "请选择第" + Integer.toString(wrongIndex + 1) + "题。";
             } else {
-                message += "第" + Integer.toString(wrongIndex + 1) + "题为" + Integer.toString(num) + "选题。";
+                message += "第" + Integer.toString(wrongIndex + 1) + "题为" + chineseDigit[num] + "选题。";
             }
 
         } else {
@@ -240,11 +242,18 @@ public class fill_in_questionare_page extends AppCompatActivity implements View.
                 }else {
                     Log.e("num:", Integer.toString(data.getQuestions().get(i).getChoiceNum()));
                     if (data.getQuestions().get(i).getChoiceNum() != 0 && answer.length() != data.getQuestions().get(i).getChoiceNum()) {
+                        Log.e("answer:", answer);
                         return i;
                     }
                 }
             } else {
+                Log.e("i:", Integer.toString(i));
+                EditText edit = ((EditText)findViewById(i*100));
+                if (edit == null) {
+                    return -2;
+                }
                 String answer = ((EditText)findViewById(i*100)).getText().toString();
+
                 if (answer == null || answer.isEmpty()) {
                     return i;
                 } else {

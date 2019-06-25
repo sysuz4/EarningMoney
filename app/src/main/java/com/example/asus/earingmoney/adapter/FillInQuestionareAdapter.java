@@ -126,8 +126,14 @@ public class FillInQuestionareAdapter  extends BaseAdapter
 
     private void fillItem(int type, int i, View rootview) {
         if (type == 0) {
-            ((EditText)rootview).setText(list.get(i).getAnswer());
-            ((EditText)rootview).setId(i*100);
+            String answer = list.get(i).getAnswer();
+            //Log.e("an:", answer);
+            if (answer != null && !answer.isEmpty()){
+                ((EditText) rootview).setText(answer);
+            } else {
+                ((EditText) rootview).setText("");
+            }
+            ((EditText) rootview).setId(i * 100);
         } else if (type == 1) {
             List<String> options = Arrays.asList(list.get(i).getChoiceStr().split("\\|"));
             String option = list.get(i).getAnswer();
@@ -139,6 +145,10 @@ public class FillInQuestionareAdapter  extends BaseAdapter
                         .getLayoutParams();
                 layoutParams.setMargins(30, 5, 0, 5);//4个参数按顺序分别是左上右下
                 button.setLayoutParams(layoutParams);
+
+                if (option != null && !option.isEmpty()) {
+                    button.setEnabled(false);
+                }
             }
 
             if (option != null) {
@@ -148,6 +158,7 @@ public class FillInQuestionareAdapter  extends BaseAdapter
         } else {
             List<String> options = Arrays.asList(list.get(i).getChoiceStr().split("\\|"));
             String option = list.get(i).getAnswer();
+
             for (int j = 0; j < options.size(); ++j) {
                 CheckBox box = new CheckBox(context);
                 setCheckBoxAttribute(box, ch.substring(j, j+1) + "." + options.get(j), i*100 + j);
@@ -158,14 +169,23 @@ public class FillInQuestionareAdapter  extends BaseAdapter
                 box.setLayoutParams(layoutParams);
 
                 box.setOnCheckedChangeListener(this);
+
+                if (option != null && !option.isEmpty()) {
+                    box.setEnabled(false);
+                }
             }
             if (option != null) {
-                List<String> optionList = Arrays.asList(option.split(""));
-                for (int j = 0; j < optionList.size(); ++j) {
-                    int index = ch.indexOf(optionList.get(j));
+                //List<String> optionList = Arrays.asList(option.split(""));
+                //Toast.makeText(context, Integer.toString(optionList.size()), Toast.LENGTH_SHORT).show();
+                Log.e("option:", option);
+                for (int j = 0; j < option.length(); ++j) {
+                    int index = ch.indexOf(option.substring(j, j+1));
                     //int index = j;
                     CheckBox box = rootview.findViewById(i*100 + index);
                     box.setChecked(true);
+
+                    String answer = list.get(i).getAnswer();
+                    list.get(i).setAnswer(answer.substring(0, answer.length() - 1));
                 }
             }
         }
@@ -228,6 +248,8 @@ public class FillInQuestionareAdapter  extends BaseAdapter
             String newOption = deleteSubString(originOption, optionStr);
             list.get(questionIndex).setAnswer(newOption);
         }
+
+        Log.e("hh", list.get(questionIndex).getAnswer());
     }
 
     private String deleteSubString(String str1, String str2) {
