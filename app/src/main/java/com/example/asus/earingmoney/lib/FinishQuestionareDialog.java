@@ -124,7 +124,7 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
     }
 
     private Handler handler;
-    private String str = "年级：";
+    private String str = "";
     private Button choice1;
     private Button choice2;
     private Button choice3;
@@ -191,7 +191,6 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
                     choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
                     choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
                     choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    str += "专业：";
                 }
                 if(msg.what == 10){
                     title.setText("个人特性");
@@ -203,7 +202,6 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
                     choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
                     choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
                     choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    str += "个人特性：";
                 }
                 if(msg.what == 11){
                     title.setText("爱好");
@@ -215,7 +213,6 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
                     choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
                     choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
                     choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    str += "爱好：";
                 }
                 if(msg.what == 12){
                     if(mContext instanceof createQuestionare)

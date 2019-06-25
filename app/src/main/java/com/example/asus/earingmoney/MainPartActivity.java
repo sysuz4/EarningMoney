@@ -88,6 +88,11 @@ public class MainPartActivity extends AppCompatActivity {
         public void onPageSelected(int position) {
             RadioButton radioButton = (RadioButton) tabs_rg.getChildAt(position);
             radioButton.setChecked(true);
+            if(position == 2)
+            {
+                MeFragment meFragment = (MeFragment)fragments.get(position);
+                meFragment.cancelModifyInfo();
+            }
         }
 
         @Override
