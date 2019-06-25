@@ -110,6 +110,12 @@ public class MultiChooseDialog extends BaseDialog<MultiChooseDialog> {
                     toast("选项数目不能为0");
                 else if(numberPicker.getText().toString().isEmpty())
                     toast("请填写可选数目");
+                else if(Integer.valueOf(numberPicker.getText().toString()) > chooseNum)
+                    toast("可选数目不能大于选项数目");
+                else if(Integer.valueOf(numberPicker.getText().toString()) < 0)
+                    toast("可选数目不能小于0");
+                else if(Integer.valueOf(numberPicker.getText().toString()) == 1)
+                    toast("多选题选择数目不能为1");
                 else
                 {
                     String question = questionText.getText().toString();
@@ -155,6 +161,8 @@ public class MultiChooseDialog extends BaseDialog<MultiChooseDialog> {
                 String chooseText = tempChooseText.getText().toString();
                 if(chooseText.isEmpty())
                     toast("选项不能为空");
+                else if(chooseNum >= 6)
+                    toast("选项不能超过6个");
                 else
                 {
                     RadioButton  button=new RadioButton(mContext);

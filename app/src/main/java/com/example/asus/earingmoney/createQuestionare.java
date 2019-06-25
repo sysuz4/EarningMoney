@@ -81,6 +81,8 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
     public Float money;
     public int taskNum;
 
+    public String tags = "";
+
     private service myservice;
 
     @Override
@@ -329,7 +331,7 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
 
         mission.setDeadLine(finishDate);
         mission.setMoney(money);
-        mission.setTags(""); //todo
+        mission.setTags(tags); //todo
         mission.setTitle(titleText.getText().toString());
         mission.setTaskNum(taskNum);
         mission.setPublishTime(Util.convertDate2String(new Date()));
