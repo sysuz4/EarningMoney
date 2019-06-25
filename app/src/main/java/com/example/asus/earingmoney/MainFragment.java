@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -36,7 +38,7 @@ import rx.schedulers.Schedulers;
 public class MainFragment extends Fragment {
     private static final String ARG_SHOW_TEXT = "text";
 
-    private Spinner spinner1, spinner2, spinner3, spinner4;
+    private Spinner spinner1, spinner2, spinner3;
     private service myservice;
     private ServiceFactory serviceFactory;
     private List<Mission> missionslist = new ArrayList<Mission>();//missionslist为显示的内容，
@@ -47,7 +49,6 @@ public class MainFragment extends Fragment {
     private ListView listview;
     private String[] mItems1,mItems2,mItems3,mItems4;
     private SwipeRefreshLayout swipeRefreshLayout;
-
 
     public MainFragment() {
         // Required empty public constructor
@@ -82,24 +83,19 @@ public class MainFragment extends Fragment {
         spinner1 = rootView.findViewById(R.id.spinner1);
         spinner2 = rootView.findViewById(R.id.spinner2);
         spinner3 = rootView.findViewById(R.id.spinner3);
-        spinner4 = rootView.findViewById(R.id.spinner4);
         mItems1 = getResources().getStringArray(R.array.spin1);
         mItems2 = getResources().getStringArray(R.array.spin2);
         mItems3 = getResources().getStringArray(R.array.spin3);
-        mItems4 = getResources().getStringArray(R.array.spin4);
         ArrayAdapter<String> adapter1=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems1);
         ArrayAdapter<String> adapter2=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems2);
         ArrayAdapter<String> adapter3=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems3);
-        ArrayAdapter<String> adapter4=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems4);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //绑定 Adapter到控件
         spinner1.setAdapter(adapter1);
         spinner2.setAdapter(adapter2);
         spinner3.setAdapter(adapter3);
-        spinner4.setAdapter(adapter4);
 
         iniSpiner();
 //        TextView contentTv = rootView.findViewById(R.id.content_tv);
@@ -240,6 +236,7 @@ public class MainFragment extends Fragment {
             public void onNext(GetMissionsObj missions) {
                 for(Mission i : missions.getAllMissions()){
                     boolean have_this_mission = false;
+                    //System.out.println(i.getTitle());
                     if(i.getMissionStatus() == 1) //如果问卷填写人数已满则不显示
                         continue;
                     if(i.getReportNum() >= 4) //如果举报次数>=4就不显示

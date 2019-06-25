@@ -11,10 +11,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Constants;
 
@@ -32,7 +34,7 @@ public class MainPartActivity extends AppCompatActivity {
     private List<Fragment> fragments;
     private FragmentPagerAdapter adapter;
     private Toolbar toolbar;
-    private SearchView mSearchView;
+    private Toolbar.OnMenuItemClickListener onMenuItemClick;
 
     //获取服务端数据时要进行初始化
     public Uri headerUri = null;
@@ -70,6 +72,24 @@ public class MainPartActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //筛选标签
+        onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                //String msg = "";
+                switch (menuItem.getItemId()) {
+                    case R.id.filtrate:
+                        //msg += "筛选";
+                        break;
+                }
+//                if(!msg.equals("")) {
+//                    Toast.makeText(MainPartActivity.this, msg, Toast.LENGTH_SHORT).show();
+//                }
+                return true;
+            }
+        };
+        toolbar.setOnMenuItemClickListener(onMenuItemClick);
     }
 
     @Override
