@@ -240,6 +240,8 @@ public class MainFragment extends Fragment {
             public void onNext(GetMissionsObj missions) {
                 for(Mission i : missions.getAllMissions()){
                     boolean have_this_mission = false;
+                    if(i.getMissionStatus() == 1) //如果问卷填写人数已满则不显示
+                        continue;
                     if(i.getReportNum() >= 4) //如果举报次数>=4就不显示
                         continue;
                     //System.out.println(i.getMissionId());
