@@ -337,7 +337,9 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                 .build();
 
         UserService userService = retrofit.create(UserService.class);
-        Observable<ArrayList<MissionModel>> missionObservable = userService.getMissionsByUserId(getToken(),getUserId());
+        int u = getUserId();
+        Observable<ArrayList<MissionModel>> missionObservable = userService.getMissionsByUserId(getToken(),u);
+        Log.e("u", Integer.toString(u));
         missionObservable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ArrayList<MissionModel>>() {
@@ -348,8 +350,9 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(getContext(), "获取我的任务错误!", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
+                        Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        //e.printStackTrace();
+                        Log.e("err:",e.toString());
                     }
 
                     @Override
@@ -379,7 +382,8 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                     @Override
                     public void onError(Throwable e) {
                         Toast.makeText(getContext(), "获取我的任务错误!", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
+                        //e.printStackTrace();
+                        Log.e("err", e.toString());
                     }
 
                     @Override
