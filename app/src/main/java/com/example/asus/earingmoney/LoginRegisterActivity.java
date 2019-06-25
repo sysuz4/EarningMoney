@@ -53,12 +53,14 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -81,7 +83,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
     private TextWatcher login_username_watcher, login_password_watcher, register_nickname_watcher, register_password_watcher , register_password_clarify_watcher, register_name_watcher,
             register_age_watcher, register_major_watcher, register_id_watcher, register_mail_watcher, register_phone_watcher;
     private boolean login_has_username, login_has_password, register_has_nickname, register_has_password, register_has_password_clarify,
-            register_has_name, register_has_credit, register_has_sex, register_has_grade, had_login_in;
+            register_has_name, register_has_credit, register_has_sex, register_has_grade, had_login_in, token_valid;
 
     private String default_image = null;
     private String image_name = null;
@@ -93,21 +95,23 @@ public class LoginRegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
 
-        if(MainPartActivity.instance != null){
+        if(MainPartActivity.instance != null){//使得登录后按返回按钮不会返回登录界面
             MainPartActivity.instance.finish();
         }
 
         instance = this;
 
-        user_shared_preference = getSharedPreferences("user", 0);
-        had_login_in = user_shared_preference.getBoolean("had_user",false);
-        if(had_login_in){
-            Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
-            startActivity(intent);
-        }
-
         serviceFactory = new ServiceFactory();
         myservice = serviceFactory.CreatService();
+
+        user_shared_preference = getSharedPreferences("user", 0);
+//        had_login_in = user_shared_preference.getBoolean("had_user",false);
+//        if(had_login_in){
+//            Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
+//            startActivity(intent);
+//        }
+
+        check_token();//判断token是否过期，如过期则需重新登录
 
         current_sex = 2;//初始化性别为未知
         current_grade = 0;
@@ -158,7 +162,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         continue_2 = (TextView)findViewById(R.id.continue_2);
         continue_3 = (TextView)findViewById(R.id.continue_3);
 
-        initWatcher();
+        initWatcher();//初始化Edittext监听器
 
         login_username.addTextChangedListener(login_username_watcher);
         login_password.addTextChangedListener(login_password_watcher);
@@ -616,6 +620,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    //登录，输入姓名和密码返回token值，将token值保存以便后续使用
     public void getToken(final String username, final String password) {
 
         myservice.post_to_get_token(username,password)
@@ -653,6 +658,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 });
     }
 
+    //上传图片
     private void upload_img(){
         if(default_image != null){
             File file = new File(default_image);
@@ -708,6 +714,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         }
     }
 
+    //注册新用户
     private void register_new_user(){
         final String nickname = register_nickname.getText().toString();
         final String password = register_password.getText().toString();
@@ -899,5 +906,41 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 }
             }
         }.start();
+    }
+
+    private void check_token(){
+        Observer<Response<ResponseBody>> observer_2 = new Observer<Response<ResponseBody>>() {
+            @Override
+            public void onNext(Response<ResponseBody> r) {
+                System.out.println(r.code());
+                if(r.code() == 200){
+                    token_valid = true;
+                }
+                else {
+                    token_valid = false;
+                    Toast.makeText(getApplicationContext(), "登录已失效", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCompleted() {
+                if(token_valid){
+                    Intent intent = new Intent(LoginRegisterActivity.this,MainPartActivity.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(getApplicationContext(), "登录已失效", Toast.LENGTH_SHORT).show();
+                token_valid = false;
+            }
+        };
+        myservice.check_token(Util.getToken(this))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer_2);
+
+
     }
 }

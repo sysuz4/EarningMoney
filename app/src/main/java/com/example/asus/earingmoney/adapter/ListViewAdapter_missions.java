@@ -46,6 +46,7 @@ public class ListViewAdapter_missions extends ArrayAdapter<Mission> {
         }
         final ImageView image = view.findViewById(R.id.image);
 
+        //判断是跑腿任务还是问卷任务，来选择显示图标
         if(contact.getTaskType() == 0){
             image.setImageResource(R.mipmap.errand);
         }

@@ -64,6 +64,7 @@ public class MissionDetailActivity extends AppCompatActivity {
         serviceFactory = new ServiceFactory();
         myservice = serviceFactory.CreatService();
 
+        //从后台请求该任务详情信息
         getMissionDetail();
 
         if(taskType == 0)
@@ -71,6 +72,7 @@ public class MissionDetailActivity extends AppCompatActivity {
         else
             image.setImageResource(R.mipmap.questionare);
 
+        //接受任务按钮
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

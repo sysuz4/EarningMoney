@@ -22,6 +22,7 @@ import com.google.gson.JsonArray;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
@@ -87,6 +88,10 @@ public interface service{
     @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/missions/{missionID}/accept")
     Observable<ResponseBody> acceptMission(@Header("authorization") String token, @Path("missionID") int missionID);
+
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/tokens")
+    Observable<Response<ResponseBody>> check_token(@Header("authorization") String token);
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}")
