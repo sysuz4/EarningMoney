@@ -1,10 +1,15 @@
 package com.example.asus.earingmoney.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.view.ActionProvider;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+
+import com.example.asus.earingmoney.R;
 
 public class ElipsisActionProvider extends ActionProvider {
     /**
@@ -38,6 +43,26 @@ public class ElipsisActionProvider extends ActionProvider {
                 .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        final AlertDialog.Builder normalDialog = new AlertDialog.Builder(getContext());
+                        final View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_report,null);
+                        normalDialog.setTitle("请输入举报内容");
+                        normalDialog.setView(dialogView);
+                        normalDialog.setPositiveButton("确定",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //...To-do
+                                    }
+                                });
+                        normalDialog.setNegativeButton("取消",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //...To-do
+                                    }
+                                });
+                        // 显示
+                        normalDialog.show();
                         return true;
                     }
                 });

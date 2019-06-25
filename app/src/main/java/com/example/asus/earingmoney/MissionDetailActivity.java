@@ -104,6 +104,7 @@ public class MissionDetailActivity extends AppCompatActivity {
         });
     }
 
+    //右上方小组件变化
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.missin_detail_menu, menu);
@@ -120,6 +121,7 @@ public class MissionDetailActivity extends AppCompatActivity {
         return true;
     }
 
+    //从后台获取mission详情
     private void getMissionDetail(){
         Observer<Mission> observer_mission = new Observer<Mission>() {
             @Override
@@ -149,6 +151,7 @@ public class MissionDetailActivity extends AppCompatActivity {
                 .subscribe(observer_mission);
     }
 
+    //通过userId获取用户昵称
     private void getUserDetail(){
         Observer<User> observer_user = new Observer<User>() {
             @Override
