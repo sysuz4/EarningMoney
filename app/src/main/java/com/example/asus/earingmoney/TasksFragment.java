@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,8 +48,12 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class TasksFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
     private static final String ARG_SHOW_TEXT = "text";
+
+    private SwipeRefreshLayout swipeRefreshLayout1,swipeRefreshLayout2;
 
     private String mContentText;
     private ListView missionOrTaskList;
@@ -115,14 +120,39 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.tasks_fragment, container, false);
+        final View rootView = inflater.inflate(R.layout.tasks_fragment, container, false);
         setHasOptionsMenu(true);
         //TextView contentTv = rootView.findViewById(R.id.content_tv);
         //contentTv.setText(mContentText);
+
+        swipeRefreshLayout1 = rootView.findViewById(R.id.swipeLayout1);
+        swipeRefreshLayout1.setSize(SwipeRefreshLayout.DEFAULT);
+        swipeRefreshLayout1.setProgressViewEndTarget(true, 200);
+
+        swipeRefreshLayout2 = rootView.findViewById(R.id.swipeLayout1);
+        swipeRefreshLayout2.setSize(SwipeRefreshLayout.DEFAULT);
+        swipeRefreshLayout2.setProgressViewEndTarget(true, 200);
+
         initView(rootView);
         initData();
 
+        swipeRefreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout1.setRefreshing(true);
+                initData();
+            }
+        });
+
+        swipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout2.setRefreshing(true);
+                initData();
+            }
+        });
 
         return rootView;
     }
@@ -392,6 +422,9 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                         tasks.addAll(taskModels);
                     }
                 });
+
+        swipeRefreshLayout1.setRefreshing(false);
+        swipeRefreshLayout2.setRefreshing(false);
     }
 
     @Override
@@ -411,6 +444,13 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
             }
             //点击我发布的跑腿任务
             else if (displayMission && ((MissionModel) list.get(i)).getTaskType() == Constants.TASK_ERRAND){
+                int missionId = ((MissionModel)list.get(i)).getMissionId();
+                Bundle bundle = new Bundle();
+                bundle.putInt("missionId",missionId);
+                Intent intent  = new Intent();
+                intent.setClass(getActivity(),errand_status_page.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
 
             }
             //点击我领取的问卷任务
@@ -423,8 +463,14 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
                 startActivity(intent);
             }
             //点击我领取的跑腿任务
-            else {
-
+            else if(!displayMission && ((TaskModel) list.get(i)).getTaskType() == Constants.TASK_ERRAND){
+                int taskId = ((TaskModel) list.get(i)).getTaskId();
+                Bundle bundle = new Bundle();
+                bundle.putInt("taskId",taskId);
+                Intent intent  = new Intent();
+                intent.setClass(getActivity(),errand_detail_page.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         } else if (adapterView.getId() == R.id.displayQuestionareList) {
             //点击问卷中的问答题

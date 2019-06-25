@@ -2,12 +2,17 @@ package com.example.asus.earingmoney;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,6 +30,7 @@ import com.example.asus.earingmoney.model.Mission;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Completable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -32,17 +38,17 @@ import rx.schedulers.Schedulers;
 public class MainFragment extends Fragment {
     private static final String ARG_SHOW_TEXT = "text";
 
-    private Spinner spinner1, spinner2, spinner3, spinner4;
+    private Spinner spinner1, spinner2, spinner3;
     private service myservice;
     private ServiceFactory serviceFactory;
-    private List<Mission> missionslist = new ArrayList<Mission>();
-    private List<Mission> totallist = new ArrayList<Mission>();
+    private List<Mission> missionslist = new ArrayList<Mission>();//missionslist为显示的内容，
+    private List<Mission> totallist = new ArrayList<Mission>();   //totallist为所有mission内容，ques_list和err_list分别为问卷任务和跑腿任务
     private List<Mission> questionare_missionslist = new ArrayList<Mission>();
     private List<Mission> errand_missionslist = new ArrayList<Mission>();
     public ListViewAdapter_missions adapter;
     private ListView listview;
     private String[] mItems1,mItems2,mItems3,mItems4;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public MainFragment() {
         // Required empty public constructor
@@ -68,27 +74,28 @@ public class MainFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.main_fragment, container, false);
         setHasOptionsMenu(true);
 
+        //初始化下拉刷新组件
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeLayout);
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
+        swipeRefreshLayout.setProgressViewEndTarget(true, 200);
+
+        //初始化下拉排序组件
         spinner1 = rootView.findViewById(R.id.spinner1);
         spinner2 = rootView.findViewById(R.id.spinner2);
         spinner3 = rootView.findViewById(R.id.spinner3);
-        spinner4 = rootView.findViewById(R.id.spinner4);
         mItems1 = getResources().getStringArray(R.array.spin1);
         mItems2 = getResources().getStringArray(R.array.spin2);
         mItems3 = getResources().getStringArray(R.array.spin3);
-        mItems4 = getResources().getStringArray(R.array.spin4);
         ArrayAdapter<String> adapter1=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems1);
         ArrayAdapter<String> adapter2=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems2);
         ArrayAdapter<String> adapter3=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems3);
-        ArrayAdapter<String> adapter4=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, mItems4);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //绑定 Adapter到控件
         spinner1.setAdapter(adapter1);
         spinner2.setAdapter(adapter2);
         spinner3.setAdapter(adapter3);
-        spinner4.setAdapter(adapter4);
 
         iniSpiner();
 //        TextView contentTv = rootView.findViewById(R.id.content_tv);
@@ -102,13 +109,140 @@ public class MainFragment extends Fragment {
         listview.setAdapter(adapter);
 //        Util.setListViewHeightBasedOnChildren(listview);
 
+        //向后台请求任务数据
+        getMissions();
+
+        listview.setOnItemClickListener(new MyOnItemClickListener());
+
+//        Button button = rootView.findViewById(R.id.button);
+////        button.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View v) {
+////                Intent intent = new Intent(getActivity(),MissionDetailActivity.class);
+////                startActivity(intent);
+////            }
+////        });
+
+        //下拉刷新更新数据
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                getMissions();
+            }
+        });
+
+        return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    private class MyOnItemClickListener implements AdapterView.OnItemClickListener {//任务的点击事件，跳转到详情
+        @Override
+        public void onItemClick(AdapterView<?> parent,View view,int position, long id) {
+            if(position >= 0) {
+                Intent intent = new Intent(getActivity(), MissionDetailActivity.class);
+                intent.putExtra("missionId", missionslist.get(position).getMissionId());
+                intent.putExtra("taskType", missionslist.get(position).getTaskType());
+                intent.putExtra("Description", missionslist.get(position).getDescription());
+                startActivity(intent);
+            }
+        }
+    }
+
+    private void iniSpiner(){//用于排序、筛选
+
+        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { //对问卷或跑腿任务进行筛选
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    missionslist.clear();
+                    missionslist.addAll(totallist);
+                }
+                else if(position == 1){
+                    missionslist.clear();
+                    missionslist.addAll(questionare_missionslist);
+                }
+                else{
+                    missionslist.clear();
+                    missionslist.addAll(errand_missionslist);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){ //对酬劳进行排序
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    MissionsSortUtil.sortById(missionslist);
+                }
+                else if(position == 1){
+                    MissionsSortUtil.sortByPriceUp(missionslist);
+                }
+                else {
+                    MissionsSortUtil.sortByPriceDown(missionslist);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){ //对截止时间进行排序
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    MissionsSortUtil.sortById(missionslist);
+                }
+                else if(position == 1){
+                    MissionsSortUtil.sortByTimeUp(missionslist);
+                }
+                else {
+                    MissionsSortUtil.sortByTimeDown(missionslist);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void getMissions(){ //获取任务列表
+        totallist.clear();
+        missionslist.clear();
+        questionare_missionslist.clear();
+        errand_missionslist.clear();
         Observer<GetMissionsObj> observer = new Observer<GetMissionsObj>() {
             @Override
             public void onNext(GetMissionsObj missions) {
                 for(Mission i : missions.getAllMissions()){
                     boolean have_this_mission = false;
+                    //System.out.println(i.getTitle());
+                    if(i.getMissionStatus() == 1) //如果问卷填写人数已满则不显示
+                        continue;
+                    if(i.getReportNum() >= 4) //如果举报次数>=4就不显示
+                        continue;
                     //System.out.println(i.getMissionId());
-                    if(!i.isMyAccept()){//判断该任务是否已经接受，或是否为自己创建的，如是则不显示
+                    if(!(i.isMyAccept() || i.isMyPub())){//判断该任务是否已经接受，或是否为自己创建的，如是则不显示
                         for(Mission j :missionslist){
                             if(j.getMissionId() == i.getMissionId())
                                 have_this_mission = true;
@@ -144,107 +278,8 @@ public class MainFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
 
-        listview.setOnItemClickListener(new MyOnItemClickListener());
-
-//        Button button = rootView.findViewById(R.id.button);
-////        button.setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////                Intent intent = new Intent(getActivity(),MissionDetailActivity.class);
-////                startActivity(intent);
-////            }
-////        });
-        return rootView;
+        swipeRefreshLayout.setRefreshing(false);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.main_menu, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
 
-    private class MyOnItemClickListener implements AdapterView.OnItemClickListener {//任务的点击事件，跳转到详情
-        @Override
-        public void onItemClick(AdapterView<?> parent,View view,int position, long id) {
-            if(position >= 0) {
-                Intent intent = new Intent(getActivity(), MissionDetailActivity.class);
-                intent.putExtra("missionId", missionslist.get(position).getMissionId());
-                intent.putExtra("taskType", missionslist.get(position).getTaskType());
-                intent.putExtra("Description", missionslist.get(position).getDescription());
-                startActivity(intent);
-            }
-        }
-    }
-
-    private void iniSpiner(){//用于排序、筛选
-
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0){
-                    missionslist.clear();
-                    missionslist.addAll(totallist);
-                }
-                else if(position == 1){
-                    missionslist.clear();
-                    missionslist.addAll(questionare_missionslist);
-                }
-                else{
-                    missionslist.clear();
-                    missionslist.addAll(errand_missionslist);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0){
-                    MissionsSortUtil.sortById(missionslist);
-                }
-                else if(position == 1){
-                    MissionsSortUtil.sortByPriceUp(missionslist);
-                }
-                else {
-                    MissionsSortUtil.sortByPriceDown(missionslist);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0){
-                    MissionsSortUtil.sortById(missionslist);
-                }
-                else if(position == 1){
-                    MissionsSortUtil.sortByTimeUp(missionslist);
-                }
-                else {
-                    MissionsSortUtil.sortByTimeDown(missionslist);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
 }

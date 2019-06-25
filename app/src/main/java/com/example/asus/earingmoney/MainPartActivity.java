@@ -11,10 +11,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Constants;
 
@@ -32,7 +34,7 @@ public class MainPartActivity extends AppCompatActivity {
     private List<Fragment> fragments;
     private FragmentPagerAdapter adapter;
     private Toolbar toolbar;
-    private SearchView mSearchView;
+    private Toolbar.OnMenuItemClickListener onMenuItemClick;
 
     //获取服务端数据时要进行初始化
     public Uri headerUri = null;
@@ -55,6 +57,7 @@ public class MainPartActivity extends AppCompatActivity {
         fragment_vp = findViewById(R.id.fragment_vp);
         tabs_rg = findViewById(R.id.tabs_rg);
 
+        //储存三个Fragments界面
         fragments = new ArrayList<>(3);
         fragments.add(MainFragment.newInstance("首页"));
         fragments.add(TasksFragment.newInstance("任务"));
@@ -69,6 +72,24 @@ public class MainPartActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //筛选标签
+        onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                //String msg = "";
+                switch (menuItem.getItemId()) {
+                    case R.id.filtrate:
+                        //msg += "筛选";
+                        break;
+                }
+//                if(!msg.equals("")) {
+//                    Toast.makeText(MainPartActivity.this, msg, Toast.LENGTH_SHORT).show();
+//                }
+                return true;
+            }
+        };
+        toolbar.setOnMenuItemClickListener(onMenuItemClick);
     }
 
     @Override
@@ -77,7 +98,7 @@ public class MainPartActivity extends AppCompatActivity {
         fragment_vp.removeOnPageChangeListener(mPageChangeListener);
     }
 
-    private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
+    private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {//界面切换
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -95,6 +116,7 @@ public class MainPartActivity extends AppCompatActivity {
         }
     };
 
+    //点击下方按钮切换界面
     private RadioGroup.OnCheckedChangeListener mOnCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -205,6 +227,7 @@ public class MainPartActivity extends AppCompatActivity {
         }
     }
 
+    //自定义的fragmentAdapter
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private List<Fragment> mList;

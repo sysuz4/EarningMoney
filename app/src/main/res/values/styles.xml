@@ -19,7 +19,7 @@
 
     <style name="PopWindowStyle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <!--字体和图标的颜色-->
-        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="PopWindowBackgroundStyle" parent="@style/ThemeOverlay.AppCompat.Light">

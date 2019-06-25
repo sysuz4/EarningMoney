@@ -22,6 +22,7 @@ import com.google.gson.JsonArray;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
@@ -44,6 +45,7 @@ public interface service{
     Observable<GetTokenObj> post_to_get_token(@Query("username") String username, @Query("password") String password);
 
     //@HEAD()
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/tasks/{taskID}/questionares")
     Call<Questionare> get_questionare(@Path("taskID") int taskID);
 
@@ -55,16 +57,17 @@ public interface service{
     @POST("/missions/errands")
     Call<Msg> create_errand(@Header("authorization") String token, @Body RequestBody errand);
 
-
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/users/{userID}")
     Call<User> get_user(@Header("authorization") String token, @Path("userID") int userID);
 
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @PUT("/users/{userID}")
     Call<Msg> modify_user(@Header("authorization") String token, @Path("userID") int userID, @Query("oldPassword") String oldPassword, @Body RequestBody requestBody);
 
     @Multipart
     @POST("/images")
-    Call<Image> upload_pic(@Header("authorization") String token, @Part("description") RequestBody description, @Part MultipartBody.Part file);
+    Call<Image> upload_pic(@Part("description") RequestBody description, @Part MultipartBody.Part file);
 
     @Streaming
     @GET
@@ -74,6 +77,7 @@ public interface service{
     @GET("/missions/AllMissions")
     Observable<GetMissionsObj> getMissions(@Header("authorization") String token);
 
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/missions/{missionID}")
     Observable<Mission> getMissionDetail(@Path("missionID") int missionID);
 
@@ -83,7 +87,15 @@ public interface service{
 
     @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
     @GET("/missions/{missionID}/accept")
-    Observable<ResponseBody> acceptMission(@Header("authorization") String token, @Path("missionID") int userID);
+    Observable<ResponseBody> acceptMission(@Header("authorization") String token, @Path("missionID") int missionID);
+
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/tokens")
+    Observable<Response<ResponseBody>> check_token(@Header("authorization") String token);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @POST("/report/{missionID}")
+    Observable<Response<ResponseBody>> commitReport(@Header("authorization") String token, @Path("missionID") int missionId, @Body RequestBody requestBody);
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @GET("/missions/{missionID}")
@@ -106,8 +118,15 @@ public interface service{
     Observable<Questionare> getQuestionareByTaskId(@Header("authorization") String token, @Path("taskId") int taskId);
 
     @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
+    @GET("/tasks/{taskID}")
+    Call<Task> getTaskByTaskId(@Header("authorization") String token, @Path("taskID") int taskID);
+
+    @Headers({"Content-type:application/json; charset=utf8","Accept:application/json"})
     @POST("tasks/{taskId}/QAsubmit")
     Observable<Msg> commitQuestionare(@Header("authorization") String token, @Path("taskId") int taskId, @Body RequestBody questionare);
 
+    @Headers({"Content-Type:application/json;charset=utf-8", "Accept:application/json;"})
+    @GET("/tasks/{taskID}/finishErrand")
+    Call<ResponseBody> finishErrandTask(@Header("authorization") String token, @Path("taskID") int taskID);
 
 }
