@@ -51,6 +51,8 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
     public Float money;
     public int taskNum;
 
+    public String tags = "";
+
     public Map<Integer, String> photoArray = new HashMap<>();
     public List<String> imagesName = new ArrayList<>();
 
@@ -203,7 +205,7 @@ public class creat_errand_activity extends AppCompatActivity implements View.OnL
 
         mission.setDeadLine(finishDate);
         mission.setMoney(money);
-        mission.setTags(""); //todo
+        mission.setTags(tags); //todo
         mission.setTitle(titleText.getText().toString());
         mission.setTaskNum(taskNum);
         mission.setPublishTime(Util.convertDate2String(new Date()));
