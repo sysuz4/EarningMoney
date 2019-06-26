@@ -409,6 +409,7 @@ public class MeFragment extends Fragment {
     public void cancelModifyInfo()
     {
         modifyStatus = false;
+        str = "";
         //Toast.makeText(getActivity(), "取消修改成功", Toast.LENGTH_SHORT).show();
 
         tagsLayout.setClickable(false);
