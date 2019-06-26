@@ -97,9 +97,11 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
         if (list.get(i).getQuestionType() == Constants.QUERY_QUESTION) {
             questionType.setText("[问答]");
             viewHolder.optionList.setVisibility(View.GONE);
+            viewHolder.jumpBtn.setVisibility(View.VISIBLE);
         } else if (list.get(i).getQuestionType() == Constants.SINGLE_CHOOSE_QUESTION){
             questionType.setText("[单选]");
             viewHolder.jumpBtn.setVisibility(View.GONE);
+            viewHolder.optionList.setVisibility(View.VISIBLE);
             viewHolder.optionList.setText(getOptionListText(i));
         } else {
             int num = list.get(i).getChoiceNum();
@@ -169,7 +171,7 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
                 }
             }
         }
-
+        Log.e("size:", Integer.toString(optionStr.size()));
         for (int j = 0; j < optionStr.size(); ++j) {
             sb.append(ch.substring(j, j+1));
             sb.append(": ");
