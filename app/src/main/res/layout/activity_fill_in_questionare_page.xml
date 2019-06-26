@@ -43,14 +43,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="提交" />
+                android:background="@color/Blue"
+                android:text="提交"
+                android:layout_margin="5dp"/>
 
             <Button
                 android:id="@+id/cancelBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="取消" />
+                android:background="@color/Blue"
+                android:text="取消"
+                android:layout_margin="5dp"/>
         </LinearLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
