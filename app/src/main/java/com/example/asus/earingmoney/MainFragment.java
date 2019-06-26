@@ -53,7 +53,7 @@ public class MainFragment extends Fragment {
     private List<Mission> errand_missionslist = new ArrayList<Mission>();
     public ListViewAdapter_missions adapter;
     private ListView listview;
-    private String[] mItems1,mItems2,mItems3,mItems4;
+    private String[] mItems1,mItems2,mItems3;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public MainFragment() {
@@ -154,7 +154,6 @@ public class MainFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.filtrate:
                 showDialog();
-                //divideTags();
                 break;
         }
         return true;
@@ -308,6 +307,7 @@ public class MainFragment extends Fragment {
     private Button choice4;
     private Button continue_button;
     private TextView title;
+    private ArrayList<String> tags;
 
     //选择想要进行筛选的标签
     public void showDialog(){
@@ -395,6 +395,7 @@ public class MainFragment extends Fragment {
                 }
                 if(msg.what == 12){
                     dialog.dismiss();
+                    compare();
                 }
             }
         };
@@ -502,9 +503,52 @@ public class MainFragment extends Fragment {
         dialog.show();
         //此处设置位置窗体大小 注意一定要在show方法调用后再写设置窗口大小的代码，否则不起效果会
         dialog.getWindow().setLayout((ScreenUtils.getScreenWidth(getContext())), LinearLayout.LayoutParams.WRAP_CONTENT);
+
     }
 
-    private void divideTags(String Tags){
+    private ArrayList<String> divideTags(String Tags){
+        ArrayList<String> tags = new ArrayList<String>();
+        String[] tag1 = Tags.split(";");
+        for(int i = 0; i < tag1.length; i++){
+            String[] tag2 = tag1[i].split("、");
+            for(int j = 0; j < tag2.length; j++){
+                if(!tags.contains(tag2[j])){
+                    tags.add(tag2[j]);
+                    //Log.d("testing", "onClick: " + tag2[j]);
+                }
+            }
+        }
+        return  tags;
+    }
 
+    //对比任务和选择的tag，进行筛选
+    private void compare(){
+        tags = divideTags(str);
+        ArrayList<String> temp = new ArrayList<String>();
+
+        if(tags.size() == 0)
+            return;
+
+        missionslist.clear();
+        for(Mission i :totallist){
+            if(i.getTags() == null)
+                continue;
+            temp = divideTags(i.getTags());
+            Log.d("testing",  i.getTags());
+            boolean equal = false;
+            for(String j : tags){
+                for(String k : temp){
+                    if(j.equals(k)){
+                        equal = true;
+                        break;
+                    }
+                    equal = false;
+                }
+            }
+            if(equal == true){
+                missionslist.add(i);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 }
