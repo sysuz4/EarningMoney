@@ -474,8 +474,9 @@ public class MeFragment extends Fragment {
 
         tagsLayout.removeAllViewsInLayout();
         List<String> tags = Util.decodeTags(str);
-        Log.e("tagsize", "" + tags.size());
+        Log.e("tagsize", str + tags.size());
         tagList.clear();
+        Log.e("tagsize2", str + tags.size());
         if(!tags.isEmpty())
         {
             Map<String, Object> map = null;
@@ -622,36 +623,49 @@ public class MeFragment extends Fragment {
             public void handleMessage(Message msg){
                 super.handleMessage(msg);
                 if(msg.what == 1){
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
-                    str += choice1.getText().toString() + "、";
+                    choice1.setBackgroundColor(getResources().getColor(R.color.blue));
+                    String s = choice1.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
+
                 }
                 if(msg.what == 2){
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
-                    str += choice2.getText().toString() + "、";
+                    choice2.setBackgroundColor(getResources().getColor(R.color.blue));
+                    String s = choice2.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
                 }
                 if(msg.what == 3){
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
-                    str += choice3.getText().toString() + "、";
+                    choice3.setBackgroundColor(getResources().getColor(R.color.blue));
+                    String s = choice3.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
                 }
                 if(msg.what == 4)
                 {
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
-                    str += choice4.getText().toString() + "、";
+                    choice4.setBackgroundColor(getResources().getColor(R.color.blue));
+                    String s = choice4.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
                 }
                 if(msg.what == 5){
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice1.setBackgroundColor(getResources().getColor(R.color.gray));
                     str = str.replaceAll(choice1.getText().toString()+"、","");
                 }
                 if(msg.what == 6){
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(getResources().getColor(R.color.gray));
                     str = str.replaceAll(choice2.getText().toString()+"、","");
                 }
                 if(msg.what == 7){
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(getResources().getColor(R.color.gray));
                     str = str.replaceAll(choice3.getText().toString()+"、","");
                 }
                 if(msg.what == 8){
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(getResources().getColor(R.color.gray));
                     str = str.replaceAll(choice4.getText().toString()+"、","");
                 }
                 if(msg.what == 9){
@@ -660,10 +674,10 @@ public class MeFragment extends Fragment {
                     choice2.setText("经管");
                     choice3.setText("物化生医");
                     choice4.setText("文史哲");
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice1.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(getResources().getColor(R.color.gray));
                 }
                 if(msg.what == 10){
                     title.setText("个人特性");
@@ -671,10 +685,10 @@ public class MeFragment extends Fragment {
                     choice2.setText("文艺青年");
                     choice3.setText("忧郁小王子");
                     choice4.setText("沉着冷静");
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice1.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(getResources().getColor(R.color.gray));
                 }
                 if(msg.what == 11){
                     title.setText("爱好");
@@ -682,10 +696,10 @@ public class MeFragment extends Fragment {
                     choice2.setText("音乐绘画");
                     choice3.setText("二次元");
                     choice4.setText("影视书籍");
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice1.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(getResources().getColor(R.color.gray));
                 }
                 if(msg.what == 12){
                     dialog.dismiss();
