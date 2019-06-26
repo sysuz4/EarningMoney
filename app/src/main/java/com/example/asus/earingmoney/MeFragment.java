@@ -18,13 +18,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.SimpleAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +52,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -93,8 +100,12 @@ public class MeFragment extends Fragment {
 
     Menu mymenu;
 
-    LinearLayout tagsLayout;
-
+    GridView tagsLayout;
+    List<Map<String, Object>> tagList;
+    private String[] from = { "tag_name" };
+    private int[] to = {R.id.tag_name };
+    SimpleAdapter pictureAdapter;
+    TextView tag_label;
     public MeFragment() {
         // Required empty public constructor
     }
@@ -179,25 +190,20 @@ public class MeFragment extends Fragment {
                     str = user.getTags();
                     List<String> tags = Util.decodeTags(user.getTags());
                     tagsLayout.removeAllViewsInLayout();
+                    tagList.clear();
                     if(!tags.isEmpty())
                     {
+                        Map<String, Object> map = null;
                         for(int i = 0; i < tags.size(); i++)
                         {
                             if(!tags.get(i).isEmpty())
                             {
-                                TextView textView = new TextView(getContext());
-
-                                setRadioBtnAttribute(textView, tags.get(i), i);
-                                textView.setBackgroundColor(getResources().getColor(R.color.lightblue));
-                                textView.setPadding(10, 10, 10, 10);
-                                textView.setTextSize(18);
-                                tagsLayout.addView(textView);
-                                LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) textView
-                                        .getLayoutParams();
-                                layoutParams.setMargins(0, 5,  0, 5);//4个参数按顺序分别是左上右下
-                                textView.setLayoutParams(layoutParams);
+                                map = new HashMap<String, Object>();
+                                map.put("tag_name", tags.get(i));
+                                tagList.add(map);
                             }
                         }
+                        pictureAdapter.notifyDataSetChanged();
                     }
                 }
                 else
@@ -263,13 +269,21 @@ public class MeFragment extends Fragment {
         studentIdText = view.findViewById(R.id.studentIdText);
         ImageName = "";
         tagsLayout = view.findViewById(R.id.tagsLayout);
-        tagsLayout.setOnClickListener(new View.OnClickListener() {
+        tag_label = view.findViewById(R.id.label_text);
+        tag_label.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog();
             }
         });
+
         tagsLayout.setClickable(false);
+        tagList = new ArrayList<>();
+        pictureAdapter = new SimpleAdapter(getContext(), tagList,
+                R.layout.tag_item_layout, from, to);
+
+        tagsLayout.setAdapter(pictureAdapter);
+
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,6 +322,8 @@ public class MeFragment extends Fragment {
         MainPartActivity activity = (MainPartActivity)getContext();
         activity.headerUri = null;
 
+        tag_label.setClickable(false);
+        tag_label.setText("我的标签: ");
         usernameText.setEnabled(false);
         realNameText.setEnabled(false);
         ageText.setEnabled(false);
@@ -389,7 +405,8 @@ public class MeFragment extends Fragment {
     {
         Toast.makeText(getActivity(), "点击对应信息进行修改", Toast.LENGTH_SHORT).show();
 
-        tagsLayout.setClickable(true);
+        tag_label.setClickable(true);
+        tag_label.setText("点我修改标签");
         usernameText.setEnabled(true);
         realNameText.setEnabled(true);
         ageText.setEnabled(true);
@@ -412,7 +429,8 @@ public class MeFragment extends Fragment {
         str = "";
         //Toast.makeText(getActivity(), "取消修改成功", Toast.LENGTH_SHORT).show();
 
-        tagsLayout.setClickable(false);
+        tag_label.setClickable(false);
+        tag_label.setText("我的标签: ");
         usernameText.setEnabled(false);
         realNameText.setEnabled(false);
         ageText.setEnabled(false);
@@ -456,25 +474,20 @@ public class MeFragment extends Fragment {
         tagsLayout.removeAllViewsInLayout();
         List<String> tags = Util.decodeTags(str);
         Log.e("tagsize", "" + tags.size());
+        tagList.clear();
         if(!tags.isEmpty())
         {
+            Map<String, Object> map = null;
             for(int i = 0; i < tags.size(); i++)
             {
                 if(!tags.get(i).isEmpty())
                 {
-                    TextView textView = new TextView(getContext());
-
-                    setRadioBtnAttribute(textView, tags.get(i), i);
-                    textView.setBackgroundColor(getResources().getColor(R.color.lightblue));
-                    textView.setPadding(10, 10, 10, 10);
-                    textView.setTextSize(18);
-                    tagsLayout.addView(textView);
-                    LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) textView
-                            .getLayoutParams();
-                    layoutParams.setMargins(0, 5,  0, 5);//4个参数按顺序分别是左上右下
-                    textView.setLayoutParams(layoutParams);
+                    map = new HashMap<String, Object>();
+                    map.put("tag_name", tags.get(i));
+                    tagList.add(map);
                 }
             }
+            pictureAdapter.notifyDataSetChanged();
         }
         tagsLayout.setClickable(false);
 
