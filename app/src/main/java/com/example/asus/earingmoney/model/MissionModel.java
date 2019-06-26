@@ -12,6 +12,7 @@ public class MissionModel extends MissionOrTask{
     private int taskNum;
     private int taskType;
     private String description;
+    private int reportNum;
 
     public MissionModel(int _missionId, String _publishTime, int _missionStatus, String _title,
                         String _deadLine, String _tags, int _money, int _userId, int _taskNum,
@@ -120,5 +121,13 @@ public class MissionModel extends MissionOrTask{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getReportNum() {
+        return reportNum;
+    }
+
+    public void setReportNum(int reportNum) {
+        this.reportNum = reportNum;
     }
 }

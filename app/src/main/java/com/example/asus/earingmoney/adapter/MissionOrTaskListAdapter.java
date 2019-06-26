@@ -93,7 +93,10 @@ public class MissionOrTaskListAdapter extends BaseAdapter {
             viewHolder.title.setText(((MissionModel)list.get(i)).getTitle());
             viewHolder.publishTime.setText("起:"+((MissionModel)list.get(i)).getPublishTime());
             viewHolder.deadLine.setText("止:"+((MissionModel)list.get(i)).getDeadLine());
-            if (((MissionModel)list.get(i)).getMissionStatus() == Constants.NEED_MORE_PEOPLE) {
+            if (((MissionModel)list.get(i)).getReportNum() != 0) {
+                viewHolder.missionStatus.setText(Integer.toString(((MissionModel)list.get(i)).getReportNum()) + "人举报");
+                viewHolder.missionStatus.setTextColor(context.getResources().getColor(R.color.red_error));
+            } else if (((MissionModel)list.get(i)).getMissionStatus() == Constants.NEED_MORE_PEOPLE) {
                 viewHolder.missionStatus.setText("人数不够");
             } else if (((MissionModel)list.get(i)).getMissionStatus() == Constants.MAX_PEOPLE) {
                 viewHolder.missionStatus.setText("人数达上限");
@@ -111,8 +114,11 @@ public class MissionOrTaskListAdapter extends BaseAdapter {
             } else {
                 viewHolder.avator.setImageResource(R.mipmap.errand);
             }
-
-            if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_TO_DO) {
+            if (((TaskModel)list.get(i)).getReportNum() != 0) {
+                viewHolder.missionStatus.setText("已被举报");
+                viewHolder.missionStatus.setTextColor(context.getResources().getColor(R.color.red_error));
+            }
+            else if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_TO_DO) {
                 viewHolder.missionStatus.setText("待完成");
             } else if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_DOING) {
                 viewHolder.missionStatus.setText("正在进行");
@@ -126,6 +132,8 @@ public class MissionOrTaskListAdapter extends BaseAdapter {
             viewHolder.deadLine.setText("止:" + ((TaskModel)list.get(i)).getDeadLine());
             if (((TaskModel)list.get(i)).getFinishTime() != null) {
                 viewHolder.taskNum.setText("完成于" + ((TaskModel)list.get(i)).getFinishTime());
+            } else {
+                viewHolder.taskNum.setText("");
             }
             viewHolder.money.setText("奖励金" + Double.toString(((TaskModel)list.get(i)).getAveMoney()));
             viewHolder.description.setText(((TaskModel)list.get(i)).getDescription());
