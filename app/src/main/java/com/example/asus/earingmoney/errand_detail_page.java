@@ -271,10 +271,11 @@ public class errand_detail_page extends AppCompatActivity {
                             }
                         });
                     }
-
+                    /*
                     Message msg = new Message();
                     msg.what = 1;
                     handler.sendMessage(msg);
+                    */
                 }
                 else if(response.code() == 401)
                 {
