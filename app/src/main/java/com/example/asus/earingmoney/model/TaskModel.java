@@ -13,6 +13,7 @@ public class TaskModel extends MissionOrTask{
     private int pubUserId;
     private int missionId;
     private int accUserId;
+    private int reportNum;
 
     public TaskModel(int _taskId, int _taskType, int _taskStatus, String _finishTime,
                      int _pubUserId, int _missionId, int _accUserId) {
@@ -124,5 +125,13 @@ public class TaskModel extends MissionOrTask{
 
     public void setPublishTime(String publishTime) {
         this.publishTime = publishTime;
+    }
+
+    public int getReportNum() {
+        return reportNum;
+    }
+
+    public void setReportNum(int reportNum) {
+        this.reportNum = reportNum;
     }
 }
