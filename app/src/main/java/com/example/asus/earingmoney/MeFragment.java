@@ -455,7 +455,8 @@ public class MeFragment extends Fragment {
             return false;
         }
 
-
+        tag_label.setClickable(false);
+        tag_label.setText("我的标签：");
         usernameText.setEnabled(false);
         realNameText.setEnabled(false);
         ageText.setEnabled(false);
@@ -489,7 +490,7 @@ public class MeFragment extends Fragment {
             }
             pictureAdapter.notifyDataSetChanged();
         }
-        tagsLayout.setClickable(false);
+
 
         MainPartActivity activity = (MainPartActivity)getContext();
         if(activity.headerUri != null)
