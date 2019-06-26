@@ -133,7 +133,8 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
     private TextView title;
 
     public String showDialog(){
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_layout,null,false);
+
+        View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_layout,null,false);
 
         choice1 = view.findViewById(R.id.choice1);
         choice2 = view.findViewById(R.id.choice2);
@@ -141,7 +142,7 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
         choice4 = view.findViewById(R.id.choice4);
         continue_button = view.findViewById(R.id.continue_button);
         title = view.findViewById(R.id.title);
-        final AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(view).create();
+        final AlertDialog dialog = new AlertDialog.Builder(mContext).setView(view).create();
 
 
         handler = new Handler(){
@@ -149,36 +150,49 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
             public void handleMessage(Message msg){
                 super.handleMessage(msg);
                 if(msg.what == 1){
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
-                    str += choice1.getText().toString() + "、";
+                    choice1.setBackgroundColor(mContext.getResources().getColor(R.color.blue));
+                    String s = choice1.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
+
                 }
                 if(msg.what == 2){
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
-                    str += choice2.getText().toString() + "、";
+                    choice2.setBackgroundColor(mContext.getResources().getColor(R.color.blue));
+                    String s = choice2.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
                 }
                 if(msg.what == 3){
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
-                    str += choice3.getText().toString() + "、";
+                    choice3.setBackgroundColor(mContext.getResources().getColor(R.color.blue));
+                    String s = choice3.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
                 }
                 if(msg.what == 4)
                 {
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.blue));
-                    str += choice4.getText().toString() + "、";
+                    choice4.setBackgroundColor(mContext.getResources().getColor(R.color.blue));
+                    String s = choice4.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
                 }
                 if(msg.what == 5){
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice1.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                     str = str.replaceAll(choice1.getText().toString()+"、","");
                 }
                 if(msg.what == 6){
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                     str = str.replaceAll(choice2.getText().toString()+"、","");
                 }
                 if(msg.what == 7){
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                     str = str.replaceAll(choice3.getText().toString()+"、","");
                 }
                 if(msg.what == 8){
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                     str = str.replaceAll(choice4.getText().toString()+"、","");
                 }
                 if(msg.what == 9){
@@ -187,10 +201,10 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
                     choice2.setText("经管");
                     choice3.setText("物化生医");
                     choice4.setText("文史哲");
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice1.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                 }
                 if(msg.what == 10){
                     title.setText("个人特性");
@@ -198,10 +212,10 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
                     choice2.setText("文艺青年");
                     choice3.setText("忧郁小王子");
                     choice4.setText("沉着冷静");
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice1.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                 }
                 if(msg.what == 11){
                     title.setText("爱好");
@@ -209,10 +223,10 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
                     choice2.setText("音乐绘画");
                     choice3.setText("二次元");
                     choice4.setText("影视书籍");
-                    choice1.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice2.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice3.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
-                    choice4.setBackgroundColor(getContext().getResources().getColor(R.color.gray));
+                    choice1.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
                 }
                 if(msg.what == 12){
                     if(mContext instanceof createQuestionare)
@@ -233,7 +247,6 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
                             .dismissAnim(new FadeExit())//
                             .show();
                     dialog.setCanceledOnTouchOutside(false);
-
                 }
             }
         };
@@ -340,7 +353,7 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
 
         dialog.show();
         //此处设置位置窗体大小 注意一定要在show方法调用后再写设置窗口大小的代码，否则不起效果会
-        dialog.getWindow().setLayout((ScreenUtils.getScreenWidth(getContext())), LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout((ScreenUtils.getScreenWidth(mContext)), LinearLayout.LayoutParams.WRAP_CONTENT);
         return str;
     }
 }
