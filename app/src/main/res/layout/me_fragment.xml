@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:src="@mipmap/addd"
+                android:src="@mipmap/man"
                 android:onClick="changeHeader"
                 android:id="@+id/headerPic"
                 android:layout_width="120dp"
@@ -282,6 +282,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
+
+            <GridView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginVertical="10dp"
+                android:id="@+id/tagsLayout"
+                app:layout_constraintTop_toBottomOf="@id/label_text"
+                android:clickable="false"
+                android:verticalSpacing="10dp"
+                android:horizontalSpacing="10dp"
+                android:numColumns="3">
+
+            </GridView>
+
             <Button
                 android:id="@+id/log_out"
                 android:layout_width="match_parent"
@@ -290,7 +304,7 @@
                 android:layout_margin="10dp"
                 android:background="@color/holo_red_light"
                 android:textColor="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/label_text"/>
+                app:layout_constraintTop_toBottomOf="@id/tagsLayout"/>
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>

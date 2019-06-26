@@ -72,24 +72,6 @@ public class MainPartActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //筛选标签
-        onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                //String msg = "";
-                switch (menuItem.getItemId()) {
-                    case R.id.filtrate:
-                        //msg += "筛选";
-                        break;
-                }
-//                if(!msg.equals("")) {
-//                    Toast.makeText(MainPartActivity.this, msg, Toast.LENGTH_SHORT).show();
-//                }
-                return true;
-            }
-        };
-        toolbar.setOnMenuItemClickListener(onMenuItemClick);
     }
 
     @Override
@@ -108,6 +90,11 @@ public class MainPartActivity extends AppCompatActivity {
         public void onPageSelected(int position) {
             RadioButton radioButton = (RadioButton) tabs_rg.getChildAt(position);
             radioButton.setChecked(true);
+            if(position == 2)
+            {
+                MeFragment meFragment = (MeFragment)fragments.get(position);
+                meFragment.cancelModifyInfo();
+            }
         }
 
         @Override

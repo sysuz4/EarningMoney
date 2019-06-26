@@ -1,32 +1,47 @@
 package com.example.asus.earingmoney;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.SimpleAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.Util.Util;
+import com.example.asus.earingmoney.lib.FinishQuestionareDialog2;
 import com.example.asus.earingmoney.model.Image;
 import com.example.asus.earingmoney.model.Msg;
+import com.example.asus.earingmoney.model.ScreenUtils;
 import com.example.asus.earingmoney.model.User;
+import com.flyco.animation.FadeEnter.FadeEnter;
+import com.flyco.animation.FadeExit.FadeExit;
 import com.google.gson.Gson;
 
 import java.io.BufferedInputStream;
@@ -37,6 +52,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -81,6 +100,12 @@ public class MeFragment extends Fragment {
 
     Menu mymenu;
 
+    GridView tagsLayout;
+    List<Map<String, Object>> tagList;
+    private String[] from = { "tag_name" };
+    private int[] to = {R.id.tag_name };
+    SimpleAdapter pictureAdapter;
+    TextView tag_label;
     public MeFragment() {
         // Required empty public constructor
     }
@@ -105,7 +130,7 @@ public class MeFragment extends Fragment {
     }
 
     private void initData() {
-        Call<User> getCall =  myservice.get_user(Util.getToken(getContext()), Util.getUserId(getContext())); //todo
+        final Call<User> getCall =  myservice.get_user(Util.getToken(getContext()), Util.getUserId(getContext())); //todo
         getCall.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -162,6 +187,24 @@ public class MeFragment extends Fragment {
                         }
                     }).start();
 
+                    str = user.getTags();
+                    List<String> tags = Util.decodeTags(user.getTags());
+                    tagsLayout.removeAllViewsInLayout();
+                    tagList.clear();
+                    if(!tags.isEmpty())
+                    {
+                        Map<String, Object> map = null;
+                        for(int i = 0; i < tags.size(); i++)
+                        {
+                            if(!tags.get(i).isEmpty())
+                            {
+                                map = new HashMap<String, Object>();
+                                map.put("tag_name", tags.get(i));
+                                tagList.add(map);
+                            }
+                        }
+                        pictureAdapter.notifyDataSetChanged();
+                    }
                 }
                 else
                 {
@@ -225,6 +268,22 @@ public class MeFragment extends Fragment {
         creditValueText = view.findViewById(R.id.creditValueText);
         studentIdText = view.findViewById(R.id.studentIdText);
         ImageName = "";
+        tagsLayout = view.findViewById(R.id.tagsLayout);
+        tag_label = view.findViewById(R.id.label_text);
+        tag_label.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog();
+            }
+        });
+
+        tagsLayout.setClickable(false);
+        tagList = new ArrayList<>();
+        pictureAdapter = new SimpleAdapter(getContext(), tagList,
+                R.layout.tag_item_layout, from, to);
+
+        tagsLayout.setAdapter(pictureAdapter);
+
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,6 +322,8 @@ public class MeFragment extends Fragment {
         MainPartActivity activity = (MainPartActivity)getContext();
         activity.headerUri = null;
 
+        tag_label.setClickable(false);
+        tag_label.setText("我的标签: ");
         usernameText.setEnabled(false);
         realNameText.setEnabled(false);
         ageText.setEnabled(false);
@@ -344,6 +405,8 @@ public class MeFragment extends Fragment {
     {
         Toast.makeText(getActivity(), "点击对应信息进行修改", Toast.LENGTH_SHORT).show();
 
+        tag_label.setClickable(true);
+        tag_label.setText("点我修改标签");
         usernameText.setEnabled(true);
         realNameText.setEnabled(true);
         ageText.setEnabled(true);
@@ -362,8 +425,12 @@ public class MeFragment extends Fragment {
 
     public void cancelModifyInfo()
     {
-        Toast.makeText(getActivity(), "取消修改成功", Toast.LENGTH_SHORT).show();
+        modifyStatus = false;
+        str = "";
+        //Toast.makeText(getActivity(), "取消修改成功", Toast.LENGTH_SHORT).show();
 
+        tag_label.setClickable(false);
+        tag_label.setText("我的标签: ");
         usernameText.setEnabled(false);
         realNameText.setEnabled(false);
         ageText.setEnabled(false);
@@ -388,7 +455,8 @@ public class MeFragment extends Fragment {
             return false;
         }
 
-
+        tag_label.setClickable(false);
+        tag_label.setText("我的标签：");
         usernameText.setEnabled(false);
         realNameText.setEnabled(false);
         ageText.setEnabled(false);
@@ -403,6 +471,27 @@ public class MeFragment extends Fragment {
         pass.setVisibility(View.GONE);
         oldPasswordText.setVisibility(View.GONE);
         newPasswordText.setVisibility(View.GONE);
+
+        tagsLayout.removeAllViewsInLayout();
+        List<String> tags = Util.decodeTags(str);
+        Log.e("tagsize", str + tags.size());
+        tagList.clear();
+        Log.e("tagsize2", str + tags.size());
+        if(!tags.isEmpty())
+        {
+            Map<String, Object> map = null;
+            for(int i = 0; i < tags.size(); i++)
+            {
+                if(!tags.get(i).isEmpty())
+                {
+                    map = new HashMap<String, Object>();
+                    map.put("tag_name", tags.get(i));
+                    tagList.add(map);
+                }
+            }
+            pictureAdapter.notifyDataSetChanged();
+        }
+
 
         MainPartActivity activity = (MainPartActivity)getContext();
         if(activity.headerUri != null)
@@ -474,7 +563,7 @@ public class MeFragment extends Fragment {
                              usernameText.getText().toString(), Integer.valueOf(ageText.getText().toString()),
                              activity.sex, Integer.valueOf(gradeText.getText().toString()), majorText.getText().toString(),
                              mailText.getText().toString(), phoneText.getText().toString(), studentIdText.getText().toString(),
-                             Float.valueOf(balanceText.getText().toString()), "", newPasswordText.getText().toString(),
+                             Float.valueOf(balanceText.getText().toString()), str, newPasswordText.getText().toString(),
                              creditValueText.getText().toString());
         Gson gson = new Gson();
         String jsonBody = gson.toJson(user);
@@ -507,4 +596,234 @@ public class MeFragment extends Fragment {
         });
     }
 
+    private Handler handler;
+    private String str = "";
+    private Button choice1;
+    private Button choice2;
+    private Button choice3;
+    private Button choice4;
+    private Button continue_button;
+    private TextView title;
+
+    public String showDialog(){
+        str = "";
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_layout,null,false);
+
+        choice1 = view.findViewById(R.id.choice1);
+        choice2 = view.findViewById(R.id.choice2);
+        choice3 = view.findViewById(R.id.choice3);
+        choice4 = view.findViewById(R.id.choice4);
+        continue_button = view.findViewById(R.id.continue_button);
+        title = view.findViewById(R.id.title);
+        final AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(view).create();
+
+
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg){
+                super.handleMessage(msg);
+                if(msg.what == 1){
+                    choice1.setBackgroundColor(getResources().getColor(R.color.blue));
+                    String s = choice1.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
+
+                }
+                if(msg.what == 2){
+                    choice2.setBackgroundColor(getResources().getColor(R.color.blue));
+                    String s = choice2.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
+                }
+                if(msg.what == 3){
+                    choice3.setBackgroundColor(getResources().getColor(R.color.blue));
+                    String s = choice3.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
+                }
+                if(msg.what == 4)
+                {
+                    choice4.setBackgroundColor(getResources().getColor(R.color.blue));
+                    String s = choice4.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
+                }
+                if(msg.what == 5){
+                    choice1.setBackgroundColor(getResources().getColor(R.color.gray));
+                    str = str.replaceAll(choice1.getText().toString()+"、","");
+                }
+                if(msg.what == 6){
+                    choice2.setBackgroundColor(getResources().getColor(R.color.gray));
+                    str = str.replaceAll(choice2.getText().toString()+"、","");
+                }
+                if(msg.what == 7){
+                    choice3.setBackgroundColor(getResources().getColor(R.color.gray));
+                    str = str.replaceAll(choice3.getText().toString()+"、","");
+                }
+                if(msg.what == 8){
+                    choice4.setBackgroundColor(getResources().getColor(R.color.gray));
+                    str = str.replaceAll(choice4.getText().toString()+"、","");
+                }
+                if(msg.what == 9){
+                    title.setText("专业");
+                    choice1.setText("IT");
+                    choice2.setText("经管");
+                    choice3.setText("物化生医");
+                    choice4.setText("文史哲");
+                    choice1.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(getResources().getColor(R.color.gray));
+                }
+                if(msg.what == 10){
+                    title.setText("个人特性");
+                    choice1.setText("热情开朗");
+                    choice2.setText("文艺青年");
+                    choice3.setText("忧郁小王子");
+                    choice4.setText("沉着冷静");
+                    choice1.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(getResources().getColor(R.color.gray));
+                }
+                if(msg.what == 11){
+                    title.setText("爱好");
+                    choice1.setText("体育运动");
+                    choice2.setText("音乐绘画");
+                    choice3.setText("二次元");
+                    choice4.setText("影视书籍");
+                    choice1.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice2.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice3.setBackgroundColor(getResources().getColor(R.color.gray));
+                    choice4.setBackgroundColor(getResources().getColor(R.color.gray));
+                }
+                if(msg.what == 12){
+                    dialog.dismiss();
+                }
+            }
+        };
+
+        choice1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message msg = new Message();
+                msg.what = 1;
+                handler.sendMessage(msg);
+            }
+        });
+        choice1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Message msg = new Message();
+                msg.what = 5;
+                handler.sendMessage(msg);
+                return true;
+            }
+        });
+
+        choice2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message msg = new Message();
+                msg.what = 2;
+                handler.sendMessage(msg);
+            }
+        });
+        choice2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Message msg = new Message();
+                msg.what = 6;
+                handler.sendMessage(msg);
+                return true;
+            }
+        });
+
+        choice3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message msg = new Message();
+                msg.what = 3;
+                handler.sendMessage(msg);
+            }
+        });
+        choice3.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Message msg = new Message();
+                msg.what = 7;
+                handler.sendMessage(msg);
+                return true;
+            }
+        });
+
+        choice4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message msg = new Message();
+                msg.what = 4;
+                handler.sendMessage(msg);
+                // dialog.dismiss();
+            }
+        });
+        choice4.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Message msg = new Message();
+                msg.what = 8;
+                handler.sendMessage(msg);
+                return true;
+            }
+        });
+
+        continue_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                str += ";";
+                Log.d("testing", "onClick: " + str);
+                if(title.getText().toString().equals("年级")){
+                    Message msg = new Message();
+                    msg.what = 9;
+                    handler.sendMessage(msg);
+                } else if(title.getText().toString().equals("专业")){
+                    Message msg = new Message();
+                    msg.what = 10;
+                    handler.sendMessage(msg);
+                } else if(title.getText().toString().equals("个人特性")){
+                    Message msg = new Message();
+                    msg.what = 11;
+                    handler.sendMessage(msg);
+                } else if(title.getText().toString().equals("爱好")) {
+                    Message msg = new Message();
+                    msg.what = 12;
+                    handler.sendMessage(msg);
+                }
+
+
+            }
+        });
+
+        dialog.show();
+        //此处设置位置窗体大小 注意一定要在show方法调用后再写设置窗口大小的代码，否则不起效果会
+        dialog.getWindow().setLayout((ScreenUtils.getScreenWidth(getContext())), LinearLayout.LayoutParams.WRAP_CONTENT);
+        return str;
+    }
+
+    @SuppressLint("ResourceType")
+    private void setRadioBtnAttribute(final TextView textView, String btnContent, int id ){
+        if( null ==textView ){
+            return;
+        }
+        textView.setId( id );
+        textView.setText( btnContent );
+
+        textView.setGravity( Gravity.CENTER );
+
+        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT , LinearLayout.LayoutParams.WRAP_CONTENT);
+        textView.setLayoutParams( rlp );
+    }
 }

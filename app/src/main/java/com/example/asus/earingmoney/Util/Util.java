@@ -38,6 +38,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Util {
+    public static  List<String> decodeTags(String tagsStr)
+    {
+        String[] decodeTags = tagsStr.split(";|、");
+        List<String> choices = Arrays.asList(decodeTags);
+        return choices;
+    }
+
     public static List<String> decodeChoiceStr(String choiceStr)
     {
         String[] decodeChoices = choiceStr.split("\\|");

@@ -51,20 +51,33 @@ public class Dialog extends AppCompatActivity {
                 super.handleMessage(msg);
                 if(msg.what == 1){
                     choice1.setBackgroundColor(getResources().getColor(R.color.blue));
-                    str += choice1.getText().toString() + "、";
+                    String s = choice1.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
+
                 }
                 if(msg.what == 2){
                     choice2.setBackgroundColor(getResources().getColor(R.color.blue));
-                    str += choice2.getText().toString() + "、";
+                    String s = choice2.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
                 }
                 if(msg.what == 3){
                     choice3.setBackgroundColor(getResources().getColor(R.color.blue));
-                    str += choice3.getText().toString() + "、";
+                    String s = choice3.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
                 }
                 if(msg.what == 4)
                 {
                     choice4.setBackgroundColor(getResources().getColor(R.color.blue));
-                    str += choice4.getText().toString() + "、";
+                    String s = choice4.getText().toString() + "、";
+                    if(str.indexOf(s) == -1){
+                        str += s;
+                    }
                 }
                 if(msg.what == 5){
                     choice1.setBackgroundColor(getResources().getColor(R.color.gray));
