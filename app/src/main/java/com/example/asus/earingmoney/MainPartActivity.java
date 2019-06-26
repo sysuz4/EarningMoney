@@ -92,7 +92,6 @@ public class MainPartActivity extends AppCompatActivity {
             radioButton.setChecked(true);
             if(position == 2)
             {
-                toolbar.setFocusable(false);
                 MeFragment meFragment = (MeFragment)fragments.get(position);
                 meFragment.cancelModifyInfo();
             }
