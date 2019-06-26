@@ -96,14 +96,17 @@ public class MissionOrTaskListAdapter extends BaseAdapter {
             if (((MissionModel)list.get(i)).getReportNum() != 0) {
                 viewHolder.missionStatus.setText(Integer.toString(((MissionModel)list.get(i)).getReportNum()) + "人举报");
                 viewHolder.missionStatus.setTextColor(context.getResources().getColor(R.color.red_error));
-            } else if (((MissionModel)list.get(i)).getMissionStatus() == Constants.NEED_MORE_PEOPLE) {
-                viewHolder.missionStatus.setText("人数不够");
-            } else if (((MissionModel)list.get(i)).getMissionStatus() == Constants.MAX_PEOPLE) {
-                viewHolder.missionStatus.setText("人数达上限");
-            } else if (((MissionModel)list.get(i)).getMissionStatus() == Constants.OVERDUE){
-                viewHolder.missionStatus.setText("已经过期");
             } else {
-                viewHolder.missionStatus.setText("全部完成");
+                if (((MissionModel) list.get(i)).getMissionStatus() == Constants.NEED_MORE_PEOPLE) {
+                    viewHolder.missionStatus.setText("人数不够");
+                } else if (((MissionModel) list.get(i)).getMissionStatus() == Constants.MAX_PEOPLE) {
+                    viewHolder.missionStatus.setText("人数达上限");
+                } else if (((MissionModel) list.get(i)).getMissionStatus() == Constants.OVERDUE) {
+                    viewHolder.missionStatus.setText("已经过期");
+                } else {
+                    viewHolder.missionStatus.setText("全部完成");
+                }
+                viewHolder.missionStatus.setTextColor(context.getResources().getColor(R.color.black));
             }
             viewHolder.taskNum.setText("需" + ((MissionModel)list.get(i)).getTaskNum() + "人");
             viewHolder.money.setText("奖励金:" + ((MissionModel)list.get(i)).getMoney());
@@ -114,18 +117,21 @@ public class MissionOrTaskListAdapter extends BaseAdapter {
             } else {
                 viewHolder.avator.setImageResource(R.mipmap.errand);
             }
+
             if (((TaskModel)list.get(i)).getReportNum() != 0) {
                 viewHolder.missionStatus.setText("已被举报");
                 viewHolder.missionStatus.setTextColor(context.getResources().getColor(R.color.red_error));
-            }
-            else if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_TO_DO) {
-                viewHolder.missionStatus.setText("待完成");
-            } else if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_DOING) {
-                viewHolder.missionStatus.setText("正在进行");
-            } else if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_DONE_BUT_NOT_CONFIRM) {
-                viewHolder.missionStatus.setText("提交等待确认");
-            } else if (((TaskModel)list.get(i)).getTaskStatus() == Constants.TASK_DONE_AND_CONFIRM) {
-                viewHolder.missionStatus.setText("已完成");
+            } else {
+                if (((TaskModel) list.get(i)).getTaskStatus() == Constants.TASK_TO_DO) {
+                    viewHolder.missionStatus.setText("待完成");
+                } else if (((TaskModel) list.get(i)).getTaskStatus() == Constants.TASK_DOING) {
+                    viewHolder.missionStatus.setText("正在进行");
+                } else if (((TaskModel) list.get(i)).getTaskStatus() == Constants.TASK_DONE_BUT_NOT_CONFIRM) {
+                    viewHolder.missionStatus.setText("提交等待确认");
+                } else if (((TaskModel) list.get(i)).getTaskStatus() == Constants.TASK_DONE_AND_CONFIRM) {
+                    viewHolder.missionStatus.setText("已完成");
+                }
+                viewHolder.missionStatus.setTextColor(context.getResources().getColor(R.color.black));
             }
             viewHolder.title.setText(((TaskModel)list.get(i)).getTitle());
             viewHolder.publishTime.setText("起:" + ((TaskModel)list.get(i)).getPublishTime());

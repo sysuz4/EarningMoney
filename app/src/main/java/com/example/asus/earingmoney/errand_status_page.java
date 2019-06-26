@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.model.Errand;
 import com.example.asus.earingmoney.model.Mission;
+import com.example.asus.earingmoney.model.QAsummary;
 import com.example.asus.earingmoney.model.Task;
 import com.example.asus.earingmoney.model.User;
 
@@ -33,6 +34,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class errand_status_page extends AppCompatActivity {
 
@@ -97,23 +102,8 @@ public class errand_status_page extends AppCompatActivity {
             public void handleMessage(Message msg){
                 super.handleMessage(msg);
                 if(msg.what == 1){
-                    String money_str = String.valueOf(mission.getMoney()) + "元";
-                    String status_str = "";
-                    errand_title1.setText(mission.getTitle());
-                    errand_deadline1.setText(mission.getDeadLine());
-                    payment1.setText(money_str);
-                    int status_num = mission.getMissionStatus();
-                    if(status_num == 0){
-                        status_str = "    待领取";
-                    } else if(status_num == 1){
-                        status_str = "    待完成";
-                    } else if(status_num == 2){
-                        status_str = "    待验收";
-                    } else if(status_num == 3){
-                        status_str = "    已完成";
-                    }
-                    errand_status1.setText(status_str);
-                    errand_status1.setTextSize(21);
+
+                    Log.e("money2:", mission.getMoney() == null ? "null":"not null");
                 }
                 if(msg.what == 2){
                     errand_discription1.setText(errand.getDescription());
@@ -138,6 +128,7 @@ public class errand_status_page extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         missionId = bundle.getInt("missionId");
+        //Log.e("missionId", Integer.toString(missionId));
         token = Util.getToken(getApplicationContext());
         loadData(missionId);
     }
@@ -179,18 +170,43 @@ public class errand_status_page extends AppCompatActivity {
         final service myService = retrofit.create(service.class);
         Call<Mission> myCall1 = myService.getErrandMission(token,missionId);
         Call<List<Task>> myCall2 = myService.getTaskByMissionID(token,missionId);
+        //Log.e("body:", myCall1 == null ? "mycall1 null" : "my call1 not null");
+
+
+
 
         myCall1.enqueue(new Callback<Mission>() {
             //请求成功时回调
             @Override
             public void onResponse(Call<Mission> call, final Response<Mission> response) {
                 // 步骤7：处理返回的数据结果
+                Log.e("body:", "onResponse");
                 if(response.code() == 200)
                 {
+                    Log.e("body:", response.body() == null ? "null":"not null");
                     mission = response.body();
+                    String money_str = String.valueOf(mission.getMoney()) + "元";
+                    String status_str = "";
+                    errand_title1.setText(mission.getTitle());
+                    errand_deadline1.setText(mission.getDeadLine());
+                    payment1.setText(money_str);
+                    int status_num = mission.getMissionStatus();
+                    if(status_num == 0){
+                        status_str = "    待领取";
+                    } else if(status_num == 1){
+                        status_str = "    待完成";
+                    } else if(status_num == 2){
+                        status_str = "    待验收";
+                    } else if(status_num == 3){
+                        status_str = "    已完成";
+                    }
+                    errand_status1.setText(status_str);
+                    errand_status1.setTextSize(21);
+
                     Message msg = new Message();
                     msg.what = 1;
                     handler.sendMessage(msg);
+
 
                 }
                 else if(response.code() == 401)
@@ -210,6 +226,7 @@ public class errand_status_page extends AppCompatActivity {
             //请求失败时回调
             @Override
             public void onFailure(Call<Mission> call, Throwable throwable) {
+                Log.e("body:", "fail");
                 System.out.println("连接失败");
             }
         });
@@ -305,10 +322,11 @@ public class errand_status_page extends AppCompatActivity {
                             }
                         });
                     }
-
+                    /*
                     Message msg = new Message();
                     msg.what = 1;
                     handler.sendMessage(msg);
+                    */
                 }
                 else if(response.code() == 401)
                 {
