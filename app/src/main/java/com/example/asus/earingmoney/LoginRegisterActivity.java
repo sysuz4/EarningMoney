@@ -27,24 +27,13 @@ import com.example.asus.earingmoney.Util.Constants;
 import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.model.GetTokenObj;
 import com.example.asus.earingmoney.model.Image;
-import com.example.asus.earingmoney.model.Msg;
 import com.example.asus.earingmoney.model.User;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -736,192 +725,54 @@ public class LoginRegisterActivity extends AppCompatActivity {
         final int sex = current_sex;
         final int grade = current_grade;
         final String major = register_major.getText().toString();
-        final String id_temp = register_id.getText().toString();
-        final int id = Integer.parseInt(id_temp);
+        final String id= register_id.getText().toString();
         final String mail = register_mail.getText().toString();
-        final String phone_temp = register_phone.getText().toString();
-        final int phone;
-        if(phone_temp.isEmpty())
-            phone = -1;
-        else
-            phone = Integer.parseInt(phone_temp);
+        final String phone = register_phone.getText().toString();
 
         register.setProgress(0);
 
-        new Thread(){
+        User model = new User();
+        model.setNickName(nickname);
+        model.setPassword(password);
+        model.setName(name);
+        if(!age_temp.isEmpty()){
+            model.setAge(age);
+        }
+        model.setSex(sex);
+        model.setGrade(grade);
+        model.setMajor(major);
+        model.setStuId(id);
+        model.setMailAddr(mail);
+        model.setPhoneNum(phone);
+        Gson gson=new Gson();
+        final String jsonBody = gson.toJson(model);
+        RequestBody reqBody = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=utf-8"),jsonBody);
+        Observer<Response<ResponseBody>> observer = new Observer<Response<ResponseBody>>() {
             @Override
-            public void run () {
-                //params.setUseJsonStreamer(true);
-                JSONObject body = new JSONObject();
-                try {
-                    body.put("userId", 4396);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            public void onNext(Response<ResponseBody> r) {
+                System.out.println(r.code());
+                if(r.code() == 201){
+                    Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
                 }
-                try {
-                    body.put("avator", image_name);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("userType", 0);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("name", name);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("nickName", nickname);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    if(!age_temp.isEmpty())
-                        body.put("age", age);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("sex", sex);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("grade", grade);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("major", major);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("mailAddr", mail);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    if(!phone_temp.isEmpty())
-                        body.put("phoneNum", phone);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("stuId", id);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("tags", "0");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    body.put("password", password);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                Message msg1 = new Message();
-                msg1.what = 20;
-                handler.sendMessage(msg1);
-
-                String urlPath = "http://106.14.225.59/users";
-                URL url = null;
-                try {
-                    url = new URL(urlPath);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                HttpURLConnection conn = null;
-                try {
-                    conn = (HttpURLConnection) url.openConnection();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                conn.setConnectTimeout(5000);
-                // 设置允许输出
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-                try {
-                    conn.setRequestMethod("POST");
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
-                }
-
-                Message msg2 = new Message();
-                msg2.what = 20;
-                handler.sendMessage(msg2);
-
-                // 设置contentType
-                conn.setRequestProperty("Content-Type", "application/json; charset = utf-8");
-                DataOutputStream os = null;
-                try {
-                    os = new DataOutputStream(conn.getOutputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Message msg3 = new Message();
-                msg3.what = 20;
-                handler.sendMessage(msg3);
-
-                String content = String.valueOf(body);
-                try {
-                    os.writeBytes(content);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    os.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    //System.out.println(conn.getResponseCode());
-                    if (conn.getResponseCode() == 201) {
-                        InputStreamReader in = new InputStreamReader(conn.getInputStream());
-                        BufferedReader bf = new BufferedReader(in);
-                        String recieveData = null;
-                        String result = "";
-                        while ((recieveData = bf.readLine()) != null) {
-                            result += recieveData + "\n";
-                        }
-                        //System.out.println(result);
-                        in.close();
-                        conn.disconnect();
-
-                        Message msg4 = new Message();
-                        msg4.what = 40;
-                        handler.sendMessage(msg4);
-
-                        getToken(nickname,password);
-                    }
-                    else if(conn.getResponseCode() ==  409){
-                        Message msg5 = new Message();
-                        msg5.what = -1;
-                        handler.sendMessage(msg5);
-                    }
-                    else{
-                        Message msg5 = new Message();
-                        msg5.what = -3;
-                        msg5.obj = conn.getResponseCode();
-                        handler.sendMessage(msg5);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                else {
+                    Toast.makeText(getApplicationContext(), r.code(), Toast.LENGTH_SHORT).show();
                 }
             }
-        }.start();
+
+            @Override
+            public void onCompleted() {
+                getToken(nickname,password);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
+            }
+        };
+        myservice.register(reqBody)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     private void check_token(){
