@@ -101,10 +101,30 @@ public class errand_status_page extends AppCompatActivity {
             @Override
             public void handleMessage(Message msg){
                 super.handleMessage(msg);
+
                 if(msg.what == 1){
 
                     Log.e("money2:", mission.getMoney() == null ? "null":"not null");
+
+                    String money_str = String.valueOf(mission.getMoney()) + "元";
+                    String status_str = "";
+                    errand_title1.setText(mission.getTitle());
+                    errand_deadline1.setText(mission.getDeadLine());
+                    payment1.setText(money_str);
+                    int status_num = mission.getMissionStatus();
+                    if(status_num == 0){
+                        status_str = "    待领取";
+                    } else if(status_num == 1){
+                        status_str = "    待完成";
+                    } else if(status_num == 2){
+                        status_str = "    待验收";
+                    } else if(status_num == 3){
+                        status_str = "    已完成";
+                    }
+                    errand_status1.setText(status_str);
+                    errand_status1.setTextSize(21);
                 }
+
                 if(msg.what == 2){
                     errand_discription1.setText(errand.getDescription());
                     errand_private_info1.setText(errand.getPrivateInfo());
@@ -185,23 +205,6 @@ public class errand_status_page extends AppCompatActivity {
                 {
                     Log.e("body:", response.body() == null ? "null":"not null");
                     mission = response.body();
-                    String money_str = String.valueOf(mission.getMoney()) + "元";
-                    String status_str = "";
-                    errand_title1.setText(mission.getTitle());
-                    errand_deadline1.setText(mission.getDeadLine());
-                    payment1.setText(money_str);
-                    int status_num = mission.getMissionStatus();
-                    if(status_num == 0){
-                        status_str = "    待领取";
-                    } else if(status_num == 1){
-                        status_str = "    待完成";
-                    } else if(status_num == 2){
-                        status_str = "    待验收";
-                    } else if(status_num == 3){
-                        status_str = "    已完成";
-                    }
-                    errand_status1.setText(status_str);
-                    errand_status1.setTextSize(21);
 
                     Message msg = new Message();
                     msg.what = 1;
@@ -243,11 +246,11 @@ public class errand_status_page extends AppCompatActivity {
                         taskId = task_list.get(0).getTaskId();
                         //Log.d("taskId", "onResponse: " + taskId);
                         int status = task_list.get(0).getTaskStatus();
-                        if( status == 2){
-                            Message msg = new Message();
-                            msg.what = 2;
-                            handler.sendMessage(msg);
-                        }
+//                        if( status == 2){
+//                            Message msg = new Message();
+//                            msg.what = 2;
+//                            handler.sendMessage(msg);
+//                        }
                         Call<Errand> myCall3 = myService.getErrandByTaskId(token,task_list.get(0).getTaskId());
                         myCall3.enqueue(new Callback<Errand>() {
                             //请求成功时回调

@@ -140,6 +140,7 @@ public class TasksFragment extends Fragment implements AdapterView.OnItemClickLi
             public void onRefresh() {
                 swipeRefreshLayout1.setRefreshing(true);
                 initData();
+                completenessSpinner.setSelection(0);
             }
         });
 

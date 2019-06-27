@@ -111,6 +111,7 @@ public class DisplayQuestionareAdapter extends BaseAdapter {
                 questionType.setText("[不定项]");
             }
             viewHolder.jumpBtn.setVisibility(View.GONE);
+            viewHolder.optionList.setVisibility(View.VISIBLE);
             viewHolder.optionList.setText(getOptionListText(i));
         }
 
