@@ -25,7 +25,7 @@ public class MissionsSortUtil {
     static Comparator<Mission> missionComparatorByPriceUp = new Comparator<Mission>() {
         @Override
         public int compare(Mission lhs, Mission rhs) {
-            if(lhs.getMoney() < rhs.getMoney())
+            if(lhs.getAvemoney() < rhs.getAvemoney())
                 return 1;
             return -1;       //注意此处不是0
         }
@@ -34,7 +34,7 @@ public class MissionsSortUtil {
     static Comparator<Mission> missionComparatorByPriceDown = new Comparator<Mission>() {
         @Override
         public int compare(Mission lhs, Mission rhs) {
-            if(lhs.getMoney() > rhs.getMoney())
+            if(lhs.getAvemoney() > rhs.getAvemoney())
                 return 1;
             return -1;       //注意此处不是0
         }
