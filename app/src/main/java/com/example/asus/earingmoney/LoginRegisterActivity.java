@@ -594,7 +594,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 String image_name_temp = UUID.randomUUID().toString() + ".jpg";
                 //存储图片
                 FileOutputStream out = openFileOutput(image_name_temp, MODE_PRIVATE);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
                 //获取复制后文件的uri
                 Uri image_file_uri = Uri.fromFile(getFileStreamPath(image_name_temp));
                 //图片预览
@@ -755,6 +755,9 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 if(r.code() == 201){
                     Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
                 }
+                else if(r.code() == 409){
+                    Toast.makeText(getApplicationContext(), "该用户已被注册", Toast.LENGTH_SHORT).show();
+                }
                 else {
                     Toast.makeText(getApplicationContext(), r.code(), Toast.LENGTH_SHORT).show();
                 }
@@ -767,7 +770,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
             @Override
             public void onError(Throwable e) {
-                Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
             }
         };
         myservice.register(reqBody)
