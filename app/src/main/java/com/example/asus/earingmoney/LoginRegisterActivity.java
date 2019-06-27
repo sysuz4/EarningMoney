@@ -200,7 +200,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 login_password.setText("");
             }
             else if(msg.what == -3){
-                Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), msg.obj.toString(), Toast.LENGTH_SHORT).show();
                 login_username.setText("");
                 login_password.setText("");
             }
@@ -912,6 +912,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     else{
                         Message msg5 = new Message();
                         msg5.what = -3;
+                        msg5.obj = conn.getResponseCode();
                         handler.sendMessage(msg5);
                     }
                 } catch (IOException e) {
