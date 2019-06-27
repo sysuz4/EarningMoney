@@ -455,6 +455,17 @@ public class MeFragment extends Fragment {
             return false;
         }
 
+        try
+        {
+            int a = Integer.valueOf(gradeText.getText().toString());
+            int b = Integer.valueOf(ageText.getText().toString());
+        }
+        catch (Exception E)
+        {
+            Toast.makeText(getContext(), "年龄或年级必须为正整数", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         tag_label.setClickable(false);
         tag_label.setText("我的标签：");
         usernameText.setEnabled(false);
