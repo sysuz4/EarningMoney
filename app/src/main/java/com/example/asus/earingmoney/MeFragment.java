@@ -465,12 +465,18 @@ public class MeFragment extends Fragment {
              if(a<0||b<0)
              {
                Toast.makeText(getContext(), "年龄或年级必须为正数", Toast.LENGTH_SHORT).show();
-            return false;
+                return false;
              }
         }
         catch (Exception E)
         {
             Toast.makeText(getContext(), "年龄或年级必须为正整数", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(usernameText.getText().toString().isEmpty() || realNameText.getText().toString().isEmpty())
+        {
+            Toast.makeText(getContext(), "昵称或真实姓名不能为空", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -599,7 +605,7 @@ public class MeFragment extends Fragment {
                 }
                 else
                 {
-                    Toast.makeText(getContext(), "修改失败",
+                    Toast.makeText(getContext(), "修改失败: " + response.body().getMsg(),
                             Toast.LENGTH_SHORT).show();
                     Log.e("modifyPersonalInfo:", response.raw().toString());
                 }

@@ -70,6 +70,10 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
             public void onClick(View v) {
                 if(moneyText.getText().toString().isEmpty() || taskNumText.getText().toString().isEmpty())
                     toast("金额或任务限制人数不能为空");
+                else if(Integer.valueOf(taskNumText.getText().toString()) <= 0)
+                {
+                    toast("任务人数必须为正整数");
+                }
                 else
                 {
 
