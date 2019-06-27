@@ -107,27 +107,51 @@ public class errand_status_page extends AppCompatActivity {
                     Log.e("money2:", mission.getMoney() == null ? "null":"not null");
 
                     String money_str = String.valueOf(mission.getMoney()) + "元";
-                    String status_str = "";
                     errand_title1.setText(mission.getTitle());
                     errand_deadline1.setText(mission.getDeadLine());
                     payment1.setText(money_str);
-                    int status_num = mission.getMissionStatus();
-                    if(status_num == 0){
-                        status_str = "    待领取";
-                    } else if(status_num == 1){
-                        status_str = "    待完成";
-                    } else if(status_num == 2){
-                        status_str = "    待验收";
-                    } else if(status_num == 3){
-                        status_str = "    已完成";
+
+                    if(mission.getMissionStatus() == 3){
+                        button.setEnabled(false);
+                        button.setBackgroundColor(getResources().getColor(R.color.buttom_tv));
+                        errand_status1.setText("已完成");
+                        errand_status1.setTextSize(21);
+                        button.setText("已完成");
                     }
-                    errand_status1.setText(status_str);
-                    errand_status1.setTextSize(21);
+                    if(mission.getMissionStatus() == 2){
+                        button.setEnabled(false);
+                        button.setBackgroundColor(getResources().getColor(R.color.buttom_tv));
+                        errand_status1.setText("已过期");
+                        errand_status1.setTextSize(21);
+                        button.setText("已过期");
+                    }
+                    if(mission.getMissionStatus() == 0){
+                        button.setEnabled(false);
+                        button.setBackgroundColor(getResources().getColor(R.color.buttom_tv));
+                        errand_status1.setText("完成此任务的人数还不够");
+                        errand_status1.setTextSize(21);
+                    }
+
                 }
 
                 if(msg.what == 2){
                     errand_discription1.setText(errand.getDescription());
                     errand_private_info1.setText(errand.getPrivateInfo());
+                    String status_str = "";
+                    int pdf = 1;
+                    for(int i = 0; i < task_list.size();i++){
+                        if(task_list.get(i).getTaskStatus() != 2){
+                            pdf = 0;
+                        }
+                    }
+                    if(pdf == 1){
+                        status_str = "    任务完成，待验收";
+                        button.setBackgroundColor(getResources().getColor(R.color.Blue));
+                        button.setEnabled(true);
+                        errand_status1.setText(status_str);
+                        errand_status1.setTextSize(21);
+                    }
+
                 }
                 if(msg.what == 3){
                     String acc_user_info = "姓名:" + user.getName() + '\n';
@@ -136,10 +160,15 @@ public class errand_status_page extends AppCompatActivity {
                 }
                 if(msg.what == 4){
                     info1.setText("暂无人领取");
+                    errand_status1.setText("完成此任务的人数还不够");
+                    errand_status1.setTextSize(21);
                 }
                 if(msg.what == 5){
-                    button.setBackgroundColor(getResources().getColor(R.color.Blue));
-                    button.setEnabled(true);
+                    button.setEnabled(false);
+                    button.setBackgroundColor(getResources().getColor(R.color.buttom_tv));
+                    button.setText("已完成");
+                    errand_status1.setText("已完成");
+                    errand_status1.setTextSize(21);
                 }
 
             }
@@ -190,10 +219,6 @@ public class errand_status_page extends AppCompatActivity {
         final service myService = retrofit.create(service.class);
         Call<Mission> myCall1 = myService.getErrandMission(token,missionId);
         Call<List<Task>> myCall2 = myService.getTaskByMissionID(token,missionId);
-        //Log.e("body:", myCall1 == null ? "mycall1 null" : "my call1 not null");
-
-
-
 
         myCall1.enqueue(new Callback<Mission>() {
             //请求成功时回调
@@ -205,11 +230,9 @@ public class errand_status_page extends AppCompatActivity {
                 {
                     Log.e("body:", response.body() == null ? "null":"not null");
                     mission = response.body();
-
                     Message msg = new Message();
                     msg.what = 1;
                     handler.sendMessage(msg);
-
 
                 }
                 else if(response.code() == 401)
@@ -233,7 +256,7 @@ public class errand_status_page extends AppCompatActivity {
                 System.out.println("连接失败");
             }
         });
-
+        //从这里得到task列表
         myCall2.enqueue(new Callback<List<Task>>() {
             //请求成功时回调
             @Override
@@ -244,14 +267,9 @@ public class errand_status_page extends AppCompatActivity {
                     task_list = response.body();
                     if(task_list != null){
                         taskId = task_list.get(0).getTaskId();
-                        //Log.d("taskId", "onResponse: " + taskId);
-                        int status = task_list.get(0).getTaskStatus();
-//                        if( status == 2){
-//                            Message msg = new Message();
-//                            msg.what = 2;
-//                            handler.sendMessage(msg);
-//                        }
+                       // int status = task_list.get(0).getTaskStatus();
                         Call<Errand> myCall3 = myService.getErrandByTaskId(token,task_list.get(0).getTaskId());
+                        //从这里得到跑腿任务
                         myCall3.enqueue(new Callback<Errand>() {
                             //请求成功时回调
                             @Override
@@ -259,8 +277,6 @@ public class errand_status_page extends AppCompatActivity {
                                 // 步骤7：处理返回的数据结果
                                 if(response.code() == 200)
                                 {
-//                                    Toast.makeText(getApplicationContext(),
-//                                            "get errand success", Toast.LENGTH_SHORT).show();
                                     errand = response.body();
                                     Message msg = new Message();
                                     msg.what = 2;
@@ -286,10 +302,12 @@ public class errand_status_page extends AppCompatActivity {
                                 System.out.println("连接失败");
                             }
                         });
+
                         int userId = task_list.get(0).getAccUserId();
                         Log.d("userId", "onResponse: "+ userId);
                         Log.d("userId", "onResponse: " + task_list.get(0).getPubUserId());
                         Call<User> myCall4 = myService.getUserById(token,userId);
+                        //从这里得到用户信息
                         myCall4.enqueue(new Callback<User>() {
                             //请求成功时回调
                             @Override
@@ -325,11 +343,6 @@ public class errand_status_page extends AppCompatActivity {
                             }
                         });
                     }
-                    /*
-                    Message msg = new Message();
-                    msg.what = 1;
-                    handler.sendMessage(msg);
-                    */
                 }
                 else if(response.code() == 401)
                 {
@@ -378,10 +391,9 @@ public class errand_status_page extends AppCompatActivity {
                 // 步骤7：处理返回的数据结果
                 if(response.code() == 200)
                 {
-                    Toast.makeText(getApplicationContext(),
-                            "提交成功，等待审核", Toast.LENGTH_SHORT).show();
+
                     Message msg = new Message();
-                    msg.what = 3;
+                    msg.what = 5;
                     handler.sendMessage(msg);
 
                 }
