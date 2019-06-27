@@ -199,6 +199,11 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 login_username.setText("");
                 login_password.setText("");
             }
+            else if(msg.what == -3){
+                Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
+                login_username.setText("");
+                login_password.setText("");
+            }
             else {
                 register.setProgress(register.getProgress() + msg.what);
                 if(register.getProgress() == 100){
@@ -660,7 +665,10 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
     //上传图片
     private void upload_img(){
-        if(default_image != null){
+        if(default_image == null){
+            register_new_user();
+        }
+        else {
             File file = new File(default_image);
             // 创建 RequestBody，用于封装构建RequestBody
             // RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -877,7 +885,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    //System.out.println(conn.getResponseCode());
+                    System.out.println(conn.getResponseCode());
                     if (conn.getResponseCode() == 201) {
                         InputStreamReader in = new InputStreamReader(conn.getInputStream());
                         BufferedReader bf = new BufferedReader(in);
@@ -899,6 +907,11 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     else if(conn.getResponseCode() ==  409){
                         Message msg5 = new Message();
                         msg5.what = -1;
+                        handler.sendMessage(msg5);
+                    }
+                    else{
+                        Message msg5 = new Message();
+                        msg5.what = -3;
                         handler.sendMessage(msg5);
                     }
                 } catch (IOException e) {
