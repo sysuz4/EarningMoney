@@ -885,7 +885,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    System.out.println(conn.getResponseCode());
+                    //System.out.println(conn.getResponseCode());
                     if (conn.getResponseCode() == 201) {
                         InputStreamReader in = new InputStreamReader(conn.getInputStream());
                         BufferedReader bf = new BufferedReader(in);

@@ -254,7 +254,8 @@ public class MainFragment extends Fragment {
                 for(Mission i : missions.getAllMissions()){
                     boolean have_this_mission = false;
                     //System.out.println(i.getTitle());
-                    if(i.getMissionStatus() == 1) //如果问卷填写人数已满则不显示
+                    //System.out.println(i.getMissionStatus());
+                    if(i.getMissionStatus() != 0) //如果问卷填写人数不为可接受则不显示
                         continue;
                     if(i.getReportNum() >= 4) //如果举报次数>=4就不显示
                         continue;
