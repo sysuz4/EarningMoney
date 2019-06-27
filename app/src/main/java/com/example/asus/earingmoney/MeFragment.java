@@ -395,6 +395,9 @@ public class MeFragment extends Fragment {
                     cancelModifyInfo();
                 }
                 break;
+            case R.id.freshBtn:
+                initData();
+                Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
             default:
                 break;
         }
@@ -459,6 +462,11 @@ public class MeFragment extends Fragment {
         {
             int a = Integer.valueOf(gradeText.getText().toString());
             int b = Integer.valueOf(ageText.getText().toString());
+             if(a<0||b<0)
+             {
+               Toast.makeText(getContext(), "年龄或年级必须为正数", Toast.LENGTH_SHORT).show();
+            return false;
+             }
         }
         catch (Exception E)
         {

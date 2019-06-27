@@ -18,4 +18,12 @@
         android:title="修改"
         app:actionProviderClass="com.example.asus.earingmoney.menuActionProvider.meFragementActionProvider"/>
 
+    <item
+        android:id="@+id/freshBtn"
+        android:icon="@mipmap/fresh"
+        app:showAsAction="always"
+        android:title="刷新"
+        app:actionProviderClass="com.example.asus.earingmoney.menuActionProvider.meFragementActionProvider"/>
+
+
 </menu>
