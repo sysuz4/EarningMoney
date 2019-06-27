@@ -395,6 +395,9 @@ public class MeFragment extends Fragment {
                     cancelModifyInfo();
                 }
                 break;
+            case R.id.freshBtn:
+                initData();
+                Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
             default:
                 break;
         }
