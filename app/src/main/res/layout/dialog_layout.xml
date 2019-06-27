@@ -25,40 +25,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:weightSum="2">
         <Button
             android:id="@+id/choice1"
-            android:layout_width="160dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="大一"
             android:layout_marginRight="15dp"
-            android:background="@color/gray"/>
+            android:background="@color/gray"
+            android:layout_weight="1"/>
         <Button
             android:id="@+id/choice2"
-            android:layout_width="160dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="大二"
-            android:background="@color/gray"/>
+            android:background="@color/gray"
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="2">
         <Button
             android:id="@+id/choice3"
-            android:layout_width="160dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="大三"
             android:layout_marginRight="15dp"
-            android:background="@color/gray" />
+            android:background="@color/gray"
+            android:layout_weight="1"/>
         <Button
             android:id="@+id/choice4"
-            android:layout_width="160dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="大四"
-            android:background="@color/gray"/>
+            android:background="@color/gray"
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <Button

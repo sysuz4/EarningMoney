@@ -247,11 +247,11 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
 
                     dialog.dismiss();
 
-                    final FinishQuestionareDialog2 dialog = new FinishQuestionareDialog2(mContext);
-                    dialog.showAnim(new FadeEnter())//
+                    final FinishQuestionareDialog2 dialog2 = new FinishQuestionareDialog2(mContext);
+                    dialog2.showAnim(new FadeEnter())//
                             .dismissAnim(new FadeExit())//
                             .show();
-                    dialog.setCanceledOnTouchOutside(false);
+                    dialog2.setCanceledOnTouchOutside(false);
                 }
             }
         };
