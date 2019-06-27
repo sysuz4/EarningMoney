@@ -17,6 +17,8 @@ import com.example.asus.earingmoney.Util.Util;
 import com.example.asus.earingmoney.model.Mission;
 import com.example.asus.earingmoney.model.User;
 
+import java.io.IOException;
+
 import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -83,7 +85,11 @@ public class MissionDetailActivity extends AppCompatActivity {
                 Observer<ResponseBody> observer_accept_mission = new Observer<ResponseBody>() {
                     @Override
                     public void onNext(ResponseBody mission) {
-
+//                        try {
+//                            System.out.println(mission.string());
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
                     }
 
                     @Override
