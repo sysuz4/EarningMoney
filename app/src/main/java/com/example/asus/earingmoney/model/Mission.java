@@ -25,6 +25,9 @@ public class Mission {
     @SerializedName("avator")
     private String avator;
 
+    @SerializedName("aveMoney")
+    private float avemoney;
+
     @SerializedName("money")
     private float money;
 
@@ -159,5 +162,9 @@ public class Mission {
 
     public int getReportNum() {
         return reportNum;
+    }
+
+    public float getAvemoney() {
+        return avemoney;
     }
 }

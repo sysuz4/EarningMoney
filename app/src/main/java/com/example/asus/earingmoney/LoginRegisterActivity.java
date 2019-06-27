@@ -779,7 +779,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    body.put("age", age);
+                    if(!age_temp.isEmpty())
+                        body.put("age", age);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -804,7 +805,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    body.put("phoneNum", phone);
+                    if(!phone_temp.isEmpty())
+                        body.put("phoneNum", phone);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -856,7 +858,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 handler.sendMessage(msg2);
 
                 // 设置contentType
-                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Content-Type", "application/json; charset = utf-8");
                 DataOutputStream os = null;
                 try {
                     os = new DataOutputStream(conn.getOutputStream());

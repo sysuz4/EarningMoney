@@ -206,10 +206,10 @@ public class MainFragment extends Fragment {
                     MissionsSortUtil.sortById(missionslist);
                 }
                 else if(position == 1){
-                    MissionsSortUtil.sortByPriceUp(missionslist);
+                    MissionsSortUtil.sortByPriceDown(missionslist);
                 }
                 else {
-                    MissionsSortUtil.sortByPriceDown(missionslist);
+                    MissionsSortUtil.sortByPriceUp(missionslist);
                 }
                 adapter.notifyDataSetChanged();
             }

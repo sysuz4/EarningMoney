@@ -142,7 +142,7 @@ public class MissionDetailActivity extends AppCompatActivity {
                 publish_time.setText(mission.getPublishTime());
                 detail.setText(description);
                 deadline.setText(mission.getDeadLine());
-                money.setText(mission.getMoney() + "元");
+                money.setText(mission.getMoney()/mission.getTaskNum() + "元");
                 titleText.setText(mission.getTitle());
             }
 
