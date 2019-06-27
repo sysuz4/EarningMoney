@@ -395,6 +395,9 @@ public class MeFragment extends Fragment {
                     cancelModifyInfo();
                 }
                 break;
+            case R.id.freshBtn:
+                initData();
+                Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
             default:
                 break;
         }
@@ -452,6 +455,17 @@ public class MeFragment extends Fragment {
         if(oldPasswordText.getText().toString().isEmpty() || newPasswordText.getText().toString().isEmpty())
         {
             Toast.makeText(getContext(), "请输入密码后确认修改",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        try
+        {
+            int a = Integer.valueOf(gradeText.getText().toString());
+            int b = Integer.valueOf(ageText.getText().toString());
+        }
+        catch (Exception E)
+        {
+            Toast.makeText(getContext(), "年龄或年级必须为正整数", Toast.LENGTH_SHORT).show();
             return false;
         }
 

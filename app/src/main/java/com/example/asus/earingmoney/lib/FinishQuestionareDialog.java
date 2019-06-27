@@ -89,6 +89,11 @@ public class FinishQuestionareDialog extends BaseDialog<FinishQuestionareDialog>
                     }
                     else if(mContext instanceof creat_errand_activity)
                     {
+                        if(taskNum != 1)
+                        {
+                            toast("跑腿任务人数只能为1");
+                            return;
+                        }
                         creat_errand_activity activity = (creat_errand_activity)mContext;
                         activity.money = money;
                         activity.taskNum = taskNum;
