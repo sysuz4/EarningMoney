@@ -744,6 +744,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
         model.setStuId(id);
         model.setMailAddr(mail);
         model.setPhoneNum(phone);
+        model.setAvator(image_name);
         Gson gson=new Gson();
         final String jsonBody = gson.toJson(model);
         RequestBody reqBody = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=utf-8"),jsonBody);

@@ -59,6 +59,7 @@ public class User{
     }
 
     public User() {
+        avator = "";
         userType = 0;
         tags = "";
         creditVal = "";
