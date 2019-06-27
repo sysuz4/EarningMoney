@@ -246,11 +246,11 @@ public class errand_status_page extends AppCompatActivity {
                         taskId = task_list.get(0).getTaskId();
                         //Log.d("taskId", "onResponse: " + taskId);
                         int status = task_list.get(0).getTaskStatus();
-                        if( status == 2){
-                            Message msg = new Message();
-                            msg.what = 2;
-                            handler.sendMessage(msg);
-                        }
+//                        if( status == 2){
+//                            Message msg = new Message();
+//                            msg.what = 2;
+//                            handler.sendMessage(msg);
+//                        }
                         Call<Errand> myCall3 = myService.getErrandByTaskId(token,task_list.get(0).getTaskId());
                         myCall3.enqueue(new Callback<Errand>() {
                             //请求成功时回调
