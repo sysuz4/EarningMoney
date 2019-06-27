@@ -605,8 +605,7 @@ public class MeFragment extends Fragment {
                 }
                 else
                 {
-                    Toast.makeText(getContext(), "修改失败: " + response.body().getMsg(),
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "修改失败: ", Toast.LENGTH_SHORT).show();
                     Log.e("modifyPersonalInfo:", response.raw().toString());
                 }
 
