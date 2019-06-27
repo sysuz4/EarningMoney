@@ -313,6 +313,17 @@ public class createQuestionare extends AppCompatActivity implements AdapterView.
 
     public void create_questinoare_to_server()
     {
+        if(titleText.getText().toString().isEmpty())
+        {
+            Toast.makeText(this, "标题不能为空", Toast.LENGTH_SHORT);
+            return;
+        }
+        if(mQueList.size() <= 0)
+        {
+            Toast.makeText(this, "题目不能为空", Toast.LENGTH_SHORT);
+            return;
+        }
+
         Log.e("s", "" + Util.getUserId(this));
         CreateQuestionareModel createQuestionareModel = new CreateQuestionareModel();
         Mission mission = new Mission();
