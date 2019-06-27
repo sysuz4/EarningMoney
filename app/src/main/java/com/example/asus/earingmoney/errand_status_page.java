@@ -151,6 +151,11 @@ public class errand_status_page extends AppCompatActivity {
                         errand_status1.setText(status_str);
                         errand_status1.setTextSize(21);
                     }
+                    else{
+                        status_str = "完成此任务的人数还不够";
+                        errand_status1.setText(status_str);
+                        errand_status1.setTextSize(21);
+                    }
 
                 }
                 if(msg.what == 3){
